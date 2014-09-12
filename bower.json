@@ -1,0 +1,12 @@
+{
+  "name": "Fayde.Zoomer",
+  "version": "0.1.0",
+  "ignore": [
+    "build",
+    "nuget",
+    "src",
+    "test",
+    "testsite",
+    "Gruntfile.js"
+  ]
+}

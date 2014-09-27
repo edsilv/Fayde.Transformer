@@ -1,24 +1,65 @@
 <Application
         xmlns="http://schemas.wsick.com/fayde"
         xmlns:x="http://schemas.wsick.com/fayde/x"
+        xmlns:vms="ViewModels"
+        xmlns:mylib="lib:Fayde.Zoomer"
         ThemeName="Metro">
     <Application.Resources>
     </Application.Resources>
     <Grid x:Name="LayoutRoot">
+
+        <Grid.DataContext>
+            <vms:TestViewModel />
+        </Grid.DataContext>
+
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="220" />
         </Grid.ColumnDefinitions>
-        <StackPanel>
-            <HyperlinkButton TargetName="ContentFrame" NavigateUri="/test1" Content="Test 1" />
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <mylib:Zoomer ZoomLevels="2" ZoomLevel="{Binding ZoomLevel}" ZoomChanged="{EventBinding ZoomChanged}">
+            <Canvas x:Name="ZoomContent"
+                    Canvas.Left="{Binding ZoomContentOffset.X}"
+                    Canvas.Top="{Binding ZoomContentOffset.Y}"
+                    Width="{Binding ZoomContentSize.Width}"
+                    Height="{Binding ZoomContentSize.Height}"
+                    Background="#40e6ff">
+            </Canvas>
+        </mylib:Zoomer>
+
+        <StackPanel Grid.ZIndex="2" Grid.Column="1" Margin="0,20,20,0" Orientation="Vertical">
+            <StackPanel Orientation="Horizontal">
+                <RepeatButton x:Name="ZoomIn" Width="100" Click="{EventBinding ZoomIn_Click}" Delay="100" Interval="100">
+                    <!--<Image Width="60" Height="60" Source="Images/zoom-in.png" />-->
+                    +
+                </RepeatButton>
+                <RepeatButton x:Name="ZoomOut" Width="100" Click="{EventBinding ZoomOut_Click}" Delay="100" Interval="100">
+                    <!--<Image Width="60" Height="60" Source="Images/zoom-out.png" />-->
+                    -
+                </RepeatButton>
+            </StackPanel>
+            <StackPanel Margin="0,10,0,10" VerticalAlignment="Center">
+                <Slider x:Name="ZoomSlider" Value="{Binding ZoomLevel, Mode=TwoWay}" Minimum="0" Maximum="{Binding ZoomLevels}" TickFrequency="10" IsSnapToTickEnabled="True"  />
+                <!--<TextBlock Text="{Binding ElementName=ZoomSlider, Path=Value}" Foreground="#FFFFFF" />-->
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <RepeatButton x:Name="ScrollLeft" Width="50" Click="{EventBinding ScrollLeft_Click}" Delay="100" Interval="100">
+                    &lt;
+                </RepeatButton>
+                <RepeatButton x:Name="ScrollRight" Width="50" Click="{EventBinding ScrollRight_Click}" Delay="100" Interval="100">
+                    &gt;
+                </RepeatButton>
+                <RepeatButton x:Name="ScrollUp" Width="50" Click="{EventBinding ScrollUp_Click}" Delay="100" Interval="100">
+                    ^
+                </RepeatButton>
+                <RepeatButton x:Name="ScrollDown" Width="50" Click="{EventBinding ScrollDown_Click}" Delay="100" Interval="100">
+                    v
+                </RepeatButton>
+            </StackPanel>
         </StackPanel>
-        <Frame x:Name="ContentFrame" Grid.Column="1">
-            <Frame.UriMapper>
-                <UriMapper>
-                    <UriMapping Uri="" MappedUri="Views/test1.fayde" />
-                    <UriMapping Uri="/{pageName}" MappedUri="Views/{pageName}.fayde" />
-                </UriMapper>
-            </Frame.UriMapper>
-        </Frame>
     </Grid>
 </Application>

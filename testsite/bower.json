@@ -4,6 +4,8 @@
     "dependencies": {
         "requirejs": "*",
         "requirejs-text": "*",
-        "fayde": "*"
+        "fayde": "*",
+        "tween.ts": "0.1.1",
+        "fayde.utils": "0.1.9"
     }
 }

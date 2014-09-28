@@ -12,7 +12,7 @@ define(["require", "exports"], function(require, exports) {
         function TestViewModel() {
             _super.call(this);
 
-            this.ZoomLevel = 1;
+            this.ZoomLevel = 0;
         }
         Object.defineProperty(TestViewModel.prototype, "ZoomLevel", {
             get: function () {

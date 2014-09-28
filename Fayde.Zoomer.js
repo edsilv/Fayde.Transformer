@@ -34,9 +34,6 @@ var Fayde;
             __extends(Zoomer, _super);
             function Zoomer() {
                 _super.call(this);
-                this._TweenSpeed = 250;
-                this._ZoomLevels = 10;
-                this._ZoomFactor = 2;
                 this._Origin = 0 /* Center */;
                 this._IsMouseDown = false;
                 this._IsDragging = false;
@@ -49,60 +46,35 @@ var Fayde;
                 this._DragFriction = 2;
                 this._ConstrainToViewport = true;
                 this._LastVisualTick = new Date(0).getTime();
-                this.ZoomChanged = new MulticastEvent();
+                this.ZoomUpdated = new MulticastEvent();
                 this.DefaultStyleKey = this.constructor;
 
                 this._TweenEasing = TWEEN.Easing.Quadratic.InOut;
 
-                this.ViewportSize = new Size(320, 240);
-
                 this._Timer = new Fayde.ClockTimer();
                 this._Timer.RegisterTimer(this);
             }
+            Zoomer.prototype.OnAnimationSpeedChanged = function (args) {
+            };
+
             Zoomer.prototype.OnZoomLevelsChanged = function (args) {
                 this.ZoomLevels = args.NewValue;
             };
 
             Zoomer.prototype.OnZoomLevelChanged = function (args) {
-                var _this = this;
-                var value = Math.floor(args.NewValue);
-
-                if (value < 0 || value > this.ZoomLevels)
-                    return;
-
-                this._ZoomLevel = value;
-
-                this._ZoomTo(value, function () {
-                    _this.ZoomChanged.Raise(_this, new _Zoomer.ZoomerEventArgs(_this.ZoomContentSize, _this.ZoomContentOffset));
-                }, function () {
-                    console.log("zoomLevel: " + _this.ZoomLevel);
-                    console.log("width: " + _this.ZoomContentSize.Width);
-                });
+                this._ZoomTo(this.ZoomLevel);
             };
 
-            Object.defineProperty(Zoomer.prototype, "ZoomLevels", {
-                get: function () {
-                    return this._ZoomLevels;
-                },
-                set: function (value) {
-                    this._ZoomLevels = value;
-                },
-                enumerable: true,
-                configurable: true
-            });
+            Zoomer.prototype.OnWidthChanged = function (args) {
+                this.ViewportSize = new Size(args.NewValue, this.Height);
+            };
 
+            Zoomer.prototype.OnHeightChanged = function (args) {
+                this.ViewportSize = new Size(this.Width, args.NewValue);
+            };
 
-            Object.defineProperty(Zoomer.prototype, "ZoomFactor", {
-                get: function () {
-                    return this._ZoomFactor;
-                },
-                set: function (value) {
-                    this._ZoomFactor = value;
-                },
-                enumerable: true,
-                configurable: true
-            });
-
+            Zoomer.prototype.OnZoomFactorChanged = function (args) {
+            };
 
             Object.defineProperty(Zoomer.prototype, "MaxWidth", {
                 get: function () {
@@ -168,14 +140,6 @@ var Fayde;
             });
 
 
-            Object.defineProperty(Zoomer.prototype, "ZoomLevel", {
-                get: function () {
-                    return this._ZoomLevel;
-                },
-                enumerable: true,
-                configurable: true
-            });
-
             Zoomer.prototype.OnTicked = function (lastTime, nowTime) {
                 var now = new Date().getTime();
                 if (now - this._LastVisualTick < MAX_MSPF)
@@ -188,17 +152,18 @@ var Fayde;
 
             Zoomer.prototype.OnApplyTemplate = function () {
                 _super.prototype.OnApplyTemplate.call(this);
+                this._ZoomTo(this.ZoomLevel);
             };
 
-            Zoomer.prototype._ZoomTo = function (level, onUpdateCallback, onCompleteCallback) {
+            Zoomer.prototype._ZoomTo = function (level) {
+                var _this = this;
                 var newSize = this._GetZoomTargetSize(level);
 
-                var zoomTween = new TWEEN.Tween(this.ZoomContentSize).to(newSize, this._TweenSpeed).delay(0).easing(this._TweenEasing).onUpdate(function () {
-                    if (onUpdateCallback)
-                        onUpdateCallback();
+                var zoomTween = new TWEEN.Tween(this.ZoomContentSize).to(newSize, this.AnimationSpeed).delay(0).easing(this._TweenEasing).onUpdate(function () {
+                    _this.ZoomUpdated.Raise(_this, new _Zoomer.ZoomerEventArgs(_this.ZoomContentSize, _this.ZoomContentOffset));
                 }).onComplete(function () {
-                    if (onCompleteCallback)
-                        onCompleteCallback();
+                    console.log("zoomLevel: " + _this.ZoomLevel);
+                    console.log("width: " + _this.ZoomContentSize.Width);
                 });
 
                 zoomTween.start(this._LastVisualTick);
@@ -210,7 +175,7 @@ var Fayde;
 
             Zoomer.prototype._ScrollTo = function (newScroll) {
                 var _this = this;
-                var scrollTween = new TWEEN.Tween(this.ZoomContentOffset).to(newScroll, this._TweenSpeed).delay(0).easing(this._TweenEasing).onUpdate(function () {
+                var scrollTween = new TWEEN.Tween(this.ZoomContentOffset).to(newScroll, this.AnimationSpeed).delay(0).easing(this._TweenEasing).onUpdate(function () {
                     _this._Constrain();
                 });
 
@@ -341,19 +306,56 @@ var Fayde;
                     this.ZoomContentOffset.Add(this._MouseDelta);
                 }
             };
+            Zoomer.AnimationSpeedProperty = DependencyProperty.Register("AnimationSpeed", function () {
+                return Number;
+            }, Zoomer, 250, function (d, args) {
+                return d.OnAnimationSpeedChanged(args);
+            });
             Zoomer.ZoomLevelsProperty = DependencyProperty.Register("ZoomLevels", function () {
                 return Number;
             }, Zoomer, 10, function (d, args) {
                 return d.OnZoomLevelsChanged(args);
             });
-            Zoomer.ZoomLevelProperty = DependencyProperty.Register("ZoomLevel", function () {
+
+            Zoomer.ZoomFactorProperty = DependencyProperty.Register("ZoomFactor", function () {
+                return Number;
+            }, Zoomer, 2, function (d, args) {
+                return d.OnZoomFactorChanged(args);
+            });
+            Zoomer.WidthProperty = DependencyProperty.Register("Width", function () {
+                return Number;
+            }, Zoomer, 640, function (d, args) {
+                return d.OnWidthChanged(args);
+            });
+            Zoomer.HeightProperty = DependencyProperty.Register("Height", function () {
+                return Number;
+            }, Zoomer, 480, function (d, args) {
+                return d.OnHeightChanged(args);
+            });
+
+            Zoomer.ZoomLevelProperty = DependencyProperty.RegisterFull("ZoomLevel", function () {
                 return Number;
             }, Zoomer, 0, function (d, args) {
                 return d.OnZoomLevelChanged(args);
-            });
+            }, undefined, undefined, zoomLevelValidator);
             return Zoomer;
         })(Fayde.Controls.ContentControl);
         _Zoomer.Zoomer = Zoomer;
+
+        function zoomLevelValidator(dobj, propd, value) {
+            if (typeof value !== 'number')
+                return false;
+
+            if (value < 0) {
+                return false;
+            }
+
+            if (value > this.OwnerType.ZoomLevelsProperty.DefaultValue) {
+                return false;
+            }
+
+            return true;
+        }
     })(Fayde.Zoomer || (Fayde.Zoomer = {}));
     var Zoomer = Fayde.Zoomer;
 })(Fayde || (Fayde = {}));

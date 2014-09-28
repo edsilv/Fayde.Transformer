@@ -18,47 +18,52 @@ module Fayde.Zoomer {
 
     export class Zoomer extends Fayde.Controls.ContentControl {
 
+        static AnimationSpeedProperty = DependencyProperty.Register("AnimationSpeed", () => Number, Zoomer, 250, (d, args) => (<Zoomer>d).OnAnimationSpeedChanged(args));
         static ZoomLevelsProperty = DependencyProperty.Register("ZoomLevels", () => Number, Zoomer, 10, (d, args) => (<Zoomer>d).OnZoomLevelsChanged(args));
-        static ZoomLevelProperty = DependencyProperty.Register("ZoomLevel", () => Number, Zoomer, 0, (d, args) => (<Zoomer>d).OnZoomLevelChanged(args));
+        //static ZoomLevelProperty = DependencyProperty.Register("ZoomLevel", () => Number, Zoomer, 0, (d, args) => (<Zoomer>d).OnZoomLevelChanged(args));
+        static ZoomFactorProperty = DependencyProperty.Register("ZoomFactor", () => Number, Zoomer, 2, (d, args) => (<Zoomer>d).OnZoomFactorChanged(args));
+        static WidthProperty = DependencyProperty.Register("Width", () => Number, Zoomer, 640, (d, args) => (<Zoomer>d).OnWidthChanged(args));
+        static HeightProperty = DependencyProperty.Register("Height", () => Number, Zoomer, 480, (d, args) => (<Zoomer>d).OnHeightChanged(args));
+
+        static ZoomLevelProperty = DependencyProperty.RegisterFull("ZoomLevel", () => Number, Zoomer, 0, (d, args) => (<Zoomer>d).OnZoomLevelChanged(args), undefined, undefined, zoomLevelValidator);
+
+        private OnAnimationSpeedChanged (args: IDependencyPropertyChangedEventArgs) {
+
+        }
 
         private OnZoomLevelsChanged (args: IDependencyPropertyChangedEventArgs) {
             this.ZoomLevels = args.NewValue;
         }
 
         private OnZoomLevelChanged (args: IDependencyPropertyChangedEventArgs) {
-            var value = Math.floor(args.NewValue);
-
-            //if (value == this.ZoomLevel) return;
-
-            if (value < 0 || value > this.ZoomLevels) return;
-
-            this._ZoomLevel = value;
-    
-            this._ZoomTo(value, () => {
-                this.ZoomChanged.Raise(this, new ZoomerEventArgs(this.ZoomContentSize, this.ZoomContentOffset))
-            }, () => {
-                console.log("zoomLevel: " + this.ZoomLevel);
-                console.log("width: " + this.ZoomContentSize.Width);
-            });
+            this._ZoomTo(this.ZoomLevel);
         }
 
-        private _TweenSpeed: number = 250;
+        private OnWidthChanged (args: IDependencyPropertyChangedEventArgs) {
+            this.ViewportSize = new Size(args.NewValue, this.Height);
+        }
+
+        private OnHeightChanged (args: IDependencyPropertyChangedEventArgs) {
+            this.ViewportSize = new Size(this.Width, args.NewValue);
+        }
+
+        private OnZoomFactorChanged (args: IDependencyPropertyChangedEventArgs) {
+
+        }
+
+        ZoomLevel: number;
+        ZoomLevels: number;
+        ZoomFactor: number;
+        AnimationSpeed: number;
+
         private _TweenEasing: any;
-
-        private _ZoomLevel: number;
-        private _ZoomLevels: number = 10;
-        private _ZoomFactor: number = 2;
         private _MinWidth: number;
-
         private _ViewportSize: Size;
         private _ZoomContentSize: Size;
         private _ZoomContentOffset: Vector;
-
         private _Origin: Origin = Origin.Center;
-
         private _IsMouseDown: boolean = false;
         private _IsDragging: boolean = false;
-
         private _LastMousePosition: Vector;
         private _LastDragAccelerationMousePosition: Vector;
         private _MousePosition: Vector;
@@ -69,29 +74,11 @@ module Fayde.Zoomer {
         private _DragMinSpeed: number = 2;
         private _DragMaxSpeed: number = 30;
         private _DragFriction: number = 2;
-
         private _ConstrainToViewport: boolean = true;
-
         private _Timer: Fayde.ClockTimer;
         private _LastVisualTick: number = new Date(0).getTime();
 
-        ZoomChanged = new MulticastEvent<ZoomerEventArgs>();
-
-        get ZoomLevels(): number {
-            return this._ZoomLevels;
-        }
-
-        set ZoomLevels(value: number) {
-            this._ZoomLevels = value;
-        }
-
-        get ZoomFactor(): number {
-            return this._ZoomFactor;
-        }
-
-        set ZoomFactor(value: number) {
-            this._ZoomFactor = value;
-        }
+        ZoomUpdated = new MulticastEvent<ZoomerEventArgs>();
 
         get MaxWidth(): number {
             return Math.pow(this.ZoomFactor, this.ZoomLevels) * this.MinWidth;
@@ -139,22 +126,19 @@ module Fayde.Zoomer {
             this._ZoomContentOffset = value;
         }
 
-        get ZoomLevel(): number {
-            return this._ZoomLevel;
-        }
-
         constructor() {
             super();
             this.DefaultStyleKey = (<any>this).constructor;
 
             this._TweenEasing = TWEEN.Easing.Quadratic.InOut;
 
-            //this.ViewportSize = new Size(this.Width, this.Height);
-            this.ViewportSize = new Size(320, 240);
+            //this.ViewportSize = new Size(320, 240);
 //            this.ZoomLevel = this.InitialZoomLevel; // trigger initial sizing
 
             this._Timer = new Fayde.ClockTimer();
             this._Timer.RegisterTimer(this);
+
+//            this._ZoomTo(this.ZoomLevel);
         }
 
         OnTicked (lastTime: number, nowTime: number) {
@@ -169,7 +153,7 @@ module Fayde.Zoomer {
 
         OnApplyTemplate() {
             super.OnApplyTemplate();
-
+            this._ZoomTo(this.ZoomLevel);
         }
 
         /**
@@ -181,19 +165,20 @@ module Fayde.Zoomer {
          * @param {Function} onCompleteCallback An optional callback function for when the zoom completes
          * @return {Void}
          */
-        _ZoomTo(level: number, onUpdateCallback?: () => void, onCompleteCallback?: () => void): void {
+        private _ZoomTo(level: number): void {
 
             var newSize = this._GetZoomTargetSize(level);
 
             var zoomTween = new TWEEN.Tween(this.ZoomContentSize)
-                .to(newSize, this._TweenSpeed)
+                .to(newSize, this.AnimationSpeed)
                 .delay(0)
                 .easing(this._TweenEasing)
                 .onUpdate(() => {
-                    if (onUpdateCallback) onUpdateCallback();
+                    this.ZoomUpdated.Raise(this, new ZoomerEventArgs(this.ZoomContentSize, this.ZoomContentOffset));
                 })
                 .onComplete(() => {
-                    if (onCompleteCallback) onCompleteCallback();
+                    console.log("zoomLevel: " + this.ZoomLevel);
+                    console.log("width: " + this.ZoomContentSize.Width);
                 });
 
             zoomTween.start(this._LastVisualTick);
@@ -203,9 +188,9 @@ module Fayde.Zoomer {
             this._ScrollTo(newScroll);
         }
 
-        _ScrollTo(newScroll: Vector) {
+        private _ScrollTo(newScroll: Vector) {
             var scrollTween = new TWEEN.Tween(this.ZoomContentOffset)
-                .to(newScroll, this._TweenSpeed)
+                .to(newScroll, this.AnimationSpeed)
                 .delay(0)
                 .easing(this._TweenEasing)
                 .onUpdate(() => {
@@ -215,7 +200,7 @@ module Fayde.Zoomer {
             scrollTween.start(this._LastVisualTick);
         }
 
-        _Constrain(){
+        private _Constrain(){
 
             if (this._ConstrainToViewport){
 
@@ -276,7 +261,7 @@ module Fayde.Zoomer {
             }
         }
 
-        _AddVelocity(){
+        private _AddVelocity(){
 
             var mouseStopped = false;
 
@@ -354,6 +339,21 @@ module Fayde.Zoomer {
                 this.ZoomContentOffset.Add(this._MouseDelta);
             }
         }
+    }
+
+    function zoomLevelValidator(dobj: DependencyObject, propd: DependencyProperty, value: any): boolean {
+        if (typeof value !== 'number')
+            return false;
+
+        if (value < 0) {
+            return false;
+        }
+
+        if (value > this.OwnerType.ZoomLevelsProperty.DefaultValue) {
+            return false;
+        }
+
+        return true;
     }
 
 }

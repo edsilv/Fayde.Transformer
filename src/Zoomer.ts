@@ -106,7 +106,7 @@ module Fayde.Zoomer {
 
         private _ZoomTo(level: number): void {
 
-            this.ZoomUpdated.Raise(this, new ZoomerEventArgs(this.ZoomContentSize, this.ZoomContentOffset));
+            this._OnZoomUpdated();
 
             var newSize = this._GetZoomTargetSize(level);
 
@@ -115,7 +115,7 @@ module Fayde.Zoomer {
                 .delay(0)
                 .easing(this._TweenEasing)
                 .onUpdate(() => {
-                    this.ZoomUpdated.Raise(this, new ZoomerEventArgs(this.ZoomContentSize, this.ZoomContentOffset));
+                    this._OnZoomUpdated();
                 })
                 .onComplete(() => {
                     console.log("zoomLevel: " + this.ZoomLevel);
@@ -127,6 +127,11 @@ module Fayde.Zoomer {
             var newScroll = this._GetZoomTargetScroll(newSize);
 
             this._ScrollTo(newScroll);
+        }
+
+        // todo: http://www.codeproject.com/Articles/535735/Implementing-a-Generic-Object-Pool-in-NET ?
+        private _OnZoomUpdated() {
+            this.ZoomUpdated.Raise(this, new ZoomerEventArgs(this.ZoomContentSize, this.ZoomContentOffset));
         }
 
         private _GetZoomTargetSize(level: number): Size {

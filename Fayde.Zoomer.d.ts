@@ -34,6 +34,7 @@ declare module Fayde.Zoomer {
         public OnTicked(lastTime: number, nowTime: number): void;
         public OnApplyTemplate(): void;
         private _ZoomTo(level);
+        private _OnZoomUpdated();
         private _GetZoomTargetSize(level);
         private _ScrollTo(newScroll);
         private _Constrain();

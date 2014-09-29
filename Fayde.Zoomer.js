@@ -106,12 +106,12 @@ var Fayde;
 
             Zoomer.prototype._ZoomTo = function (level) {
                 var _this = this;
-                this.ZoomUpdated.Raise(this, new _Zoomer.ZoomerEventArgs(this.ZoomContentSize, this.ZoomContentOffset));
+                this._OnZoomUpdated();
 
                 var newSize = this._GetZoomTargetSize(level);
 
                 var zoomTween = new TWEEN.Tween(this.ZoomContentSize).to(newSize, this.AnimationSpeed).delay(0).easing(this._TweenEasing).onUpdate(function () {
-                    _this.ZoomUpdated.Raise(_this, new _Zoomer.ZoomerEventArgs(_this.ZoomContentSize, _this.ZoomContentOffset));
+                    _this._OnZoomUpdated();
                 }).onComplete(function () {
                     console.log("zoomLevel: " + _this.ZoomLevel);
                     console.log("width: " + _this.ZoomContentSize.Width);
@@ -122,6 +122,10 @@ var Fayde;
                 var newScroll = this._GetZoomTargetScroll(newSize);
 
                 this._ScrollTo(newScroll);
+            };
+
+            Zoomer.prototype._OnZoomUpdated = function () {
+                this.ZoomUpdated.Raise(this, new _Zoomer.ZoomerEventArgs(this.ZoomContentSize, this.ZoomContentOffset));
             };
 
             Zoomer.prototype._GetZoomTargetSize = function (level) {

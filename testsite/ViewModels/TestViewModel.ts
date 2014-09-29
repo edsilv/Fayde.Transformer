@@ -49,7 +49,7 @@ class TestViewModel extends Fayde.MVVM.ViewModelBase {
         this.ZoomLevel = 0;
     }
 
-    ZoomChanged(e: Fayde.IEventBindingArgs<Fayde.Zoomer.ZoomerEventArgs>){
+    ZoomUpdated(e: Fayde.IEventBindingArgs<Fayde.Zoomer.ZoomerEventArgs>){
         this.ZoomContentSize = e.args.Size;
         this.ZoomContentOffset = e.args.Offset;
     }

@@ -21,7 +21,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <mylib:Zoomer Width="320" Height="240" ZoomLevels="5" ZoomLevel="{Binding ZoomLevel}" ZoomUpdated="{EventBinding ZoomChanged}">
+        <mylib:Zoomer Width="320" Height="240" ZoomLevels="5" ZoomLevel="{Binding ZoomLevel}" ZoomUpdated="{EventBinding ZoomUpdated}">
             <Canvas>
                 <Canvas x:Name="ZoomContent"
                         Canvas.Left="{Binding ZoomContentOffset.X}"
@@ -33,7 +33,7 @@
             </Canvas>
         </mylib:Zoomer>
 
-        <Border Grid.ZIndex="2" BorderBrush="Black" Width="320" Height="240" BorderThickness="1"></Border>
+        <!--<Border Grid.ZIndex="2" BorderBrush="Black" Width="320" Height="240" BorderThickness="1"></Border>-->
 
         <StackPanel Grid.ZIndex="2" Grid.Column="1" Margin="0,20,20,0" Orientation="Vertical">
             <StackPanel Orientation="Horizontal">

@@ -57,7 +57,7 @@ define(["require", "exports"], function(require, exports) {
         });
 
 
-        TestViewModel.prototype.ZoomChanged = function (e) {
+        TestViewModel.prototype.ZoomUpdated = function (e) {
             this.ZoomContentSize = e.args.Size;
             this.ZoomContentOffset = e.args.Offset;
         };

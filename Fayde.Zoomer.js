@@ -34,6 +34,11 @@ var Fayde;
             __extends(Zoomer, _super);
             function Zoomer() {
                 _super.call(this);
+                this.AnimationSpeed = 250;
+                this.ZoomFactor = 2;
+                this.ZoomContentOffset = new Vector(0, 0);
+                this._LastVisualTick = new Date(0).getTime();
+                this._ConstrainToViewport = true;
                 this._Origin = 0 /* Center */;
                 this._IsMouseDown = false;
                 this._IsDragging = false;
@@ -44,76 +49,26 @@ var Fayde;
                 this._DragMinSpeed = 2;
                 this._DragMaxSpeed = 30;
                 this._DragFriction = 2;
-                this._ConstrainToViewport = true;
-                this._LastVisualTick = new Date(0).getTime();
                 this.ZoomUpdated = new MulticastEvent();
                 this.DefaultStyleKey = this.constructor;
 
                 this._TweenEasing = TWEEN.Easing.Quadratic.InOut;
 
+                this.MouseLeftButtonDown.Subscribe(this.Zoomer_MouseLeftButtonDown, this);
+                this.MouseLeftButtonUp.Subscribe(this.Zoomer_MouseLeftButtonUp, this);
+                this.MouseMove.Subscribe(this.Zoomer_MouseMove, this);
+
                 this._Timer = new Fayde.ClockTimer();
                 this._Timer.RegisterTimer(this);
             }
-            Zoomer.prototype.OnAnimationSpeedChanged = function (args) {
-            };
-
-            Zoomer.prototype.OnZoomLevelsChanged = function (args) {
-                this.ZoomLevels = args.NewValue;
-            };
-
             Zoomer.prototype.OnZoomLevelChanged = function (args) {
                 this._ZoomTo(this.ZoomLevel);
             };
 
-            Zoomer.prototype.OnWidthChanged = function (args) {
-                this.ViewportSize = new Size(args.NewValue, this.Height);
-            };
-
-            Zoomer.prototype.OnHeightChanged = function (args) {
-                this.ViewportSize = new Size(this.Width, args.NewValue);
-            };
-
-            Zoomer.prototype.OnZoomFactorChanged = function (args) {
-            };
-
-            Object.defineProperty(Zoomer.prototype, "MaxWidth", {
-                get: function () {
-                    return Math.pow(this.ZoomFactor, this.ZoomLevels) * this.MinWidth;
-                },
-                enumerable: true,
-                configurable: true
-            });
-
-            Object.defineProperty(Zoomer.prototype, "MinWidth", {
-                get: function () {
-                    return this._MinWidth;
-                },
-                set: function (value) {
-                    this._MinWidth = value;
-                },
-                enumerable: true,
-                configurable: true
-            });
-
-
-            Object.defineProperty(Zoomer.prototype, "ViewportSize", {
-                get: function () {
-                    return this._ViewportSize;
-                },
-                set: function (value) {
-                    this.MinWidth = Math.pow(this.ZoomFactor, this.ZoomLevel * -1) * value.Width;
-                    this._ViewportSize = value;
-                },
-                enumerable: true,
-                configurable: true
-            });
-
-
             Object.defineProperty(Zoomer.prototype, "ZoomContentSize", {
                 get: function () {
                     if (!this._ZoomContentSize) {
-                        this._ZoomContentSize = new Size(this._ViewportSize.Width, this._ViewportSize.Height);
-                        ;
+                        this._ZoomContentSize = this.ViewportSize;
                     }
                     return this._ZoomContentSize;
                 },
@@ -125,20 +80,13 @@ var Fayde;
             });
 
 
-            Object.defineProperty(Zoomer.prototype, "ZoomContentOffset", {
+            Object.defineProperty(Zoomer.prototype, "ViewportSize", {
                 get: function () {
-                    if (!this._ZoomContentOffset) {
-                        this._ZoomContentOffset = new Vector(0, 0);
-                    }
-                    return this._ZoomContentOffset;
-                },
-                set: function (value) {
-                    this._ZoomContentOffset = value;
+                    return new Size(this.Width, this.Height);
                 },
                 enumerable: true,
                 configurable: true
             });
-
 
             Zoomer.prototype.OnTicked = function (lastTime, nowTime) {
                 var now = new Date().getTime();
@@ -152,11 +100,14 @@ var Fayde;
 
             Zoomer.prototype.OnApplyTemplate = function () {
                 _super.prototype.OnApplyTemplate.call(this);
+
                 this._ZoomTo(this.ZoomLevel);
             };
 
             Zoomer.prototype._ZoomTo = function (level) {
                 var _this = this;
+                this.ZoomUpdated.Raise(this, new _Zoomer.ZoomerEventArgs(this.ZoomContentSize, this.ZoomContentOffset));
+
                 var newSize = this._GetZoomTargetSize(level);
 
                 var zoomTween = new TWEEN.Tween(this.ZoomContentSize).to(newSize, this.AnimationSpeed).delay(0).easing(this._TweenEasing).onUpdate(function () {
@@ -171,6 +122,13 @@ var Fayde;
                 var newScroll = this._GetZoomTargetScroll(newSize);
 
                 this._ScrollTo(newScroll);
+            };
+
+            Zoomer.prototype._GetZoomTargetSize = function (level) {
+                var newWidth = Math.pow(this.ZoomFactor, level) * this.Width;
+                var newHeight = this.ZoomContentSize.AspectRatio * newWidth;
+
+                return new Size(newWidth, newHeight);
             };
 
             Zoomer.prototype._ScrollTo = function (newScroll) {
@@ -200,13 +158,6 @@ var Fayde;
                         this.ZoomContentOffset.Y = (this.ZoomContentSize.Height - this.ViewportSize.Height) * -1;
                     }
                 }
-            };
-
-            Zoomer.prototype._GetZoomTargetSize = function (level) {
-                var newWidth = Math.pow(this.ZoomFactor, level) * this.MinWidth;
-                var newHeight = this.ZoomContentSize.AspectRatio * newWidth;
-
-                return new Size(newWidth, newHeight);
             };
 
             Zoomer.prototype._GetZoomTargetScroll = function (targetSize) {
@@ -281,23 +232,23 @@ var Fayde;
                 this._DragVelocity.Mult(0);
             };
 
-            Zoomer.prototype.Zoomer_MouseLeftButtonDown = function (e) {
+            Zoomer.prototype.Zoomer_MouseLeftButtonDown = function (sender, e) {
                 this._IsMouseDown = true;
                 this._RemoveVelocity();
             };
 
-            Zoomer.prototype.Zoomer_MouseLeftButtonUp = function (e) {
+            Zoomer.prototype.Zoomer_MouseLeftButtonUp = function (sender, e) {
                 this._IsMouseDown = false;
                 this._IsDragging = false;
             };
 
-            Zoomer.prototype.Zoomer_MouseMove = function (e) {
+            Zoomer.prototype.Zoomer_MouseMove = function (sender, e) {
                 if (this._IsMouseDown) {
                     this._IsDragging = true;
                 }
 
                 this._LastMousePosition = this._MousePosition || new Vector(0, 0);
-                this._MousePosition = new Vector(e.args.AbsolutePos.X, e.args.AbsolutePos.Y);
+                this._MousePosition = new Vector(e.AbsolutePos.X, e.AbsolutePos.Y);
 
                 this._MouseDelta = this._MousePosition.Get();
                 this._MouseDelta.Sub(this._LastMousePosition);
@@ -306,56 +257,14 @@ var Fayde;
                     this.ZoomContentOffset.Add(this._MouseDelta);
                 }
             };
-            Zoomer.AnimationSpeedProperty = DependencyProperty.Register("AnimationSpeed", function () {
-                return Number;
-            }, Zoomer, 250, function (d, args) {
-                return d.OnAnimationSpeedChanged(args);
-            });
-            Zoomer.ZoomLevelsProperty = DependencyProperty.Register("ZoomLevels", function () {
-                return Number;
-            }, Zoomer, 10, function (d, args) {
-                return d.OnZoomLevelsChanged(args);
-            });
-
-            Zoomer.ZoomFactorProperty = DependencyProperty.Register("ZoomFactor", function () {
-                return Number;
-            }, Zoomer, 2, function (d, args) {
-                return d.OnZoomFactorChanged(args);
-            });
-            Zoomer.WidthProperty = DependencyProperty.Register("Width", function () {
-                return Number;
-            }, Zoomer, 640, function (d, args) {
-                return d.OnWidthChanged(args);
-            });
-            Zoomer.HeightProperty = DependencyProperty.Register("Height", function () {
-                return Number;
-            }, Zoomer, 480, function (d, args) {
-                return d.OnHeightChanged(args);
-            });
-
             Zoomer.ZoomLevelProperty = DependencyProperty.RegisterFull("ZoomLevel", function () {
                 return Number;
             }, Zoomer, 0, function (d, args) {
                 return d.OnZoomLevelChanged(args);
-            }, undefined, undefined, zoomLevelValidator);
+            });
             return Zoomer;
         })(Fayde.Controls.ContentControl);
         _Zoomer.Zoomer = Zoomer;
-
-        function zoomLevelValidator(dobj, propd, value) {
-            if (typeof value !== 'number')
-                return false;
-
-            if (value < 0) {
-                return false;
-            }
-
-            if (value > this.OwnerType.ZoomLevelsProperty.DefaultValue) {
-                return false;
-            }
-
-            return true;
-        }
     })(Fayde.Zoomer || (Fayde.Zoomer = {}));
     var Zoomer = Fayde.Zoomer;
 })(Fayde || (Fayde = {}));

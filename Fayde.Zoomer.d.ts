@@ -3,27 +3,17 @@ declare module Fayde.Zoomer {
 }
 declare module Fayde.Zoomer {
     class Zoomer extends Controls.ContentControl {
-        static AnimationSpeedProperty: DependencyProperty;
-        static ZoomLevelsProperty: DependencyProperty;
-        static ZoomFactorProperty: DependencyProperty;
-        static WidthProperty: DependencyProperty;
-        static HeightProperty: DependencyProperty;
         static ZoomLevelProperty: DependencyProperty;
-        private OnAnimationSpeedChanged(args);
-        private OnZoomLevelsChanged(args);
         private OnZoomLevelChanged(args);
-        private OnWidthChanged(args);
-        private OnHeightChanged(args);
-        private OnZoomFactorChanged(args);
-        public ZoomLevel: number;
-        public ZoomLevels: number;
-        public ZoomFactor: number;
         public AnimationSpeed: number;
-        private _TweenEasing;
-        private _MinWidth;
-        private _ViewportSize;
+        public ZoomFactor: number;
+        public ZoomContentOffset: Utils.Vector;
+        public ZoomLevel: number;
         private _ZoomContentSize;
-        private _ZoomContentOffset;
+        private _TweenEasing;
+        private _LastVisualTick;
+        private _Timer;
+        private _ConstrainToViewport;
         private _Origin;
         private _IsMouseDown;
         private _IsDragging;
@@ -37,29 +27,23 @@ declare module Fayde.Zoomer {
         private _DragMinSpeed;
         private _DragMaxSpeed;
         private _DragFriction;
-        private _ConstrainToViewport;
-        private _Timer;
-        private _LastVisualTick;
         public ZoomUpdated: MulticastEvent<ZoomerEventArgs>;
-        public MaxWidth : number;
-        public MinWidth : number;
-        public ViewportSize : Utils.Size;
         public ZoomContentSize : Utils.Size;
-        public ZoomContentOffset : Utils.Vector;
+        public ViewportSize : Utils.Size;
         constructor();
         public OnTicked(lastTime: number, nowTime: number): void;
         public OnApplyTemplate(): void;
         private _ZoomTo(level);
+        private _GetZoomTargetSize(level);
         private _ScrollTo(newScroll);
         private _Constrain();
-        private _GetZoomTargetSize(level);
         private _GetZoomTargetScroll(targetSize);
         private _GetZoomContentOrigin(size);
         private _AddVelocity();
-        public _RemoveVelocity(): void;
-        public Zoomer_MouseLeftButtonDown(e: any): void;
-        public Zoomer_MouseLeftButtonUp(e: any): void;
-        public Zoomer_MouseMove(e: any): void;
+        private _RemoveVelocity();
+        private Zoomer_MouseLeftButtonDown(sender, e);
+        private Zoomer_MouseLeftButtonUp(sender, e);
+        private Zoomer_MouseMove(sender, e);
     }
 }
 declare module Fayde.Zoomer {

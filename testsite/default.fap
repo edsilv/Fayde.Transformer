@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.wsick.com/fayde/x"
         xmlns:vms="ViewModels"
         xmlns:mylib="lib:Fayde.Zoomer"
-        ThemeName="Metro">
+        ThemeName="Default">
     <Application.Resources>
     </Application.Resources>
     <Grid x:Name="LayoutRoot">
@@ -21,7 +21,9 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <mylib:Zoomer Width="320" Height="240" ZoomLevels="5" ZoomLevel="{Binding ZoomLevel}" ZoomUpdated="{EventBinding ZoomUpdated}">
+        <!--<Button Background="Red" Width="*" Height="*"></Button>-->
+
+        <mylib:Zoomer Width="640" Height="480" ZoomLevels="5" ZoomLevel="{Binding ZoomLevel}" ZoomUpdated="{EventBinding ZoomUpdated}">
             <Canvas>
                 <Canvas x:Name="ZoomContent"
                         Canvas.Left="{Binding ZoomContentOffset.X}"

@@ -237,16 +237,25 @@ var Fayde;
             };
 
             Zoomer.prototype.Zoomer_MouseLeftButtonDown = function (sender, e) {
+                if (e.Handled)
+                    return;
+
                 this._IsMouseDown = true;
                 this._RemoveVelocity();
             };
 
             Zoomer.prototype.Zoomer_MouseLeftButtonUp = function (sender, e) {
+                if (e.Handled)
+                    return;
+
                 this._IsMouseDown = false;
                 this._IsDragging = false;
             };
 
             Zoomer.prototype.Zoomer_MouseMove = function (sender, e) {
+                if (e.Handled)
+                    return;
+
                 if (this._IsMouseDown) {
                     this._IsDragging = true;
                 }

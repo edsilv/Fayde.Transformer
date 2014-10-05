@@ -260,19 +260,24 @@ module Fayde.Zoomer {
         }
 
         private Zoomer_MouseLeftButtonDown (sender: any, e: Fayde.Input.MouseButtonEventArgs) {
-//            if (e.Handled)
-//                return;
+            if (e.Handled)
+                return;
 
             this._IsMouseDown = true;
             this._RemoveVelocity();
         }
 
         private Zoomer_MouseLeftButtonUp(sender: any, e: Fayde.Input.MouseButtonEventArgs) {
+            if (e.Handled)
+                return;
+
             this._IsMouseDown = false;
             this._IsDragging = false;
         }
 
         private Zoomer_MouseMove(sender: any, e: Fayde.Input.MouseEventArgs) {
+            if (e.Handled)
+                return;
 
             if (this._IsMouseDown){
                 this._IsDragging = true;

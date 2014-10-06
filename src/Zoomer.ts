@@ -71,7 +71,7 @@ module Fayde.Zoomer {
         }
 
         get ViewportSize(): Size {
-            return new Size(this.Width, this.Height);
+            return new Size(this.ActualWidth, this.ActualHeight);
         }
 
         constructor() {

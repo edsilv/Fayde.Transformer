@@ -84,9 +84,14 @@ module Fayde.Zoomer {
             this.MouseLeftButtonDown.Subscribe(this.Zoomer_MouseLeftButtonDown, this);
             this.MouseLeftButtonUp.Subscribe(this.Zoomer_MouseLeftButtonUp, this);
             this.MouseMove.Subscribe(this.Zoomer_MouseMove, this);
+            this.SizeChanged.Subscribe(this.Zoomer_SizeChanged, this);
 
             this._Timer = new Fayde.ClockTimer();
             this._Timer.RegisterTimer(this);
+        }
+
+        private Zoomer_SizeChanged (sender: any, e: Fayde.SizeChangedEventArgs) {
+            this._ZoomTo(this.ZoomLevel, true);
         }
 
         OnTicked (lastTime: number, nowTime: number) {

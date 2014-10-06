@@ -32,6 +32,7 @@ declare module Fayde.Zoomer {
         public ZoomContentSize : Utils.Size;
         public ViewportSize : Utils.Size;
         constructor();
+        private Zoomer_SizeChanged(sender, e);
         public OnTicked(lastTime: number, nowTime: number): void;
         private _ZoomTo(level, instantly?);
         private _OnZoomUpdated();

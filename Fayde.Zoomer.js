@@ -58,6 +58,7 @@ var Fayde;
                 this.MouseLeftButtonDown.Subscribe(this.Zoomer_MouseLeftButtonDown, this);
                 this.MouseLeftButtonUp.Subscribe(this.Zoomer_MouseLeftButtonUp, this);
                 this.MouseMove.Subscribe(this.Zoomer_MouseMove, this);
+                this.SizeChanged.Subscribe(this.Zoomer_SizeChanged, this);
 
                 this._Timer = new Fayde.ClockTimer();
                 this._Timer.RegisterTimer(this);
@@ -88,6 +89,10 @@ var Fayde;
                 enumerable: true,
                 configurable: true
             });
+
+            Zoomer.prototype.Zoomer_SizeChanged = function (sender, e) {
+                this._ZoomTo(this.ZoomLevel, true);
+            };
 
             Zoomer.prototype.OnTicked = function (lastTime, nowTime) {
                 var now = new Date().getTime();

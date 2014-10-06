@@ -37,7 +37,6 @@ var Fayde;
                 this.AnimationSpeed = 250;
                 this.ZoomFactor = 2;
                 this.ZoomContentOffset = new Vector(0, 0);
-                this._Initialised = false;
                 this._LastVisualTick = new Date(0).getTime();
                 this._ConstrainToViewport = true;
                 this._Origin = 0 /* Center */;
@@ -99,11 +98,6 @@ var Fayde;
                 if (now - this._LastVisualTick < MAX_MSPF)
                     return;
                 this._LastVisualTick = now;
-
-                if (!this._Initialised && this.ActualWidth != 0) {
-                    this._Initialised = true;
-                    this._ZoomTo(this.ZoomLevel, true);
-                }
 
                 TWEEN.update(nowTime);
                 this._AddVelocity();

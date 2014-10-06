@@ -9,7 +9,6 @@ declare module Fayde.Zoomer {
         public ZoomFactor: number;
         public ZoomContentOffset: Utils.Vector;
         public ZoomLevel: number;
-        private _Initialised;
         private _ZoomContentSize;
         private _TweenEasing;
         private _LastVisualTick;

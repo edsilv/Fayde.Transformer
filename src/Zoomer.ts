@@ -38,7 +38,6 @@ module Fayde.Zoomer {
         ZoomContentOffset: Vector = new Vector(0, 0);
         ZoomLevel: number;
 
-        private _Initialised: boolean = false;
         private _ZoomContentSize: Size;
         private _TweenEasing: any;
         private _LastVisualTick: number = new Date(0).getTime();
@@ -90,6 +89,7 @@ module Fayde.Zoomer {
             this._Timer.RegisterTimer(this);
         }
 
+        // handle resizing - also intialise viewport size
         private Zoomer_SizeChanged (sender: any, e: Fayde.SizeChangedEventArgs) {
             this._ZoomTo(this.ZoomLevel, true);
         }
@@ -99,12 +99,6 @@ module Fayde.Zoomer {
             if (now - this._LastVisualTick < MAX_MSPF)
                 return;
             this._LastVisualTick = now;
-
-            // if this is the first tick with an available width, set the initial viewport size.
-            if (!this._Initialised && this.ActualWidth != 0) {
-                this._Initialised = true;
-                this._ZoomTo(this.ZoomLevel, true);
-            }
 
             TWEEN.update(nowTime);
             this._AddVelocity();

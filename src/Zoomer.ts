@@ -38,6 +38,7 @@ module Fayde.Zoomer {
         ZoomContentOffset: Vector = new Vector(0, 0);
         ZoomLevel: number;
 
+        private _Initialised: boolean = false;
         private _ZoomContentSize: Size;
         private _TweenEasing: any;
         private _LastVisualTick: number = new Date(0).getTime();
@@ -94,39 +95,44 @@ module Fayde.Zoomer {
                 return;
             this._LastVisualTick = now;
 
+            // if this is the first tick with an available width, set the initial viewport size.
+            if (!this._Initialised && this.ActualWidth != 0) {
+                this._Initialised = true;
+                this._ZoomTo(this.ZoomLevel, true);
+            }
+
             TWEEN.update(nowTime);
             this._AddVelocity();
         }
 
-        OnApplyTemplate() {
-            super.OnApplyTemplate();
-
-            this._ZoomTo(this.ZoomLevel);
-        }
-
-        private _ZoomTo(level: number): void {
+        private _ZoomTo(level: number, instantly?: boolean): void {
 
             this._OnZoomUpdated();
 
             var newSize = this._GetZoomTargetSize(level);
-
-            var zoomTween = new TWEEN.Tween(this.ZoomContentSize)
-                .to(newSize, this.AnimationSpeed)
-                .delay(0)
-                .easing(this._TweenEasing)
-                .onUpdate(() => {
-                    this._OnZoomUpdated();
-                })
-                .onComplete(() => {
-                    console.log("zoomLevel: " + this.ZoomLevel);
-                    console.log("width: " + this.ZoomContentSize.Width);
-                });
-
-            zoomTween.start(this._LastVisualTick);
-
             var newScroll = this._GetZoomTargetScroll(newSize);
 
-            this._ScrollTo(newScroll);
+            if (instantly){
+                this.ZoomContentSize.Width = newSize.Width;
+                this.ZoomContentSize.Height = newSize.Height;
+                this._ScrollTo(newScroll, true);
+            } else {
+                var zoomTween = new TWEEN.Tween(this.ZoomContentSize)
+                    .to(newSize, this.AnimationSpeed)
+                    .delay(0)
+                    .easing(this._TweenEasing)
+                    .onUpdate(() => {
+                        this._OnZoomUpdated();
+                    })
+                    .onComplete(() => {
+                        console.log("zoomLevel: " + this.ZoomLevel);
+                        console.log("width: " + this.ZoomContentSize.Width);
+                    });
+
+                zoomTween.start(this._LastVisualTick);
+
+                this._ScrollTo(newScroll);
+            }
         }
 
         // todo: http://www.codeproject.com/Articles/535735/Implementing-a-Generic-Object-Pool-in-NET ?
@@ -136,22 +142,28 @@ module Fayde.Zoomer {
 
         private _GetZoomTargetSize(level: number): Size {
 
-            var newWidth = Math.pow(this.ZoomFactor, level) * this.Width;
-            var newHeight = this.ZoomContentSize.AspectRatio * newWidth;
+            var newWidth = Math.pow(this.ZoomFactor, level) * this.ActualWidth;
+            var newHeight = Math.pow(this.ZoomFactor, level) * this.ActualHeight;
 
             return new Size(newWidth, newHeight);
         }
 
-        private _ScrollTo(newScroll: Vector) {
-            var scrollTween = new TWEEN.Tween(this.ZoomContentOffset)
-                .to(newScroll, this.AnimationSpeed)
-                .delay(0)
-                .easing(this._TweenEasing)
-                .onUpdate(() => {
-                    this._Constrain();
-                });
+        private _ScrollTo(newOffset: Vector, instantly?: boolean) {
 
-            scrollTween.start(this._LastVisualTick);
+            if (instantly){
+                this.ZoomContentOffset.X = newOffset.X;
+                this.ZoomContentOffset.Y = newOffset.Y;
+            } else {
+                var scrollTween = new TWEEN.Tween(this.ZoomContentOffset)
+                    .to(newOffset, this.AnimationSpeed)
+                    .delay(0)
+                    .easing(this._TweenEasing)
+                    .onUpdate(() => {
+                        this._Constrain();
+                    });
+
+                scrollTween.start(this._LastVisualTick);
+            }
         }
 
         private _Constrain(){

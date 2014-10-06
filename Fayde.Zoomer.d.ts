@@ -9,6 +9,7 @@ declare module Fayde.Zoomer {
         public ZoomFactor: number;
         public ZoomContentOffset: Utils.Vector;
         public ZoomLevel: number;
+        private _Initialised;
         private _ZoomContentSize;
         private _TweenEasing;
         private _LastVisualTick;
@@ -32,11 +33,10 @@ declare module Fayde.Zoomer {
         public ViewportSize : Utils.Size;
         constructor();
         public OnTicked(lastTime: number, nowTime: number): void;
-        public OnApplyTemplate(): void;
-        private _ZoomTo(level);
+        private _ZoomTo(level, instantly?);
         private _OnZoomUpdated();
         private _GetZoomTargetSize(level);
-        private _ScrollTo(newScroll);
+        private _ScrollTo(newOffset, instantly?);
         private _Constrain();
         private _GetZoomTargetScroll(targetSize);
         private _GetZoomContentOrigin(size);

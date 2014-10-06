@@ -37,6 +37,7 @@ var Fayde;
                 this.AnimationSpeed = 250;
                 this.ZoomFactor = 2;
                 this.ZoomContentOffset = new Vector(0, 0);
+                this._Initialised = false;
                 this._LastVisualTick = new Date(0).getTime();
                 this._ConstrainToViewport = true;
                 this._Origin = 0 /* Center */;
@@ -82,7 +83,7 @@ var Fayde;
 
             Object.defineProperty(Zoomer.prototype, "ViewportSize", {
                 get: function () {
-                    return new Size(this.Width, this.Height);
+                    return new Size(this.ActualWidth, this.ActualHeight);
                 },
                 enumerable: true,
                 configurable: true
@@ -94,34 +95,38 @@ var Fayde;
                     return;
                 this._LastVisualTick = now;
 
+                if (!this._Initialised && this.ActualWidth != 0) {
+                    this._Initialised = true;
+                    this._ZoomTo(this.ZoomLevel, true);
+                }
+
                 TWEEN.update(nowTime);
                 this._AddVelocity();
             };
 
-            Zoomer.prototype.OnApplyTemplate = function () {
-                _super.prototype.OnApplyTemplate.call(this);
-
-                this._ZoomTo(this.ZoomLevel);
-            };
-
-            Zoomer.prototype._ZoomTo = function (level) {
+            Zoomer.prototype._ZoomTo = function (level, instantly) {
                 var _this = this;
                 this._OnZoomUpdated();
 
                 var newSize = this._GetZoomTargetSize(level);
-
-                var zoomTween = new TWEEN.Tween(this.ZoomContentSize).to(newSize, this.AnimationSpeed).delay(0).easing(this._TweenEasing).onUpdate(function () {
-                    _this._OnZoomUpdated();
-                }).onComplete(function () {
-                    console.log("zoomLevel: " + _this.ZoomLevel);
-                    console.log("width: " + _this.ZoomContentSize.Width);
-                });
-
-                zoomTween.start(this._LastVisualTick);
-
                 var newScroll = this._GetZoomTargetScroll(newSize);
 
-                this._ScrollTo(newScroll);
+                if (instantly) {
+                    this.ZoomContentSize.Width = newSize.Width;
+                    this.ZoomContentSize.Height = newSize.Height;
+                    this._ScrollTo(newScroll, true);
+                } else {
+                    var zoomTween = new TWEEN.Tween(this.ZoomContentSize).to(newSize, this.AnimationSpeed).delay(0).easing(this._TweenEasing).onUpdate(function () {
+                        _this._OnZoomUpdated();
+                    }).onComplete(function () {
+                        console.log("zoomLevel: " + _this.ZoomLevel);
+                        console.log("width: " + _this.ZoomContentSize.Width);
+                    });
+
+                    zoomTween.start(this._LastVisualTick);
+
+                    this._ScrollTo(newScroll);
+                }
             };
 
             Zoomer.prototype._OnZoomUpdated = function () {
@@ -129,19 +134,24 @@ var Fayde;
             };
 
             Zoomer.prototype._GetZoomTargetSize = function (level) {
-                var newWidth = Math.pow(this.ZoomFactor, level) * this.Width;
-                var newHeight = this.ZoomContentSize.AspectRatio * newWidth;
+                var newWidth = Math.pow(this.ZoomFactor, level) * this.ActualWidth;
+                var newHeight = Math.pow(this.ZoomFactor, level) * this.ActualHeight;
 
                 return new Size(newWidth, newHeight);
             };
 
-            Zoomer.prototype._ScrollTo = function (newScroll) {
+            Zoomer.prototype._ScrollTo = function (newOffset, instantly) {
                 var _this = this;
-                var scrollTween = new TWEEN.Tween(this.ZoomContentOffset).to(newScroll, this.AnimationSpeed).delay(0).easing(this._TweenEasing).onUpdate(function () {
-                    _this._Constrain();
-                });
+                if (instantly) {
+                    this.ZoomContentOffset.X = newOffset.X;
+                    this.ZoomContentOffset.Y = newOffset.Y;
+                } else {
+                    var scrollTween = new TWEEN.Tween(this.ZoomContentOffset).to(newOffset, this.AnimationSpeed).delay(0).easing(this._TweenEasing).onUpdate(function () {
+                        _this._Constrain();
+                    });
 
-                scrollTween.start(this._LastVisualTick);
+                    scrollTween.start(this._LastVisualTick);
+                }
             };
 
             Zoomer.prototype._Constrain = function () {

@@ -24,7 +24,7 @@
         <!--<Button Background="Red" Width="*" Height="*"></Button>-->
 
         <!--<Border Grid.ZIndex="1" Grid.Row="1" BorderThickness="5" CornerRadius="5" BorderBrush="Red">-->
-        <mylib:Zoomer ZoomLevels="5" ZoomLevel="{Binding ZoomLevel}" ZoomUpdated="{EventBinding ZoomUpdated}">
+        <mylib:Zoomer ZoomLevels="5" ZoomLevel="{Binding ZoomLevel}" ZoomUpdated="{EventBinding ZoomUpdated}" ConstrainToViewport="false">
             <Canvas>
                 <Canvas x:Name="ZoomContent"
                         Canvas.Left="{Binding ZoomContentOffset.X}"

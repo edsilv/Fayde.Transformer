@@ -28,6 +28,7 @@ module Fayde.Zoomer {
     export class Zoomer extends Fayde.Controls.ContentControl {
 
         static ZoomLevelProperty = DependencyProperty.RegisterFull("ZoomLevel", () => Number, Zoomer, 0, (d, args) => (<Zoomer>d).OnZoomLevelChanged(args));
+        static ConstrainToViewportProperty = DependencyProperty.RegisterFull("ConstrainToViewport", () => Boolean, Zoomer, true);
 
         private OnZoomLevelChanged (args: IDependencyPropertyChangedEventArgs) {
             this._ZoomTo(this.ZoomLevel);
@@ -37,12 +38,12 @@ module Fayde.Zoomer {
         ZoomFactor: number = 2;
         ZoomContentOffset: Vector = new Vector(0, 0);
         ZoomLevel: number;
+        ConstrainToViewport: boolean;
 
         private _ZoomContentSize: Size;
         private _TweenEasing: any;
         private _LastVisualTick: number = new Date(0).getTime();
         private _Timer: Fayde.ClockTimer;
-        private _ConstrainToViewport: boolean = true;
         private _Origin: Origin = Origin.Center;
         private _IsMouseDown: boolean = false;
         private _IsDragging: boolean = false;
@@ -167,7 +168,7 @@ module Fayde.Zoomer {
 
         private _Constrain(){
 
-            if (this._ConstrainToViewport){
+            if (this.ConstrainToViewport){
 
                 if (this.ZoomContentOffset.X > 0){
                     this.ZoomContentOffset.X = 0;

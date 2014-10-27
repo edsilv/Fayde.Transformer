@@ -4,16 +4,17 @@ declare module Fayde.Zoomer {
 declare module Fayde.Zoomer {
     class Zoomer extends Controls.ContentControl {
         static ZoomLevelProperty: DependencyProperty;
+        static ConstrainToViewportProperty: DependencyProperty;
         private OnZoomLevelChanged(args);
         public AnimationSpeed: number;
         public ZoomFactor: number;
         public ZoomContentOffset: Utils.Vector;
         public ZoomLevel: number;
+        public ConstrainToViewport: boolean;
         private _ZoomContentSize;
         private _TweenEasing;
         private _LastVisualTick;
         private _Timer;
-        private _ConstrainToViewport;
         private _Origin;
         private _IsMouseDown;
         private _IsDragging;

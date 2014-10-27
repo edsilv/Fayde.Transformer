@@ -38,7 +38,6 @@ var Fayde;
                 this.ZoomFactor = 2;
                 this.ZoomContentOffset = new Vector(0, 0);
                 this._LastVisualTick = new Date(0).getTime();
-                this._ConstrainToViewport = true;
                 this._Origin = 0 /* Center */;
                 this._IsMouseDown = false;
                 this._IsDragging = false;
@@ -154,7 +153,7 @@ var Fayde;
             };
 
             Zoomer.prototype._Constrain = function () {
-                if (this._ConstrainToViewport) {
+                if (this.ConstrainToViewport) {
                     if (this.ZoomContentOffset.X > 0) {
                         this.ZoomContentOffset.X = 0;
                     }
@@ -284,6 +283,9 @@ var Fayde;
             }, Zoomer, 0, function (d, args) {
                 return d.OnZoomLevelChanged(args);
             });
+            Zoomer.ConstrainToViewportProperty = DependencyProperty.RegisterFull("ConstrainToViewport", function () {
+                return Boolean;
+            }, Zoomer, true);
             return Zoomer;
         })(Fayde.Controls.ContentControl);
         _Zoomer.Zoomer = Zoomer;

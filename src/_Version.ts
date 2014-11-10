@@ -1,3 +1,3 @@
 module Fayde.Zoomer {
-    export var Version = '0.2.0';
+    export var Version = '0.2.1';
 }

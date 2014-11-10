@@ -1,7 +1,7 @@
 var Fayde;
 (function (Fayde) {
     (function (Zoomer) {
-        Zoomer.Version = '0.2.0';
+        Zoomer.Version = '0.2.1';
     })(Fayde.Zoomer || (Fayde.Zoomer = {}));
     var Zoomer = Fayde.Zoomer;
 })(Fayde || (Fayde = {}));

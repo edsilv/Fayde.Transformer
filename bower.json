@@ -1,6 +1,6 @@
 {
   "name": "Fayde.Zoomer",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "ignore": [
     "build",
     "nuget",
@@ -12,7 +12,7 @@
   ],
   "dependencies": {
     "fayde": "~0.13.0",
-    "fayde.utils": "git://github.com/bsick7/Fayde.Utils#~0.2.0",
+    "fayde.utils": "git://github.com/edsilv/Fayde.Utils#~0.2.0",
     "tween.ts": "~0.1.0"
   },
   "devDependencies": {

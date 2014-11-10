@@ -1,7 +1,7 @@
 var Fayde;
 (function (Fayde) {
     (function (Zoomer) {
-        Zoomer.Version = '0.1.0';
+        Zoomer.Version = '0.2.0';
     })(Fayde.Zoomer || (Fayde.Zoomer = {}));
     var Zoomer = Fayde.Zoomer;
 })(Fayde || (Fayde = {}));
@@ -269,7 +269,7 @@ var Fayde;
                 }
 
                 this._LastMousePosition = this._MousePosition || new Vector(0, 0);
-                this._MousePosition = new Vector(e.AbsolutePos.X, e.AbsolutePos.Y);
+                this._MousePosition = new Vector(e.AbsolutePos.x, e.AbsolutePos.y);
 
                 this._MouseDelta = this._MousePosition.Get();
                 this._MouseDelta.Sub(this._LastMousePosition);

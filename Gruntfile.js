@@ -5,10 +5,11 @@ var version = require('./build/version'),
 
 module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-typescript');
+    grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-connect');
-    grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-qunit');
     grunt.loadNpmTasks('grunt-contrib-symlink');
+    grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-open');
     grunt.loadNpmTasks('grunt-nuget');
@@ -23,11 +24,14 @@ module.exports = function (grunt) {
 
     var dirs = {
         test: {
-            root: 'test'
+            root: 'test',
+            build: 'test/.build',
+            lib: 'test/lib'
         },
         testsite: {
             root: 'testsite',
-            build: 'testsite/.build'
+            build: 'testsite/.build',
+            lib: 'testsite/lib'
         }
     };
 
@@ -40,17 +44,64 @@ module.exports = function (grunt) {
         meta: meta,
         dirs: dirs,
         pkg: grunt.file.readJSON('./package.json'),
+        clean: {
+            bower: ['./lib'],
+            testsite: ['<%= dirs.testsite.lib %>'],
+            test: ['<%= dirs.test.lib %>']
+        },
         setup: {
+            base: {
+                cwd: '.'
+            }
+        },
+        symlink: {
+            options: {
+                overwrite: true
+            },
             test: {
-                cwd: dirs.test.root
+                files: [
+                    { src: './lib/minerva', dest: '<%= dirs.test.lib %>/minerva' },
+                    { src: './lib/fayde', dest: '<%= dirs.test.lib %>/fayde' },
+                    { src: './lib/fayde.utils', dest: '<%= dirs.testsite.lib %>/fayde.utils' },
+                    { src: './lib/tween.ts', dest: '<%= dirs.testsite.lib %>/tween.ts' },
+                    { src: './lib/qunit', dest: '<%= dirs.test.lib %>/qunit' },
+                    { src: './lib/requirejs', dest: '<%= dirs.test.lib %>/requirejs' },
+                    { src: './lib/requirejs-text', dest: '<%= dirs.test.lib %>/requirejs-text' },
+                    { src: './themes', dest: '<%= dirs.test.lib %>/<%= meta.name %>/themes' },
+                    { src: './<%= meta.name %>.js', dest: '<%= dirs.test.lib %>/<%= meta.name %>/<%= meta.name %>.js' },
+                    { src: './<%= meta.name %>.d.ts', dest: '<%= dirs.test.lib %>/<%= meta.name %>/<%= meta.name %>.d.ts' },
+                    { src: './<%= meta.name %>.js.map', dest: '<%= dirs.test.lib %>/<%= meta.name %>/<%= meta.name %>.js.map' },
+                    { src: './src', dest: '<%= dirs.test.lib %>/<%= meta.name %>/src' }
+                ]
             },
             testsite: {
-                cwd: dirs.testsite.root
+                files: [
+                    { src: './lib/minerva', dest: '<%= dirs.testsite.lib %>/minerva' },
+                    { src: './lib/fayde', dest: '<%= dirs.testsite.lib %>/fayde' },
+                    { src: './lib/fayde.utils', dest: '<%= dirs.testsite.lib %>/fayde.utils' },
+                    { src: './lib/tween.ts', dest: '<%= dirs.testsite.lib %>/tween.ts' },
+                    { src: './lib/requirejs', dest: '<%= dirs.testsite.lib %>/requirejs' },
+                    { src: './lib/requirejs-text', dest: '<%= dirs.testsite.lib %>/requirejs-text' },
+                    { src: './themes', dest: '<%= dirs.testsite.lib %>/<%= meta.name %>/themes' },
+                    { src: './<%= meta.name %>.js', dest: '<%= dirs.testsite.lib %>/<%= meta.name %>/<%= meta.name %>.js' },
+                    { src: './<%= meta.name %>.d.ts', dest: '<%= dirs.testsite.lib %>/<%= meta.name %>/<%= meta.name %>.d.ts' },
+                    { src: './<%= meta.name %>.js.map', dest: '<%= dirs.testsite.lib %>/<%= meta.name %>/<%= meta.name %>.js.map' },
+                    { src: './src', dest: '<%= dirs.testsite.lib %>/<%= meta.name %>/src' }
+                ]
             }
         },
         typescript: {
             build: {
-                src: ['src/_Version.ts', 'src/*.ts', 'src/**/*.ts'],
+                src: [
+                    'typings/*.d.ts',
+                    'lib/minerva/minerva.d.ts',
+                    'lib/fayde/fayde.d.ts',
+                    'lib/fayde.utils/fayde.utils.d.ts',
+                    'lib/tween.ts/src/Tween.d.ts',
+                    './src/_Version.ts',
+                    './src/*.ts',
+                    './src/**/*.ts'
+                ],
                 dest: '<%= meta.name %>.js',
                 options: {
                     target: 'es5',
@@ -59,48 +110,42 @@ module.exports = function (grunt) {
                 }
             },
             test: {
-                src: ['<%= dirs.test.root %>/**/*.ts', '!<%= dirs.test.root %>/lib/**/*.ts'],
+                src: [
+                    'typings/*.d.ts',
+                    '<%= dirs.test.root %>/**/*.ts',
+                    '!<%= dirs.test.lib %>/**/*.ts',
+                    'lib/minerva/minerva.d.ts',
+                    'lib/fayde/fayde.d.ts',
+                    'lib/fayde.utils/fayde.utils.d.ts',
+                    'lib/tween.ts/src/Tween.d.ts',
+                    'Fayde.Zoomer.d.ts'
+                ],
+                dest: '<%= dirs.test.build %>',
                 options: {
                     target: 'es5',
+                    basePath: '<%= dirs.test.root %>/tests',
                     module: 'amd',
                     sourceMap: true
                 }
             },
             testsite: {
-                src: ['<%= dirs.testsite.root %>/**/*.ts', '!<%= dirs.testsite.root %>/lib/**/*.ts'],
+                src: [
+                    'typings/*.d.ts',
+                    '<%= dirs.testsite.root %>/**/*.ts',
+                    '!<%= dirs.testsite.lib %>/**/*.ts',
+                    'lib/minerva/minerva.d.ts',
+                    'lib/fayde/fayde.d.ts',
+                    'lib/fayde.utils/fayde.utils.d.ts',
+                    'lib/tween.ts/src/Tween.d.ts',
+                    'Fayde.Zoomer.d.ts'
+                ],
                 dest: '<%= dirs.testsite.build %>',
                 options: {
-                    basePath: dirs.testsite.root,
                     target: 'es5',
                     module: 'amd',
+                    basePath: '<%= dirs.testsite.root %>',
                     sourceMap: true
                 }
-            }
-        },
-        copy: {
-            pretest: {
-                files: [
-                    { expand: true, flatten: true, src: ['Themes/*'], dest: '<%= dirs.test.root %>/lib/<%= meta.name %>/Themes', filter: 'isFile' },
-                    { expand: true, flatten: true, src: ['<%= meta.name %>.js'], dest: '<%= dirs.test.root %>/lib/<%= meta.name %>', filter: 'isFile' },
-                    { expand: true, flatten: true, src: ['<%= meta.name %>.d.ts'], dest: '<%= dirs.test.root %>/lib/<%= meta.name %>', filter: 'isFile' }
-                ]
-            },
-            pretestsite: {
-                files: [
-                    { expand: true, flatten: true, src: ['Themes/*'], dest: '<%= dirs.testsite.root %>/lib/<%= meta.name %>/Themes', filter: 'isFile' },
-                    { expand: true, flatten: true, src: ['<%= meta.name %>.js'], dest: '<%= dirs.testsite.root %>/lib/<%= meta.name %>', filter: 'isFile' },
-                    { expand: true, flatten: true, src: ['<%= meta.name %>.d.ts'], dest: '<%= dirs.testsite.root %>/lib/<%= meta.name %>', filter: 'isFile' },
-                    { expand: true, flatten: true, src: ['<%= meta.name %>.js.map'], dest: '<%= dirs.testsite.root %>/lib/<%= meta.name %>', filter: 'isFile' }
-                ]
-            }
-        },
-        symlink: {
-            options: {
-                overwrite: true
-            },
-            testsite: {
-                src: 'src',
-                dest: '<%= dirs.testsite.root %>/lib/<%= meta.name %>/src'
             }
         },
         qunit: {
@@ -125,10 +170,6 @@ module.exports = function (grunt) {
             src: {
                 files: ['src/**/*.ts'],
                 tasks: ['typescript:build']
-            },
-            dist: {
-                files: ['<%= meta.name %>.js'],
-                tasks: ['copy:pretestsite']
             },
             testsitets: {
                 files: ['<%= dirs.testsite.root %>/**/*.ts'],
@@ -177,10 +218,14 @@ module.exports = function (grunt) {
     });
 
     grunt.registerTask('default', ['version:apply', 'typescript:build']);
-    grunt.registerTask('test', ['setup:test', 'version:apply', 'typescript:build', 'copy:pretest', 'typescript:test', 'qunit']);
-    grunt.registerTask('testsite', ['setup:testsite', 'version:apply', 'typescript:build', 'copy:pretestsite', 'symlink:testsite', 'typescript:testsite', 'connect', 'open', 'watch']);
+    grunt.registerTask('test', ['version:apply', 'typescript:build', 'typescript:test', 'qunit']);
+    grunt.registerTask('testsite', ['version:apply', 'typescript:build', 'typescript:testsite', 'connect', 'open', 'watch']);
     setup(grunt);
     version(grunt);
     grunt.registerTask('package', ['nugetpack:dist']);
     grunt.registerTask('publish', ['nugetpack:dist', 'nugetpush:dist']);
+    grunt.registerTask('lib:reset', ['clean', 'setup', 'symlink:test', 'symlink:testsite']);
+    grunt.registerTask('dist:upbuild', ['version:bump', 'version:apply', 'typescript:build']);
+    grunt.registerTask('dist:upminor', ['version:bump:minor', 'version:apply', 'typescript:build']);
+    grunt.registerTask('dist:upmajor', ['version:bump:major', 'version:apply', 'typescript:build']);
 };

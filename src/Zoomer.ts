@@ -296,7 +296,7 @@ module Fayde.Zoomer {
             }
 
             this._LastMousePosition = this._MousePosition || new Vector(0, 0);
-            this._MousePosition = new Vector(e.AbsolutePos.X, e.AbsolutePos.Y);
+            this._MousePosition = new Vector(e.AbsolutePos.x, e.AbsolutePos.y);
 
             this._MouseDelta = this._MousePosition.Get();
             this._MouseDelta.Sub(this._LastMousePosition);

@@ -1,11 +1,21 @@
 {
   "name": "Fayde.Zoomer",
+  "version": "0.2.0",
   "ignore": [
     "build",
     "nuget",
     "src",
     "test",
     "testsite",
+    "typings",
     "Gruntfile.js"
-  ]
+  ],
+  "dependencies": {
+    "fayde": "~0.13.0",
+    "fayde.utils": "git://github.com/bsick7/Fayde.Utils#~0.2.0",
+    "tween.ts": "~0.1.0"
+  },
+  "devDependencies": {
+    "qunit": "~1.15.0"
+  }
 }

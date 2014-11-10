@@ -1,6 +1,4 @@
-/// <reference path="../lib/Fayde/Fayde.d.ts" />
-/// <reference path="../lib/fayde.utils/Fayde.Utils.d.ts" />
-/// <reference path="../../Fayde.Zoomer.d.ts" />
+/// <amd-dependency path="Fayde.Utils" />
 
 import Size = Fayde.Utils.Size;
 import Vector = Fayde.Utils.Vector;

@@ -94,7 +94,7 @@ module.exports = function (grunt) {
                     'lib/nullstone/dist/nullstone.d.ts',
                     'lib/minerva/dist/minerva.d.ts',
                     'lib/fayde/dist/fayde.d.ts',
-                    'lib/fayde.utils/fayde.utils.d.ts',
+                    'lib/fayde.utils/dist/fayde.utils.d.ts',
                     'lib/tween.ts/src/Tween.d.ts',
                     './src/_Version.ts',
                     './src/*.ts',
@@ -115,7 +115,7 @@ module.exports = function (grunt) {
                     'lib/nullstone/dist/nullstone.d.ts',
                     'lib/minerva/dist/minerva.d.ts',
                     'lib/fayde/dist/fayde.d.ts',
-                    'lib/fayde.utils/fayde.utils.d.ts',
+                    'lib/fayde.utils/dist/fayde.utils.d.ts',
                     'lib/tween.ts/src/Tween.d.ts',
                     'dist/<%= meta.name %>.d.ts'
                 ],
@@ -135,7 +135,7 @@ module.exports = function (grunt) {
                     'lib/nullstone/dist/nullstone.d.ts',
                     'lib/minerva/dist/minerva.d.ts',
                     'lib/fayde/dist/fayde.d.ts',
-                    'lib/fayde.utils/fayde.utils.d.ts',
+                    'lib/fayde.utils/dist/fayde.utils.d.ts',
                     'lib/tween.ts/src/Tween.d.ts',
                     'dist/<%= meta.name %>.d.ts'
                 ],

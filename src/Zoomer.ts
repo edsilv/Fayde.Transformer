@@ -58,7 +58,7 @@ module Fayde.Zoomer {
         private _DragMaxSpeed: number = 30;
         private _DragFriction: number = 2;
 
-        ZoomUpdated = new MulticastEvent<ZoomerEventArgs>();
+        ZoomUpdated = new nullstone.Event<ZoomerEventArgs>();
 
         get ZoomContentSize(): Size {
             if(!this._ZoomContentSize){
@@ -81,10 +81,10 @@ module Fayde.Zoomer {
 
             this._TweenEasing = TWEEN.Easing.Quadratic.InOut;
 
-            this.MouseLeftButtonDown.Subscribe(this.Zoomer_MouseLeftButtonDown, this);
-            this.MouseLeftButtonUp.Subscribe(this.Zoomer_MouseLeftButtonUp, this);
-            this.MouseMove.Subscribe(this.Zoomer_MouseMove, this);
-            this.SizeChanged.Subscribe(this.Zoomer_SizeChanged, this);
+            this.MouseLeftButtonDown.on(this.Zoomer_MouseLeftButtonDown, this);
+            this.MouseLeftButtonUp.on(this.Zoomer_MouseLeftButtonUp, this);
+            this.MouseMove.on(this.Zoomer_MouseMove, this);
+            this.SizeChanged.on(this.Zoomer_SizeChanged, this);
 
             this._Timer = new Fayde.ClockTimer();
             this._Timer.RegisterTimer(this);
@@ -137,7 +137,7 @@ module Fayde.Zoomer {
 
         // todo: http://www.codeproject.com/Articles/535735/Implementing-a-Generic-Object-Pool-in-NET ?
         private _OnZoomUpdated() {
-            this.ZoomUpdated.Raise(this, new ZoomerEventArgs(this.ZoomContentSize, this.ZoomContentOffset));
+            this.ZoomUpdated.raise(this, new ZoomerEventArgs(this.ZoomContentSize, this.ZoomContentOffset));
         }
 
         private _GetZoomTargetSize(level: number): Size {

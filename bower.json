@@ -11,7 +11,7 @@
     "Gruntfile.js"
   ],
   "dependencies": {
-    "fayde": "~0.13.0",
+    "fayde": "~0.14.0",
     "fayde.utils": "git://github.com/edsilv/Fayde.Utils#~0.2.0",
     "tween.ts": "~0.1.0"
   },

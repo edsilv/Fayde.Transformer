@@ -2,15 +2,17 @@ declare module Fayde.Zoomer {
     var Version: string;
 }
 declare module Fayde.Zoomer {
+    import Size = Fayde.Utils.Size;
+    import Vector = Fayde.Utils.Vector;
     class Zoomer extends Controls.ContentControl {
         static ZoomLevelProperty: DependencyProperty;
         static ConstrainToViewportProperty: DependencyProperty;
         private OnZoomLevelChanged(args);
-        public AnimationSpeed: number;
-        public ZoomFactor: number;
-        public ZoomContentOffset: Utils.Vector;
-        public ZoomLevel: number;
-        public ConstrainToViewport: boolean;
+        AnimationSpeed: number;
+        ZoomFactor: number;
+        ZoomContentOffset: Vector;
+        ZoomLevel: number;
+        ConstrainToViewport: boolean;
         private _ZoomContentSize;
         private _TweenEasing;
         private _LastVisualTick;
@@ -28,12 +30,12 @@ declare module Fayde.Zoomer {
         private _DragMinSpeed;
         private _DragMaxSpeed;
         private _DragFriction;
-        public ZoomUpdated: MulticastEvent<ZoomerEventArgs>;
-        public ZoomContentSize : Utils.Size;
-        public ViewportSize : Utils.Size;
+        ZoomUpdated: nullstone.Event<ZoomerEventArgs>;
+        ZoomContentSize: Size;
+        ViewportSize: Size;
         constructor();
         private Zoomer_SizeChanged(sender, e);
-        public OnTicked(lastTime: number, nowTime: number): void;
+        OnTicked(lastTime: number, nowTime: number): void;
         private _ZoomTo(level, instantly?);
         private _OnZoomUpdated();
         private _GetZoomTargetSize(level);
@@ -49,9 +51,11 @@ declare module Fayde.Zoomer {
     }
 }
 declare module Fayde.Zoomer {
-    class ZoomerEventArgs extends EventArgs {
-        public Size: Utils.Size;
-        public Offset: Utils.Vector;
-        constructor(size: Utils.Size, offset: Utils.Vector);
+    import Size = Fayde.Utils.Size;
+    import Vector = Fayde.Utils.Vector;
+    class ZoomerEventArgs implements nullstone.IEventArgs {
+        Size: Size;
+        Offset: Vector;
+        constructor(size: Size, offset: Vector);
     }
 }

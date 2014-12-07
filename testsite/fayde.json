@@ -11,5 +11,11 @@
       "exports": "Fayde.Zoomer",
       "deps": ["Fayde.Utils", "tween"]
     }
+  },
+  "themes": {
+    "Fayde.Utils": "none",
+    "tween": "none",
+    "Fayde.Zoomer": {
+    }
   }
 }

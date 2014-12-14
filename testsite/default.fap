@@ -23,20 +23,10 @@
 
         <!--<Button Background="Red" Width="*" Height="*"></Button>-->
 
-        <!--<Border Grid.ZIndex="1" Grid.Row="1" BorderThickness="5" CornerRadius="5" BorderBrush="Red">-->
-        <mylib:Zoomer ZoomLevels="5" ZoomLevel="{Binding ZoomLevel}" ZoomUpdated="{EventBinding ZoomUpdated}" ConstrainToViewport="false">
-            <Canvas>
-                <Canvas x:Name="ZoomContent"
-                        Canvas.Left="{Binding ZoomContentOffset.X}"
-                        Canvas.Top="{Binding ZoomContentOffset.Y}"
-                        Width="{Binding ZoomContentSize.Width}"
-                        Height="{Binding ZoomContentSize.Height}"
-                        Background="#40e6ff">
-                </Canvas>
+        <mylib:Zoomer ZoomLevels="5" ZoomLevel="{Binding ZoomLevel}" ZoomUpdated="{EventBinding ZoomUpdated}" ConstrainToViewport="false" Background="Red">
+            <Canvas Background="#40e6ff">
             </Canvas>
         </mylib:Zoomer>
-        <!--</Border>-->
-        <!--<Border Grid.ZIndex="2" BorderBrush="Black" Width="320" Height="240" BorderThickness="1"></Border>-->
 
         <StackPanel Grid.ZIndex="2" Grid.Column="1" Margin="0,20,20,0" Orientation="Vertical">
             <StackPanel Orientation="Horizontal">

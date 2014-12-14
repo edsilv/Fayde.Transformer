@@ -1,4 +1,8 @@
 
+import ScaleTransform = Fayde.Media.ScaleTransform;
+import TranslateTransform = Fayde.Media.TranslateTransform;
+import TransformGroup = Fayde.Media.TransformGroup;
+
 module Fayde.Zoomer {
 
     import Size = Fayde.Utils.Size;
@@ -36,11 +40,11 @@ module Fayde.Zoomer {
 
         AnimationSpeed: number = 250;
         ZoomFactor: number = 2;
-        ZoomContentOffset: Vector = new Vector(0, 0);
         ZoomLevel: number;
         ConstrainToViewport: boolean;
 
-        private _ZoomContentSize: Size;
+        private _TranslateTransform: Fayde.Media.TranslateTransform;// = new Point(0, 0);
+        private _ScaleTransform: Fayde.Media.ScaleTransform;
         private _TweenEasing: any;
         private _LastVisualTick: number = new Date(0).getTime();
         private _Timer: Fayde.ClockTimer;
@@ -60,15 +64,27 @@ module Fayde.Zoomer {
 
         ZoomUpdated = new nullstone.Event<ZoomerEventArgs>();
 
-        get ZoomContentSize(): Size {
-            if(!this._ZoomContentSize){
-                this._ZoomContentSize = this.ViewportSize;
+        get ScaleTransform(): ScaleTransform {
+            if(!this._ScaleTransform){
+                return new ScaleTransform(1, 1);
             }
-            return this._ZoomContentSize;
+            return this._ScaleTransform;
         }
 
-        set ZoomContentSize(value: Size) {
-            this._ZoomContentSize = value;
+        set ScaleTransform(value: ScaleTransform) {
+            this._ScaleTransform = value;
+        }
+
+        get TranslateTransform(): TranslateTransform {
+            if (!this._TranslateTransform){
+                return new TranslateTransform(0, 0);
+            }
+
+            return this._TranslateTransform;
+        }
+
+        set TranslateTransform(value: TranslateTransform){
+            this._TranslateTransform = value;
         }
 
         get ViewportSize(): Size {
@@ -81,6 +97,9 @@ module Fayde.Zoomer {
 
             this._TweenEasing = TWEEN.Easing.Quadratic.InOut;
 
+            // todo: remove?
+            this.RenderTransformOrigin = new Point(0.5, 0.5);
+
             this.MouseLeftButtonDown.on(this.Zoomer_MouseLeftButtonDown, this);
             this.MouseLeftButtonUp.on(this.Zoomer_MouseLeftButtonUp, this);
             this.MouseMove.on(this.Zoomer_MouseMove, this);
@@ -88,6 +107,26 @@ module Fayde.Zoomer {
 
             this._Timer = new Fayde.ClockTimer();
             this._Timer.RegisterTimer(this);
+        }
+
+        private _UpdateTransform() : void {
+
+            var transformGroup = new TransformGroup();
+
+            // update translate transform.
+            //var translateTransform = new TranslateTransform();
+            //translateTransform.X = this.TranslateTransform.x;
+            //translateTransform.Y = this.TranslateTransform.y;
+            transformGroup.Children.Add(this.TranslateTransform);
+
+            // update scale transform.
+            //var transformGroup = new Fayde.Media.TransformGroup();
+            //var scaleTransform = new ScaleTransform();
+            //scaleTransform.ScaleX = this.ScaleTransform.Width;
+            //scaleTransform.ScaleY = this.ScaleTransform.Height;
+            transformGroup.Children.Add(this.ScaleTransform);
+
+            this.RenderTransform = transformGroup;
         }
 
         // handle resizing - also intialise viewport size
@@ -109,112 +148,130 @@ module Fayde.Zoomer {
 
             this._OnZoomUpdated();
 
-            var newSize = this._GetZoomTargetSize(level);
-            var newScroll = this._GetZoomTargetScroll(newSize);
+            var scale = this._GetTargetScaleTransform(level);
+            var translate = this._GetTargetTranslateTransform(scale);
 
             if (instantly){
-                this.ZoomContentSize.Width = newSize.Width;
-                this.ZoomContentSize.Height = newSize.Height;
-                this._ScrollTo(newScroll, true);
+                //this.ZoomContentSize.Width = newSize.Width;
+                //this.ZoomContentSize.Height = newSize.Height;
+                this.ScaleTransform = scale;
+                this._ScrollTo(translate, true);
             } else {
-                var zoomTween = new TWEEN.Tween(this.ZoomContentSize)
-                    .to(newSize, this.AnimationSpeed)
-                    .delay(0)
-                    .easing(this._TweenEasing)
-                    .onUpdate(() => {
-                        this._OnZoomUpdated();
-                    })
-                    .onComplete(() => {
-                        console.log("zoomLevel: " + this.ZoomLevel);
-                        console.log("width: " + this.ZoomContentSize.Width);
-                    });
+                this.ScaleTransform = scale;
+                //var zoomTween = new TWEEN.Tween(this.ZoomContentSize)
+                //    .to(newSize, this.AnimationSpeed)
+                //    .delay(0)
+                //    .easing(this._TweenEasing)
+                //    .onUpdate(() => {
+                //        this._OnZoomUpdated();
+                //    })
+                //    .onComplete(() => {
+                //        console.log("zoomLevel: " + this.ZoomLevel);
+                //        console.log("width: " + this.ZoomContentSize.Width);
+                //    });
+                //
+                //zoomTween.start(this._LastVisualTick);
 
-                zoomTween.start(this._LastVisualTick);
+                this._ScrollTo(translate);
 
-                this._ScrollTo(newScroll);
+                this._UpdateTransform();
             }
         }
 
-        // todo: http://www.codeproject.com/Articles/535735/Implementing-a-Generic-Object-Pool-in-NET ?
         private _OnZoomUpdated() {
-            this.ZoomUpdated.raise(this, new ZoomerEventArgs(this.ZoomContentSize, this.ZoomContentOffset));
+            this.ZoomUpdated.raise(this, new ZoomerEventArgs(this.ScaleTransform, this.TranslateTransform));
         }
 
-        private _GetZoomTargetSize(level: number): Size {
+        private _GetTargetScaleTransform(level: number): ScaleTransform {
 
-            var newWidth = Math.pow(this.ZoomFactor, level) * this.ActualWidth;
-            var newHeight = Math.pow(this.ZoomFactor, level) * this.ActualHeight;
+            //var newWidth = Math.pow(this.ZoomFactor, level) * this.ActualWidth;
+            //var newHeight = Math.pow(this.ZoomFactor, level) * this.ActualHeight;
+
+            var newWidth = 1 * Math.pow(this.ZoomFactor, level);
+            var newHeight = 1 * Math.pow(this.ZoomFactor, level);
 
             return new Size(newWidth, newHeight);
         }
 
-        private _ScrollTo(newOffset: Vector, instantly?: boolean) {
+        private _ScrollTo(newOffset: Point, instantly?: boolean) {
 
             if (instantly){
-                this.ZoomContentOffset.X = newOffset.X;
-                this.ZoomContentOffset.Y = newOffset.Y;
+                this.TranslateTransform = newOffset;
             } else {
-                var scrollTween = new TWEEN.Tween(this.ZoomContentOffset)
-                    .to(newOffset, this.AnimationSpeed)
-                    .delay(0)
-                    .easing(this._TweenEasing)
-                    .onUpdate(() => {
-                        this._Constrain();
-                    });
+                this.TranslateTransform = newOffset;
 
-                scrollTween.start(this._LastVisualTick);
+                //var scrollTween = new TWEEN.Tween(this.ZoomContentOffset)
+                //    .to(newOffset, this.AnimationSpeed)
+                //    .delay(0)
+                //    .easing(this._TweenEasing)
+                //    .onUpdate(() => {
+                //        this._Constrain();
+                //    });
+                //
+                //scrollTween.start(this._LastVisualTick);
             }
+        }
+
+        private _GetTargetTranslateTransform(targetSize: ScaleTransform): Point {
+
+            // get the current translate
+
+            // get the next translate
+
+            //var currentOrigin: Point = this._GetZoomContentOrigin(this.ScaleTransform);
+            //var nextOrigin: Point = this._GetZoomContentOrigin(targetSize);
+            //var diff: Point = new Point(nextOrigin.x - currentOrigin.x, nextOrigin.y - currentOrigin.y); //Vector.Sub(nextOrigin, currentOrigin);
+            //var targetScroll = new Point(this.TranslateTransform.x - diff.x, this.TranslateTransform.y - diff.y); // Vector.Sub(this.ZoomContentOffset., diff);
+            //
+            //return new Point(targetScroll.x, targetScroll.y);
+
         }
 
         private _Constrain(){
 
             if (this.ConstrainToViewport){
 
-                if (this.ZoomContentOffset.X > 0){
-                    this.ZoomContentOffset.X = 0;
+                if (this.TranslateTransform.x > 0){
+                    this.TranslateTransform.x = 0;
                 }
 
-                if (this.ZoomContentOffset.X < (this.ZoomContentSize.Width - this.ViewportSize.Width) * -1){
-                    this.ZoomContentOffset.X = (this.ZoomContentSize.Width - this.ViewportSize.Width) * -1;
+                if (this.TranslateTransform.x < (this.ScaleTransform.Width - this.ViewportSize.Width) * -1){
+                    this.TranslateTransform.x = (this.ScaleTransform.Width - this.ViewportSize.Width) * -1;
                 }
 
-                if (this.ZoomContentOffset.Y > 0){
-                    this.ZoomContentOffset.Y = 0;
+                if (this.TranslateTransform.y > 0){
+                    this.TranslateTransform.y = 0;
                 }
 
-                if (this.ZoomContentOffset.Y < (this.ZoomContentSize.Height - this.ViewportSize.Height) * -1){
-                    this.ZoomContentOffset.Y = (this.ZoomContentSize.Height - this.ViewportSize.Height) * -1;
+                if (this.TranslateTransform.y < (this.ScaleTransform.Height - this.ViewportSize.Height) * -1){
+                    this.TranslateTransform.y = (this.ScaleTransform.Height - this.ViewportSize.Height) * -1;
                 }
             }
         }
 
-        private _GetZoomTargetScroll(targetSize: Size): Vector {
+        private _GetZoomContentOrigin(size: Size): Point{
 
-            var currentOrigin = this._GetZoomContentOrigin(this.ZoomContentSize);
-            var nextOrigin = this._GetZoomContentOrigin(targetSize);
-            var diff = Vector.Sub(nextOrigin, currentOrigin);
-            var targetScroll = Vector.Sub(this.ZoomContentOffset, diff);
-
-            return targetScroll;
-        }
-
-        private _GetZoomContentOrigin(size: Size): Vector{
+            return new Point(-0.5, -0.5);
 
             switch(this._Origin){
                 case Origin.Center:
-                    return new Vector(size.Width / 2, size.Height / 2);
+                    //return new Point(size.Width / 2, size.Height / 2);
+                    return new Point(0.5, 0.5);
                     break;
                 case Origin.TopLeft:
-                    return new Vector(0, 0);
+                    return new Point(0, 0);
                     break;
                 case Origin.BottomLeft:
-                    return new Vector(0, size.Height);
+                    //return new Point(0, size.Height);
+                    return new Point(0, 1);
                     break;
                 case Origin.TopRight:
-                    return new Vector(size.Width, 0);
+                    //return new Point(size.Width, 0);
+                    return new Point(1, 0);
                     break;
                 case Origin.BottomRight:
-                    return new Vector(size.Width, size.Height);
+                    //return new Point(size.Width, size.Height);
+                    return new Point(1, 1);
                     break;
             }
         }
@@ -257,7 +314,7 @@ module Fayde.Zoomer {
                     // integrate deceleration
                     this._DragVelocity.Add(this._DragAcceleration);
 
-                    this.ZoomContentOffset.Add(this._DragVelocity);
+                    this.TranslateTransform = new Point(this.TranslateTransform.x + this._DragVelocity.X, this.TranslateTransform.y + this._DragVelocity.Y); //.Add(this._DragVelocity);
                 }
             }
 
@@ -272,6 +329,8 @@ module Fayde.Zoomer {
         }
 
         private Zoomer_MouseLeftButtonDown (sender: any, e: Fayde.Input.MouseButtonEventArgs) {
+            //console.log("mouse down");
+
             if (e.Handled)
                 return;
 
@@ -296,13 +355,15 @@ module Fayde.Zoomer {
             }
 
             this._LastMousePosition = this._MousePosition || new Vector(0, 0);
+            //this._MousePosition = new Vector(e.AbsolutePos.x, e.AbsolutePos.y);
             this._MousePosition = new Vector(e.AbsolutePos.x, e.AbsolutePos.y);
 
             this._MouseDelta = this._MousePosition.Get();
             this._MouseDelta.Sub(this._LastMousePosition);
 
             if (this._IsDragging){
-                this.ZoomContentOffset.Add(this._MouseDelta);
+                //this.ZoomContentOffset.Add(this._MouseDelta);
+                this.TranslateTransform = new Point(this.TranslateTransform.x + this._MouseDelta.X, this.TranslateTransform.y + this._MouseDelta.Y);
             }
         }
     }

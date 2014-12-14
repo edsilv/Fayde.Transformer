@@ -3,16 +3,15 @@ declare module Fayde.Zoomer {
 }
 declare module Fayde.Zoomer {
     import Size = Fayde.Utils.Size;
-    import Vector = Fayde.Utils.Vector;
     class Zoomer extends Controls.ContentControl {
         static ZoomLevelProperty: DependencyProperty;
         static ConstrainToViewportProperty: DependencyProperty;
         private OnZoomLevelChanged(args);
         AnimationSpeed: number;
         ZoomFactor: number;
-        ZoomContentOffset: Vector;
         ZoomLevel: number;
         ConstrainToViewport: boolean;
+        private _ZoomContentOffset;
         private _ZoomContentSize;
         private _TweenEasing;
         private _LastVisualTick;
@@ -32,16 +31,18 @@ declare module Fayde.Zoomer {
         private _DragFriction;
         ZoomUpdated: nullstone.Event<ZoomerEventArgs>;
         ZoomContentSize: Size;
+        ZoomContentOffset: Point;
         ViewportSize: Size;
         constructor();
+        private _UpdateTransform();
         private Zoomer_SizeChanged(sender, e);
         OnTicked(lastTime: number, nowTime: number): void;
         private _ZoomTo(level, instantly?);
         private _OnZoomUpdated();
         private _GetZoomTargetSize(level);
         private _ScrollTo(newOffset, instantly?);
+        private _GetZoomTargetOffset(targetSize);
         private _Constrain();
-        private _GetZoomTargetScroll(targetSize);
         private _GetZoomContentOrigin(size);
         private _AddVelocity();
         private _RemoveVelocity();
@@ -52,10 +53,9 @@ declare module Fayde.Zoomer {
 }
 declare module Fayde.Zoomer {
     import Size = Fayde.Utils.Size;
-    import Vector = Fayde.Utils.Vector;
     class ZoomerEventArgs implements nullstone.IEventArgs {
         Size: Size;
-        Offset: Vector;
-        constructor(size: Size, offset: Vector);
+        Offset: Point;
+        constructor(size: Size, offset: Point);
     }
 }

@@ -1,8 +1,12 @@
 declare module Fayde.Zoomer {
     var Version: string;
 }
+import ScaleTransform = Fayde.Media.ScaleTransform;
+import TranslateTransform = Fayde.Media.TranslateTransform;
+import TransformGroup = Fayde.Media.TransformGroup;
+import Size = minerva.Size;
+import Vector = Fayde.Utils.Vector;
 declare module Fayde.Zoomer {
-    import Size = Fayde.Utils.Size;
     class Zoomer extends Controls.ContentControl {
         static ZoomLevelProperty: DependencyProperty;
         static ConstrainToViewportProperty: DependencyProperty;
@@ -11,12 +15,11 @@ declare module Fayde.Zoomer {
         ZoomFactor: number;
         ZoomLevel: number;
         ConstrainToViewport: boolean;
-        private _ZoomContentOffset;
-        private _ZoomContentSize;
+        private _TranslateTransform;
+        private _ScaleTransform;
         private _TweenEasing;
         private _LastVisualTick;
         private _Timer;
-        private _Origin;
         private _IsMouseDown;
         private _IsDragging;
         private _LastMousePosition;
@@ -30,8 +33,8 @@ declare module Fayde.Zoomer {
         private _DragMaxSpeed;
         private _DragFriction;
         ZoomUpdated: nullstone.Event<ZoomerEventArgs>;
-        ZoomContentSize: Size;
-        ZoomContentOffset: Point;
+        ScaleTransform: ScaleTransform;
+        TranslateTransform: TranslateTransform;
         ViewportSize: Size;
         constructor();
         private _UpdateTransform();
@@ -39,11 +42,10 @@ declare module Fayde.Zoomer {
         OnTicked(lastTime: number, nowTime: number): void;
         private _ZoomTo(level, instantly?);
         private _OnZoomUpdated();
-        private _GetZoomTargetSize(level);
+        private _GetTargetScaleTransform(level);
         private _ScrollTo(newOffset, instantly?);
-        private _GetZoomTargetOffset(targetSize);
+        private _GetTargetTranslateTransform(scaleTransform);
         private _Constrain();
-        private _GetZoomContentOrigin(size);
         private _AddVelocity();
         private _RemoveVelocity();
         private Zoomer_MouseLeftButtonDown(sender, e);
@@ -52,10 +54,9 @@ declare module Fayde.Zoomer {
     }
 }
 declare module Fayde.Zoomer {
-    import Size = Fayde.Utils.Size;
     class ZoomerEventArgs implements nullstone.IEventArgs {
         Size: Size;
-        Offset: Point;
-        constructor(size: Size, offset: Point);
+        Offset: TranslateTransform;
+        constructor(size: Size, offset: TranslateTransform);
     }
 }

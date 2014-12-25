@@ -63,9 +63,12 @@ module Fayde.Zoomer {
         ZoomUpdated = new nullstone.Event<ZoomerEventArgs>();
 
         get ScaleTransform(): ScaleTransform {
-            //if(!this._ScaleTransform){
-            //    return new ScaleTransform(1, 1);
-            //}
+            if (!this._ScaleTransform){
+                var scaleTransform = new ScaleTransform();
+                scaleTransform.ScaleX = 1;
+                scaleTransform.ScaleY = 1;
+                return scaleTransform;
+            }
             return this._ScaleTransform;
         }
 
@@ -99,7 +102,7 @@ module Fayde.Zoomer {
             this._TweenEasing = TWEEN.Easing.Quadratic.InOut;
 
             // todo: remove?
-            this.RenderTransformOrigin = new Point(0.5, 0.5);
+            this.RenderTransformOrigin = new Point(0, 0);
 
             this.MouseLeftButtonDown.on(this.Zoomer_MouseLeftButtonDown, this);
             this.MouseLeftButtonUp.on(this.Zoomer_MouseLeftButtonUp, this);
@@ -227,16 +230,26 @@ module Fayde.Zoomer {
             //
             //return new Point(targetScroll.x, targetScroll.y);
 
-            var width = scaleTransform.ScaleX * this.ViewportSize.width;
-            var height = scaleTransform.ScaleY * this.ViewportSize.height;
+            var currentWidth = this.ScaleTransform.ScaleX * this.ViewportSize.width;
+            var currentHeight = this.ScaleTransform.ScaleY * this.ViewportSize.height;
 
-            var targetTranslate = new Point(width * 0.5, height * 0.5);
+            var currentCenter = new Point(currentWidth * 0.5, currentHeight * 0.5);
 
-            var diff: Point = new Point(targetTranslate.x - this.TranslateTransform.X, targetTranslate.y - this.TranslateTransform.Y); //Vector.Sub(nextOrigin, currentOrigin);
+            var targetWidth = scaleTransform.ScaleX * this.ViewportSize.width;
+            var targetHeight = scaleTransform.ScaleY * this.ViewportSize.height;
+
+            var targetCenter = new Point(targetWidth * 0.5, targetHeight * 0.5);
+            //var targetTranslate = new Point(width, height);
+
+            var diff: Point = new Point(targetCenter.x - currentCenter.x, targetCenter.y - currentCenter.y); //Vector.Sub(nextOrigin, currentOrigin);
 
             var translateTransform = new TranslateTransform();
-            translateTransform.X = this.TranslateTransform.X + diff.x;
-            translateTransform.Y = this.TranslateTransform.Y + diff.y;
+
+            translateTransform.X = this.TranslateTransform.X - diff.x;
+            translateTransform.Y = this.TranslateTransform.Y - diff.y;
+
+            //translateTransform.X = targetTranslate.x;
+            //translateTransform.Y = targetTranslate.y;
 
             return translateTransform;
         }

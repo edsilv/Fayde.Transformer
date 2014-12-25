@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ResourceDictionary
+        xmlns="http://schemas.wsick.com/fayde"
+        xmlns:x="http://schemas.wsick.com/fayde/x"
+        xmlns:vsm="http://schemas.wsick.com/fayde"
+        xmlns:controls="lib://Fayde.Zoomer">
+    <Style TargetType="controls:Zoomer">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="controls:Zoomer">
+                    <Border x:Name="Background" Width="*" Height="*" Background="Transparent">
+                        <ContentPresenter  x:Name="contentPresenter" Content="{TemplateBinding Content}">
+                        </ContentPresenter>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

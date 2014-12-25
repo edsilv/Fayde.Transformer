@@ -58,7 +58,7 @@ var Fayde;
                 this.DefaultStyleKey = this.constructor;
                 this._TweenEasing = TWEEN.Easing.Quadratic.InOut;
                 // todo: remove?
-                this.RenderTransformOrigin = new Point(0.5, 0.5);
+                this.RenderTransformOrigin = new Point(0, 0);
                 this.MouseLeftButtonDown.on(this.Zoomer_MouseLeftButtonDown, this);
                 this.MouseLeftButtonUp.on(this.Zoomer_MouseLeftButtonUp, this);
                 this.MouseMove.on(this.Zoomer_MouseMove, this);
@@ -71,9 +71,12 @@ var Fayde;
             };
             Object.defineProperty(Zoomer.prototype, "ScaleTransform", {
                 get: function () {
-                    //if(!this._ScaleTransform){
-                    //    return new ScaleTransform(1, 1);
-                    //}
+                    if (!this._ScaleTransform) {
+                        var scaleTransform = new ScaleTransform();
+                        scaleTransform.ScaleX = 1;
+                        scaleTransform.ScaleY = 1;
+                        return scaleTransform;
+                    }
                     return this._ScaleTransform;
                 },
                 set: function (value) {
@@ -189,13 +192,19 @@ var Fayde;
                 //var targetScroll = new Point(this.TranslateTransform.x - diff.x, this.TranslateTransform.y - diff.y); // Vector.Sub(this.ZoomContentOffset., diff);
                 //
                 //return new Point(targetScroll.x, targetScroll.y);
-                var width = scaleTransform.ScaleX * this.ViewportSize.width;
-                var height = scaleTransform.ScaleY * this.ViewportSize.height;
-                var targetTranslate = new Point(width * 0.5, height * 0.5);
-                var diff = new Point(targetTranslate.x - this.TranslateTransform.X, targetTranslate.y - this.TranslateTransform.Y); //Vector.Sub(nextOrigin, currentOrigin);
+                var currentWidth = this.ScaleTransform.ScaleX * this.ViewportSize.width;
+                var currentHeight = this.ScaleTransform.ScaleY * this.ViewportSize.height;
+                var currentCenter = new Point(currentWidth * 0.5, currentHeight * 0.5);
+                var targetWidth = scaleTransform.ScaleX * this.ViewportSize.width;
+                var targetHeight = scaleTransform.ScaleY * this.ViewportSize.height;
+                var targetCenter = new Point(targetWidth * 0.5, targetHeight * 0.5);
+                //var targetTranslate = new Point(width, height);
+                var diff = new Point(targetCenter.x - currentCenter.x, targetCenter.y - currentCenter.y); //Vector.Sub(nextOrigin, currentOrigin);
                 var translateTransform = new TranslateTransform();
-                translateTransform.X = this.TranslateTransform.X + diff.x;
-                translateTransform.Y = this.TranslateTransform.Y + diff.y;
+                translateTransform.X = this.TranslateTransform.X - diff.x;
+                translateTransform.Y = this.TranslateTransform.Y - diff.y;
+                //translateTransform.X = targetTranslate.x;
+                //translateTransform.Y = targetTranslate.y;
                 return translateTransform;
             };
             Zoomer.prototype._Constrain = function () {

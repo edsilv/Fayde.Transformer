@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.wsick.com/fayde/x"
         xmlns:vms="ViewModels"
         xmlns:mylib="lib://Fayde.Zoomer"
-        ThemeName="Default">
+        ThemeName="Metro">
     <Application.Resources>
     </Application.Resources>
     <Grid x:Name="LayoutRoot">

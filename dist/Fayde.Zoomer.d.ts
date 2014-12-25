@@ -44,7 +44,8 @@ declare module Fayde.Zoomer {
         private _OnZoomUpdated();
         private _GetTargetScaleTransform(level);
         private _ScrollTo(newOffset, instantly?);
-        private _GetTargetTranslateTransform(scaleTransform);
+        private _GetTargetTranslateTransform(targetScaleTransform);
+        private _GetZoomOrigin(scaleTransform);
         private _Constrain();
         private _AddVelocity();
         private _RemoveVelocity();

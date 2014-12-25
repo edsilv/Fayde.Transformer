@@ -117,17 +117,7 @@ module Fayde.Zoomer {
 
             var transformGroup = new TransformGroup();
 
-            // update translate transform.
-            //var translateTransform = new TranslateTransform();
-            //translateTransform.X = this.TranslateTransform.x;
-            //translateTransform.Y = this.TranslateTransform.y;
             transformGroup.Children.Add(this.TranslateTransform);
-
-            // update scale transform.
-            //var transformGroup = new Fayde.Media.TransformGroup();
-            //var scaleTransform = new ScaleTransform();
-            //scaleTransform.ScaleX = this.ScaleTransform.Width;
-            //scaleTransform.ScaleY = this.ScaleTransform.Height;
             transformGroup.Children.Add(this.ScaleTransform);
 
             this.RenderTransform = transformGroup;
@@ -186,10 +176,6 @@ module Fayde.Zoomer {
         }
 
         private _GetTargetScaleTransform(level: number): ScaleTransform {
-
-            //var newWidth = Math.pow(this.ZoomFactor, level) * this.ActualWidth;
-            //var newHeight = Math.pow(this.ZoomFactor, level) * this.ActualHeight;
-
             var transform = new ScaleTransform();
 
             transform.ScaleX = Math.pow(this.ZoomFactor, level);
@@ -217,41 +203,24 @@ module Fayde.Zoomer {
             }
         }
 
-        private _GetTargetTranslateTransform(scaleTransform: ScaleTransform): TranslateTransform {
+        private _GetTargetTranslateTransform(targetScaleTransform: ScaleTransform): TranslateTransform {
 
-            // get the current translate
-
-            // get the next translate
-
-            //var currentOrigin: Point = this._GetZoomContentOrigin(this.ScaleTransform);
-            //var nextOrigin: Point = this._GetZoomContentOrigin(targetSize);
-            //var diff: Point = new Point(nextOrigin.x - currentOrigin.x, nextOrigin.y - currentOrigin.y); //Vector.Sub(nextOrigin, currentOrigin);
-            //var targetScroll = new Point(this.TranslateTransform.x - diff.x, this.TranslateTransform.y - diff.y); // Vector.Sub(this.ZoomContentOffset., diff);
-            //
-            //return new Point(targetScroll.x, targetScroll.y);
-
-            var currentWidth = this.ScaleTransform.ScaleX * this.ViewportSize.width;
-            var currentHeight = this.ScaleTransform.ScaleY * this.ViewportSize.height;
-
-            var currentCenter = new Point(currentWidth * 0.5, currentHeight * 0.5);
-
-            var targetWidth = scaleTransform.ScaleX * this.ViewportSize.width;
-            var targetHeight = scaleTransform.ScaleY * this.ViewportSize.height;
-
-            var targetCenter = new Point(targetWidth * 0.5, targetHeight * 0.5);
-            //var targetTranslate = new Point(width, height);
-
+            var currentCenter = this._GetZoomOrigin(this.ScaleTransform);
+            var targetCenter = this._GetZoomOrigin(targetScaleTransform);
             var diff: Point = new Point(targetCenter.x - currentCenter.x, targetCenter.y - currentCenter.y); //Vector.Sub(nextOrigin, currentOrigin);
 
             var translateTransform = new TranslateTransform();
-
             translateTransform.X = this.TranslateTransform.X - diff.x;
             translateTransform.Y = this.TranslateTransform.Y - diff.y;
 
-            //translateTransform.X = targetTranslate.x;
-            //translateTransform.Y = targetTranslate.y;
-
             return translateTransform;
+        }
+
+        private _GetZoomOrigin(scaleTransform: ScaleTransform) {
+            var width = scaleTransform.ScaleX * this.ViewportSize.width;
+            var height = scaleTransform.ScaleY * this.ViewportSize.height;
+
+            return new Point(width * 0.5, height * 0.5);
         }
 
         private _Constrain(){
@@ -275,41 +244,6 @@ module Fayde.Zoomer {
                 }
             }
         }
-
-        // takes a normalised size and returns an absolute X and Y
-        //private _GetZoomContentOrigin(transform: ScaleTransform): Point {
-        //    var width = transform.ScaleX * this.ViewportSize.width;
-        //    var height = transform.ScaleY * this.ViewportSize.height;
-        //
-        //    return new Point(width * 0.5, height * 0.5);
-        //}
-
-        //private _GetZoomContentOrigin(size: Size): Point{
-        //
-        //    return new Point(-0.5, -0.5);
-        //
-        //    switch(this._Origin){
-        //        case Origin.Center:
-        //            //return new Point(size.Width / 2, size.Height / 2);
-        //            return new Point(0.5, 0.5);
-        //            break;
-        //        case Origin.TopLeft:
-        //            return new Point(0, 0);
-        //            break;
-        //        case Origin.BottomLeft:
-        //            //return new Point(0, size.Height);
-        //            return new Point(0, 1);
-        //            break;
-        //        case Origin.TopRight:
-        //            //return new Point(size.Width, 0);
-        //            return new Point(1, 0);
-        //            break;
-        //        case Origin.BottomRight:
-        //            //return new Point(size.Width, size.Height);
-        //            return new Point(1, 1);
-        //            break;
-        //    }
-        //}
 
         private _AddVelocity(){
 

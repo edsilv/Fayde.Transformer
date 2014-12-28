@@ -21,9 +21,11 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <!--<Button Background="Red" Width="*" Height="*"></Button>-->
-
-        <mylib:Zoomer ZoomLevels="5" ZoomLevel="{Binding ZoomLevel}" ZoomUpdated="{EventBinding ZoomUpdated}" ConstrainToViewport="false" Background="Red">
+        <mylib:Zoomer ZoomLevels="5"
+                      ZoomLevel="{Binding ZoomLevel}"
+                      ZoomUpdated="{EventBinding ZoomUpdated}"
+                      ConstrainToViewport="false"
+                      Background="Red">
             <Canvas Background="#40e6ff">
             </Canvas>
         </mylib:Zoomer>

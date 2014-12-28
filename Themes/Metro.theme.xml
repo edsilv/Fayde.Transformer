@@ -8,7 +8,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="controls:Zoomer">
-                    <Border x:Name="Background" Width="*" Height="*" Background="Transparent">
+                    <Border x:Name="Background" Width="*" Height="*" Background="Red">
                         <ContentPresenter  x:Name="contentPresenter" Content="{TemplateBinding Content}">
                         </ContentPresenter>
                     </Border>

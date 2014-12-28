@@ -101,9 +101,6 @@ module Fayde.Zoomer {
 
             this._TweenEasing = TWEEN.Easing.Quadratic.InOut;
 
-            // todo: remove?
-            this.RenderTransformOrigin = new Point(0, 0);
-
             this.MouseLeftButtonDown.on(this.Zoomer_MouseLeftButtonDown, this);
             this.MouseLeftButtonUp.on(this.Zoomer_MouseLeftButtonUp, this);
             this.MouseMove.on(this.Zoomer_MouseMove, this);
@@ -123,7 +120,7 @@ module Fayde.Zoomer {
             this.RenderTransform = transformGroup;
         }
 
-        // handle resizing - also intialise viewport size
+        // intialise viewport size and handle resizing
         private Zoomer_SizeChanged (sender: any, e: Fayde.SizeChangedEventArgs) {
             this._ZoomTo(this.ZoomLevel, true);
         }
@@ -145,29 +142,31 @@ module Fayde.Zoomer {
             var translate = this._GetTargetTranslateTransform(scale);
 
             if (instantly){
-                //this.ZoomContentSize.Width = newSize.Width;
-                //this.ZoomContentSize.Height = newSize.Height;
                 this.ScaleTransform = scale;
                 this._ScrollTo(translate, true);
+                this._UpdateTransform();
             } else {
-                this.ScaleTransform = scale;
-                //var zoomTween = new TWEEN.Tween(this.ZoomContentSize)
-                //    .to(newSize, this.AnimationSpeed)
-                //    .delay(0)
-                //    .easing(this._TweenEasing)
-                //    .onUpdate(() => {
-                //        this._OnZoomUpdated();
-                //    })
-                //    .onComplete(() => {
-                //        console.log("zoomLevel: " + this.ZoomLevel);
-                //        console.log("width: " + this.ZoomContentSize.Width);
-                //    });
-                //
-                //zoomTween.start(this._LastVisualTick);
+
+                var currentSize: Size = new Size(this.ScaleTransform.ScaleX, this.ScaleTransform.ScaleY);
+                var newSize: Size = new Size(scale.ScaleX, scale.ScaleY);
+
+                var zoomTween = new TWEEN.Tween(currentSize)
+                    .to(newSize, this.AnimationSpeed)
+                    .delay(0)
+                    .easing(this._TweenEasing)
+                    .onUpdate(() => {
+                        this.ScaleTransform.ScaleX = currentSize.width;
+                        this.ScaleTransform.ScaleY = currentSize.height;
+                        this._UpdateTransform();
+                        this._OnZoomUpdated();
+                    })
+                    .onComplete(() => {
+                        //console.log("zoomLevel: " + this.ZoomLevel);
+                    });
+
+                zoomTween.start(this._LastVisualTick);
 
                 this._ScrollTo(translate);
-
-                this._UpdateTransform();
             }
         }
 
@@ -184,22 +183,29 @@ module Fayde.Zoomer {
             return transform;
         }
 
-        private _ScrollTo(newOffset: TranslateTransform, instantly?: boolean) {
+        private _ScrollTo(newTransform: TranslateTransform, instantly?: boolean) {
 
             if (instantly){
-                this.TranslateTransform = newOffset;
+                this.TranslateTransform = newTransform;
+                this._Constrain();
+                this._UpdateTransform();
             } else {
-                this.TranslateTransform = newOffset;
 
-                //var scrollTween = new TWEEN.Tween(this.ZoomContentOffset)
-                //    .to(newOffset, this.AnimationSpeed)
-                //    .delay(0)
-                //    .easing(this._TweenEasing)
-                //    .onUpdate(() => {
-                //        this._Constrain();
-                //    });
-                //
-                //scrollTween.start(this._LastVisualTick);
+                var currentOffset: Size = new Size(this.TranslateTransform.X, this.TranslateTransform.Y);
+                var newOffset: Size = new Size(newTransform.X, newTransform.Y);
+
+                var scrollTween = new TWEEN.Tween(currentOffset)
+                    .to(newOffset, this.AnimationSpeed)
+                    .delay(0)
+                    .easing(this._TweenEasing)
+                    .onUpdate(() => {
+                        this.TranslateTransform.X = currentOffset.width;
+                        this.TranslateTransform.Y = currentOffset.height;
+                        this._Constrain();
+                        this._UpdateTransform();
+                    });
+
+                scrollTween.start(this._LastVisualTick);
             }
         }
 
@@ -217,6 +223,9 @@ module Fayde.Zoomer {
         }
 
         private _GetZoomOrigin(scaleTransform: ScaleTransform) {
+            // todo: use this.RenderTransformOrigin instead of halving width
+            // this can then be set arbitrarily
+
             var width = scaleTransform.ScaleX * this.ViewportSize.width;
             var height = scaleTransform.ScaleY * this.ViewportSize.height;
 
@@ -231,17 +240,17 @@ module Fayde.Zoomer {
                     this.TranslateTransform.X = 0;
                 }
 
-                if (this.TranslateTransform.X < (this.ScaleTransform.ScaleX - this.ViewportSize.width) * -1){
-                    this.TranslateTransform.X = (this.ScaleTransform.ScaleX - this.ViewportSize.width) * -1;
-                }
+                //if (this.TranslateTransform.X < (this.ScaleTransform.ScaleX - this.ViewportSize.width) * -1){
+                //    this.TranslateTransform.X = (this.ScaleTransform.ScaleX - this.ViewportSize.width) * -1;
+                //}
 
                 if (this.TranslateTransform.Y > 0){
                     this.TranslateTransform.Y = 0;
                 }
 
-                if (this.TranslateTransform.Y < (this.ScaleTransform.ScaleY - this.ViewportSize.height) * -1){
-                    this.TranslateTransform.Y = (this.ScaleTransform.ScaleY - this.ViewportSize.height) * -1;
-                }
+                //if (this.TranslateTransform.Y < (this.ScaleTransform.ScaleY - this.ViewportSize.height) * -1){
+                //    this.TranslateTransform.Y = (this.ScaleTransform.ScaleY - this.ViewportSize.height) * -1;
+                //}
             }
         }
 
@@ -283,13 +292,10 @@ module Fayde.Zoomer {
                     // integrate deceleration
                     this._DragVelocity.Add(this._DragAcceleration);
 
-                    var translateTransform = new TranslateTransform();
-                    translateTransform.X = this.TranslateTransform.X + this._DragVelocity.X;
-                    translateTransform.Y = this.TranslateTransform.Y + this._DragVelocity.Y;
+                    this.TranslateTransform.X += this._DragVelocity.X;
+                    this.TranslateTransform.Y += this._DragVelocity.Y;
 
-                    this.TranslateTransform = translateTransform;
-
-                    //this.TranslateTransform = new Point(this.TranslateTransform.X + this._DragVelocity.X, this.TranslateTransform.Y + this._DragVelocity.Y); //.Add(this._DragVelocity);
+                    this._UpdateTransform();
                 }
             }
 
@@ -304,7 +310,7 @@ module Fayde.Zoomer {
         }
 
         private Zoomer_MouseLeftButtonDown (sender: any, e: Fayde.Input.MouseButtonEventArgs) {
-            //console.log("mouse down");
+            console.log("mouse down");
 
             if (e.Handled)
                 return;
@@ -330,19 +336,16 @@ module Fayde.Zoomer {
             }
 
             this._LastMousePosition = this._MousePosition || new Vector(0, 0);
-            //this._MousePosition = new Vector(e.AbsolutePos.x, e.AbsolutePos.y);
             this._MousePosition = new Vector(e.AbsolutePos.x, e.AbsolutePos.y);
 
             this._MouseDelta = this._MousePosition.Get();
             this._MouseDelta.Sub(this._LastMousePosition);
 
             if (this._IsDragging){
-                //this.ZoomContentOffset.Add(this._MouseDelta);
-                var translateTransform = new TranslateTransform();
-                translateTransform.X = this._MouseDelta.X;
-                translateTransform.Y = this.TranslateTransform.Y + this._MouseDelta.Y;
+                this.TranslateTransform.X += this._MouseDelta.X;
+                this.TranslateTransform.Y += this._MouseDelta.Y;
 
-                //this.TranslateTransform = new Point(this.TranslateTransform.x + this._MouseDelta.X, this.TranslateTransform.y + this._MouseDelta.Y);
+                this._UpdateTransform();
             }
         }
     }

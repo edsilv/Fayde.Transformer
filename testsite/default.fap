@@ -2,7 +2,8 @@
         xmlns="http://schemas.wsick.com/fayde"
         xmlns:x="http://schemas.wsick.com/fayde/x"
         xmlns:vms="ViewModels"
-        xmlns:mylib="lib://Fayde.Zoomer"
+        xmlns:controls="lib://Fayde.Controls"
+        xmlns:z="lib://Fayde.Zoomer"
         ThemeName="Metro">
     <Application.Resources>
     </Application.Resources>
@@ -22,13 +23,13 @@
         </Grid.RowDefinitions>
 
         <Border Background="LightGray">
-            <mylib:Zoomer ZoomFactor="{Binding ZoomFactor}"
-                          ZoomLevels="{Binding ZoomLevels}"
-                          ZoomLevel="{Binding ZoomLevel}"
-                          TransformUpdated="{EventBinding TransformUpdated}"
-                          ConstrainToViewport="false">
+            <z:Zoomer ZoomFactor="{Binding ZoomFactor}"
+                      ZoomLevels="{Binding ZoomLevels}"
+                      ZoomLevel="{Binding ZoomLevel}"
+                      TransformUpdated="{EventBinding TransformUpdated}"
+                      ConstrainToViewport="false">
                 <Image Source="Images/testing.jpg" />
-            </mylib:Zoomer>
+            </z:Zoomer>
         </Border>
 
         <StackPanel Grid.ZIndex="2" Grid.Column="1" Margin="0,20,20,0" Orientation="Vertical">
@@ -60,6 +61,10 @@
                 <RepeatButton x:Name="ScrollDown" Width="50" Click="{EventBinding ScrollDown_Click}" Delay="100" Interval="100">
                     v
                 </RepeatButton>
+            </StackPanel>
+
+            <StackPanel>
+                <controls:NumericUpDown x:Name="ZoomFactorValue" DecimalPlaces="0" Increment="1" Value="2" />
             </StackPanel>
         </StackPanel>
     </Grid>

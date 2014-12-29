@@ -3,11 +3,11 @@
         xmlns="http://schemas.wsick.com/fayde"
         xmlns:x="http://schemas.wsick.com/fayde/x"
         xmlns:vsm="http://schemas.wsick.com/fayde"
-        xmlns:controls="lib://Fayde.Zoomer">
-    <Style TargetType="controls:Zoomer">
+        xmlns:z="lib://Fayde.Zoomer">
+    <Style TargetType="z:Zoomer">
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="controls:Zoomer">
+                <ControlTemplate TargetType="z:Zoomer">
                     <Border x:Name="Background" Width="*" Height="*" BorderThickness="1" BorderBrush="#000">
                         <ContentPresenter  x:Name="contentPresenter" Content="{TemplateBinding Content}">
                         </ContentPresenter>

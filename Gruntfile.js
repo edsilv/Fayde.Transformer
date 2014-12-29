@@ -78,6 +78,7 @@ module.exports = function (grunt) {
                     { src: './lib/minerva', dest: '<%= dirs.testsite.lib %>/minerva' },
                     { src: './lib/fayde', dest: '<%= dirs.testsite.lib %>/fayde' },
                     { src: './lib/fayde.utils', dest: '<%= dirs.testsite.lib %>/fayde.utils' },
+                    { src: './lib/fayde.controls', dest: '<%= dirs.testsite.lib %>/fayde.controls' },
                     { src: './lib/tween.ts', dest: '<%= dirs.testsite.lib %>/tween.ts' },
                     { src: './lib/requirejs', dest: '<%= dirs.testsite.lib %>/requirejs' },
                     { src: './lib/requirejs-text', dest: '<%= dirs.testsite.lib %>/requirejs-text' },
@@ -136,6 +137,7 @@ module.exports = function (grunt) {
                     'lib/minerva/dist/minerva.d.ts',
                     'lib/fayde/dist/fayde.d.ts',
                     'lib/fayde.utils/dist/fayde.utils.d.ts',
+                    'lib/fayde.controls/dist/fayde.controls.d.ts',
                     'lib/tween.ts/src/Tween.d.ts',
                     'dist/<%= meta.name %>.d.ts'
                 ],

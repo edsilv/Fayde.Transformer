@@ -17,8 +17,9 @@
   },
   "themes": {
     "Fayde.Utils": "none",
-    "Fayde.Controls": "none",
     "tween": "none",
+    "Fayde.Controls": {
+    },
     "Fayde.Zoomer": {
     }
   }

@@ -19,26 +19,28 @@ module Fayde.Zoomer {
     //    Arbitrary = 5
     //}
 
-    /*
-    * Todo
-    * You are manually trying to calculate positions and scales on the screen.
-    * Instead, you could use RenderTransform and RenderTransformOrigin to intelligently align everything.
-    * RenderTransform can be a ScaleTransform, RotateTransform, TranslateTransform, MatrixTransform, or even a TransformGroup (composite).
-    * RenderTransformOrigin is a point in a relative coordinate system.
-    * Specifying (1,1) will use the bottom right corner of the visual.
-     */
-
     export class Zoomer extends Fayde.Controls.ContentControl {
 
+        static ZoomFactorProperty = DependencyProperty.RegisterFull("ZoomFactor", () => Number, Zoomer, 2, (d, args) => (<Zoomer>d).OnZoomFactorChanged(args));
+        static ZoomLevelsProperty = DependencyProperty.RegisterFull("ZoomLevels", () => Number, Zoomer, 0, (d, args) => (<Zoomer>d).OnZoomLevelsChanged(args));
         static ZoomLevelProperty = DependencyProperty.RegisterFull("ZoomLevel", () => Number, Zoomer, 0, (d, args) => (<Zoomer>d).OnZoomLevelChanged(args));
         static ConstrainToViewportProperty = DependencyProperty.RegisterFull("ConstrainToViewport", () => Boolean, Zoomer, true);
+
+        private OnZoomFactorChanged (args: IDependencyPropertyChangedEventArgs) {
+            this._ZoomTo(this.ZoomLevel);
+        }
+
+        private OnZoomLevelsChanged (args: IDependencyPropertyChangedEventArgs) {
+            this._ZoomTo(this.ZoomLevel);
+        }
 
         private OnZoomLevelChanged (args: IDependencyPropertyChangedEventArgs) {
             this._ZoomTo(this.ZoomLevel);
         }
 
         AnimationSpeed: number = 250;
-        ZoomFactor: number = 2;
+        ZoomFactor: number;
+        ZoomLevels: number;
         ZoomLevel: number;
         ConstrainToViewport: boolean;
 
@@ -60,7 +62,7 @@ module Fayde.Zoomer {
         private _DragMaxSpeed: number = 30;
         private _DragFriction: number = 2;
 
-        ZoomUpdated = new nullstone.Event<ZoomerEventArgs>();
+        TransformUpdated = new nullstone.Event<ZoomerEventArgs>();
 
         get ScaleTransform(): ScaleTransform {
             if (!this._ScaleTransform){
@@ -91,8 +93,8 @@ module Fayde.Zoomer {
             this._TranslateTransform = value;
         }
 
-        get ViewportSize(): minerva.Size {
-            return new minerva.Size(this.ActualWidth, this.ActualHeight);
+        get ViewportSize(): Size {
+            return new Size(this.ActualWidth, this.ActualHeight);
         }
 
         constructor() {
@@ -118,6 +120,8 @@ module Fayde.Zoomer {
             transformGroup.Children.Add(this.ScaleTransform);
 
             this.RenderTransform = transformGroup;
+
+            this.TransformUpdated.raise(this, new ZoomerEventArgs(this.ScaleTransform, this.TranslateTransform));
         }
 
         // intialise viewport size and handle resizing
@@ -135,8 +139,6 @@ module Fayde.Zoomer {
         }
 
         private _ZoomTo(level: number, instantly?: boolean): void {
-
-            this._OnZoomUpdated();
 
             var scale = this._GetTargetScaleTransform(level);
             var translate = this._GetTargetTranslateTransform(scale);
@@ -158,7 +160,6 @@ module Fayde.Zoomer {
                         this.ScaleTransform.ScaleX = currentSize.width;
                         this.ScaleTransform.ScaleY = currentSize.height;
                         this._UpdateTransform();
-                        this._OnZoomUpdated();
                     })
                     .onComplete(() => {
                         //console.log("zoomLevel: " + this.ZoomLevel);
@@ -168,10 +169,6 @@ module Fayde.Zoomer {
 
                 this._ScrollTo(translate);
             }
-        }
-
-        private _OnZoomUpdated() {
-            this.ZoomUpdated.raise(this, new ZoomerEventArgs(this.ViewportSize, this.TranslateTransform));
         }
 
         private _GetTargetScaleTransform(level: number): ScaleTransform {
@@ -213,7 +210,7 @@ module Fayde.Zoomer {
 
             var currentCenter = this._GetZoomOrigin(this.ScaleTransform);
             var targetCenter = this._GetZoomOrigin(targetScaleTransform);
-            var diff: Point = new Point(targetCenter.x - currentCenter.x, targetCenter.y - currentCenter.y); //Vector.Sub(nextOrigin, currentOrigin);
+            var diff: Point = new Point(targetCenter.x - currentCenter.x, targetCenter.y - currentCenter.y);
 
             var translateTransform = new TranslateTransform();
             translateTransform.X = this.TranslateTransform.X - diff.x;
@@ -224,7 +221,6 @@ module Fayde.Zoomer {
 
         private _GetZoomOrigin(scaleTransform: ScaleTransform) {
             // todo: use this.RenderTransformOrigin instead of halving width
-            // this can then be set arbitrarily
 
             var width = scaleTransform.ScaleX * this.ViewportSize.width;
             var height = scaleTransform.ScaleY * this.ViewportSize.height;
@@ -310,8 +306,6 @@ module Fayde.Zoomer {
         }
 
         private Zoomer_MouseLeftButtonDown (sender: any, e: Fayde.Input.MouseButtonEventArgs) {
-            console.log("mouse down");
-
             if (e.Handled)
                 return;
 

@@ -1,44 +1,61 @@
 /// <amd-dependency path="Fayde.Utils" />
 
-import Size = Fayde.Utils.Size;
-import Vector = Fayde.Utils.Vector;
+//import Size = Fayde.Utils.Size;
+//import Vector = Fayde.Utils.Vector;
+import ScaleTransform = Fayde.Media.ScaleTransform;
+import TranslateTransform = Fayde.Media.TranslateTransform;
 
 class TestViewModel extends Fayde.MVVM.ViewModelBase {
 
+    _ZoomFactor: number = 2;
+    _ZoomLevels: number = 5;
     _ZoomLevel: number;
-    _ZoomContentOffset: Vector;
-    _ZoomContentSize: Size;
+    _TranslateTransform: TranslateTransform;
+    _ScaleTransform: ScaleTransform;
+
+    get ZoomFactor(): number {
+        return this._ZoomFactor;
+    }
+
+    set ZoomFactor(value: number) {
+        this._ZoomFactor = value;
+        this.OnPropertyChanged("ZoomFactor");
+    }
+
+    get ZoomLevels(): number {
+        return this._ZoomLevels;
+    }
+
+    set ZoomLevels(value: number) {
+        this._ZoomLevels = value;
+        this.OnPropertyChanged("ZoomLevels");
+    }
 
     get ZoomLevel(): number {
         return this._ZoomLevel;
     }
 
     set ZoomLevel(value: number) {
-
         this._ZoomLevel = value;
-
         this.OnPropertyChanged("ZoomLevel");
     }
 
-    get ZoomContentSize(): Size {
-        return this._ZoomContentSize;
+    get ScaleTransform(): ScaleTransform {
+        return this._ScaleTransform;
     }
 
-    set ZoomContentSize(value: Size) {
-        this._ZoomContentSize = value;
-        this.OnPropertyChanged("ZoomContentSize");
+    set ScaleTransform(value: ScaleTransform) {
+        this._ScaleTransform = value;
+        this.OnPropertyChanged("ScaleTransform");
     }
 
-    get ZoomContentOffset(): Vector {
-        if(!this._ZoomContentOffset){
-            this._ZoomContentOffset = new Vector(0, 0);
-        }
-        return this._ZoomContentOffset;
+    get TranslateTransform(): TranslateTransform {
+        return this._TranslateTransform;
     }
 
-    set ZoomContentOffset(value: Vector) {
-        this._ZoomContentOffset = value;
-        this.OnPropertyChanged("ZoomContentOffset");
+    set TranslateTransform(value: TranslateTransform) {
+        this._TranslateTransform = value;
+        this.OnPropertyChanged("TranslateTransform");
     }
 
     constructor() {
@@ -47,9 +64,11 @@ class TestViewModel extends Fayde.MVVM.ViewModelBase {
         this.ZoomLevel = 0;
     }
 
-    ZoomUpdated(e: Fayde.IEventBindingArgs<Fayde.Zoomer.ZoomerEventArgs>){
-        //this.ZoomContentSize = e.args.Size;
-        //this.ZoomContentOffset = e.args.Offset;
+    TransformUpdated(e: Fayde.IEventBindingArgs<Fayde.Zoomer.ZoomerEventArgs>){
+        this.ScaleTransform = e.args.Scale;
+        this.TranslateTransform = e.args.Translate;
+
+        console.log(this.ScaleTransform.ScaleX);
     }
 
     ZoomIn_Click(){

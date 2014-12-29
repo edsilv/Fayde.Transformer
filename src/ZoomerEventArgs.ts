@@ -2,12 +2,12 @@
 module Fayde.Zoomer {
 
     export class ZoomerEventArgs implements nullstone.IEventArgs {
-        Size: Size;
-        Offset: TranslateTransform;
+        Scale: Fayde.Media.ScaleTransform;
+        Translate: Fayde.Media.TranslateTransform;
 
-        constructor (size: Size, offset: TranslateTransform) {
-            Object.defineProperty(this, 'Size', { value: size, writable: false });
-            Object.defineProperty(this, 'Offset', { value: offset, writable: false });
+        constructor (scale: ScaleTransform, translate: TranslateTransform) {
+            Object.defineProperty(this, 'Scale', { value: scale, writable: false });
+            Object.defineProperty(this, 'Translate', { value: translate, writable: false });
         }
     }
 }

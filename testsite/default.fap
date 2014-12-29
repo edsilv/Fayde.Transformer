@@ -21,30 +21,32 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <mylib:Zoomer ZoomLevels="5"
-                      ZoomLevel="{Binding ZoomLevel}"
-                      ZoomUpdated="{EventBinding ZoomUpdated}"
-                      ConstrainToViewport="false"
-                      Background="Red">
-            <Canvas Background="#40e6ff">
-            </Canvas>
-        </mylib:Zoomer>
+        <Border Background="LightGray">
+            <mylib:Zoomer ZoomFactor="{Binding ZoomFactor}"
+                          ZoomLevels="{Binding ZoomLevels}"
+                          ZoomLevel="{Binding ZoomLevel}"
+                          TransformUpdated="{EventBinding TransformUpdated}"
+                          ConstrainToViewport="false">
+                <Image Source="Images/testing.jpg" />
+            </mylib:Zoomer>
+        </Border>
 
         <StackPanel Grid.ZIndex="2" Grid.Column="1" Margin="0,20,20,0" Orientation="Vertical">
+
             <StackPanel Orientation="Horizontal">
                 <RepeatButton x:Name="ZoomIn" Width="100" Click="{EventBinding ZoomIn_Click}" Delay="100" Interval="100">
-                    <!--<Image Width="60" Height="60" Source="Images/zoom-in.png" />-->
                     +
                 </RepeatButton>
                 <RepeatButton x:Name="ZoomOut" Width="100" Click="{EventBinding ZoomOut_Click}" Delay="100" Interval="100">
-                    <!--<Image Width="60" Height="60" Source="Images/zoom-out.png" />-->
                     -
                 </RepeatButton>
             </StackPanel>
+
             <StackPanel Margin="0,10,0,10" VerticalAlignment="Center">
-                <Slider x:Name="ZoomSlider" Value="{Binding ZoomLevel, Mode=TwoWay}" Minimum="0" Maximum="{Binding ZoomLevels}" TickFrequency="10" IsSnapToTickEnabled="True"  />
+                <Slider x:Name="ZoomSlider" Value="{Binding ZoomLevel, Mode=TwoWay}" Minimum="0" Maximum="{Binding ZoomLevels}" TickFrequency="{Binding ZoomLevels}" IsSnapToTickEnabled="True"  />
                 <!--<TextBlock Text="{Binding ElementName=ZoomSlider, Path=Value}" Foreground="#FFFFFF" />-->
             </StackPanel>
+
             <StackPanel Orientation="Horizontal">
                 <RepeatButton x:Name="ScrollLeft" Width="50" Click="{EventBinding ScrollLeft_Click}" Delay="100" Interval="100">
                     &lt;

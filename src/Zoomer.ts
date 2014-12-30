@@ -128,7 +128,11 @@ module Fayde.Zoomer {
 
         // intialise viewport size and handle resizing
         private Zoomer_SizeChanged (sender: any, e: Fayde.SizeChangedEventArgs) {
-            this._ZoomTo(this.ZoomLevel, true);
+            var scale = this._GetTargetScaleTransform(this.ZoomLevel);
+            var translate = this._GetTargetTranslateTransform(scale);
+            this.ScaleTransform = scale;
+            this.TranslateTransform = translate;
+            this._UpdateTransform();
         }
 
         OnTicked (lastTime: number, nowTime: number) {
@@ -140,39 +144,32 @@ module Fayde.Zoomer {
             this._AddVelocity();
         }
 
-        private _ZoomTo(level: number, instantly?: boolean): void {
+        private _ZoomTo(level: number): void {
 
             if (!(level >= 0) || !(level <= this.ZoomLevels)) return;
 
             var scale = this._GetTargetScaleTransform(level);
             var translate = this._GetTargetTranslateTransform(scale);
 
-            if (instantly){
-                this.ScaleTransform = scale;
-                this._ScrollTo(translate, true);
-                this._UpdateTransform();
-            } else {
+            var currentSize: Size = new Size(this.ScaleTransform.ScaleX, this.ScaleTransform.ScaleY);
+            var newSize: Size = new Size(scale.ScaleX, scale.ScaleY);
 
-                var currentSize: Size = new Size(this.ScaleTransform.ScaleX, this.ScaleTransform.ScaleY);
-                var newSize: Size = new Size(scale.ScaleX, scale.ScaleY);
+            var zoomTween = new TWEEN.Tween(currentSize)
+                .to(newSize, this.AnimationSpeed)
+                .delay(0)
+                .easing(this._TweenEasing)
+                .onUpdate(() => {
+                    this.ScaleTransform.ScaleX = currentSize.width;
+                    this.ScaleTransform.ScaleY = currentSize.height;
+                    this._UpdateTransform();
+                })
+                .onComplete(() => {
+                    //console.log("zoomLevel: " + this.ZoomLevel);
+                });
 
-                var zoomTween = new TWEEN.Tween(currentSize)
-                    .to(newSize, this.AnimationSpeed)
-                    .delay(0)
-                    .easing(this._TweenEasing)
-                    .onUpdate(() => {
-                        this.ScaleTransform.ScaleX = currentSize.width;
-                        this.ScaleTransform.ScaleY = currentSize.height;
-                        this._UpdateTransform();
-                    })
-                    .onComplete(() => {
-                        //console.log("zoomLevel: " + this.ZoomLevel);
-                    });
+            zoomTween.start(this._LastVisualTick);
 
-                zoomTween.start(this._LastVisualTick);
-
-                this._ScrollTo(translate);
-            }
+            this._ScrollTo(translate);
         }
 
         private _GetTargetScaleTransform(level: number): ScaleTransform {
@@ -184,30 +181,23 @@ module Fayde.Zoomer {
             return transform;
         }
 
-        private _ScrollTo(newTransform: TranslateTransform, instantly?: boolean) {
+        private _ScrollTo(newTransform: TranslateTransform) {
 
-            if (instantly){
-                this.TranslateTransform = newTransform;
-                this._Constrain();
-                this._UpdateTransform();
-            } else {
+            var currentOffset: Size = new Size(this.TranslateTransform.X, this.TranslateTransform.Y);
+            var newOffset: Size = new Size(newTransform.X, newTransform.Y);
 
-                var currentOffset: Size = new Size(this.TranslateTransform.X, this.TranslateTransform.Y);
-                var newOffset: Size = new Size(newTransform.X, newTransform.Y);
+            var scrollTween = new TWEEN.Tween(currentOffset)
+                .to(newOffset, this.AnimationSpeed)
+                .delay(0)
+                .easing(this._TweenEasing)
+                .onUpdate(() => {
+                    this.TranslateTransform.X = currentOffset.width;
+                    this.TranslateTransform.Y = currentOffset.height;
+                    this._Constrain();
+                    this._UpdateTransform();
+                });
 
-                var scrollTween = new TWEEN.Tween(currentOffset)
-                    .to(newOffset, this.AnimationSpeed)
-                    .delay(0)
-                    .easing(this._TweenEasing)
-                    .onUpdate(() => {
-                        this.TranslateTransform.X = currentOffset.width;
-                        this.TranslateTransform.Y = currentOffset.height;
-                        this._Constrain();
-                        this._UpdateTransform();
-                    });
-
-                scrollTween.start(this._LastVisualTick);
-            }
+            scrollTween.start(this._LastVisualTick);
         }
 
         private _GetTargetTranslateTransform(targetScaleTransform: ScaleTransform): TranslateTransform {

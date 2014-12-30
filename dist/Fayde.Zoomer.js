@@ -112,7 +112,11 @@ var Fayde;
             };
             // intialise viewport size and handle resizing
             Zoomer.prototype.Zoomer_SizeChanged = function (sender, e) {
-                this._ZoomTo(this.ZoomLevel, true);
+                var scale = this._GetTargetScaleTransform(this.ZoomLevel);
+                var translate = this._GetTargetTranslateTransform(scale);
+                this.ScaleTransform = scale;
+                this.TranslateTransform = translate;
+                this._UpdateTransform();
             };
             Zoomer.prototype.OnTicked = function (lastTime, nowTime) {
                 var now = new Date().getTime();
@@ -122,30 +126,23 @@ var Fayde;
                 TWEEN.update(nowTime);
                 this._AddVelocity();
             };
-            Zoomer.prototype._ZoomTo = function (level, instantly) {
+            Zoomer.prototype._ZoomTo = function (level) {
                 var _this = this;
                 if (!(level >= 0) || !(level <= this.ZoomLevels))
                     return;
                 var scale = this._GetTargetScaleTransform(level);
                 var translate = this._GetTargetTranslateTransform(scale);
-                if (instantly) {
-                    this.ScaleTransform = scale;
-                    this._ScrollTo(translate, true);
-                    this._UpdateTransform();
-                }
-                else {
-                    var currentSize = new Size(this.ScaleTransform.ScaleX, this.ScaleTransform.ScaleY);
-                    var newSize = new Size(scale.ScaleX, scale.ScaleY);
-                    var zoomTween = new TWEEN.Tween(currentSize).to(newSize, this.AnimationSpeed).delay(0).easing(this._TweenEasing).onUpdate(function () {
-                        _this.ScaleTransform.ScaleX = currentSize.width;
-                        _this.ScaleTransform.ScaleY = currentSize.height;
-                        _this._UpdateTransform();
-                    }).onComplete(function () {
-                        //console.log("zoomLevel: " + this.ZoomLevel);
-                    });
-                    zoomTween.start(this._LastVisualTick);
-                    this._ScrollTo(translate);
-                }
+                var currentSize = new Size(this.ScaleTransform.ScaleX, this.ScaleTransform.ScaleY);
+                var newSize = new Size(scale.ScaleX, scale.ScaleY);
+                var zoomTween = new TWEEN.Tween(currentSize).to(newSize, this.AnimationSpeed).delay(0).easing(this._TweenEasing).onUpdate(function () {
+                    _this.ScaleTransform.ScaleX = currentSize.width;
+                    _this.ScaleTransform.ScaleY = currentSize.height;
+                    _this._UpdateTransform();
+                }).onComplete(function () {
+                    //console.log("zoomLevel: " + this.ZoomLevel);
+                });
+                zoomTween.start(this._LastVisualTick);
+                this._ScrollTo(translate);
             };
             Zoomer.prototype._GetTargetScaleTransform = function (level) {
                 var transform = new ScaleTransform();
@@ -153,24 +150,17 @@ var Fayde;
                 transform.ScaleY = Math.pow(this.ZoomFactor, level);
                 return transform;
             };
-            Zoomer.prototype._ScrollTo = function (newTransform, instantly) {
+            Zoomer.prototype._ScrollTo = function (newTransform) {
                 var _this = this;
-                if (instantly) {
-                    this.TranslateTransform = newTransform;
-                    this._Constrain();
-                    this._UpdateTransform();
-                }
-                else {
-                    var currentOffset = new Size(this.TranslateTransform.X, this.TranslateTransform.Y);
-                    var newOffset = new Size(newTransform.X, newTransform.Y);
-                    var scrollTween = new TWEEN.Tween(currentOffset).to(newOffset, this.AnimationSpeed).delay(0).easing(this._TweenEasing).onUpdate(function () {
-                        _this.TranslateTransform.X = currentOffset.width;
-                        _this.TranslateTransform.Y = currentOffset.height;
-                        _this._Constrain();
-                        _this._UpdateTransform();
-                    });
-                    scrollTween.start(this._LastVisualTick);
-                }
+                var currentOffset = new Size(this.TranslateTransform.X, this.TranslateTransform.Y);
+                var newOffset = new Size(newTransform.X, newTransform.Y);
+                var scrollTween = new TWEEN.Tween(currentOffset).to(newOffset, this.AnimationSpeed).delay(0).easing(this._TweenEasing).onUpdate(function () {
+                    _this.TranslateTransform.X = currentOffset.width;
+                    _this.TranslateTransform.Y = currentOffset.height;
+                    _this._Constrain();
+                    _this._UpdateTransform();
+                });
+                scrollTween.start(this._LastVisualTick);
             };
             Zoomer.prototype._GetTargetTranslateTransform = function (targetScaleTransform) {
                 var currentCenter = this._GetZoomOrigin(this.ScaleTransform);

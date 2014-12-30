@@ -15,7 +15,7 @@
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="220" />
+            <ColumnDefinition Width="240" />
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
@@ -33,7 +33,7 @@
             </z:Zoomer>
         </Border>
 
-        <StackPanel Grid.ZIndex="2" Grid.Column="1" Margin="0,20,20,0" Orientation="Vertical">
+        <StackPanel Grid.ZIndex="2" Grid.Column="1" Margin="20,20,20,0" Orientation="Vertical">
 
             <StackPanel Orientation="Horizontal">
                 <RepeatButton x:Name="ZoomIn" Width="100" Click="{EventBinding ZoomIn_Click}" Delay="100" Interval="100">
@@ -49,16 +49,16 @@
             </StackPanel>
 
             <StackPanel Orientation="Horizontal">
-                <RepeatButton x:Name="ScrollLeft" Width="50" Click="{EventBinding ScrollLeft_Click}" Delay="100" Interval="100">
+                <RepeatButton x:Name="ScrollLeft" Width="50" Click="{EventBinding ScrollLeft_Click}" Delay="100" Interval="{Binding ElementName=AnimationSpeed, Path=Value}">
                     &lt;
                 </RepeatButton>
-                <RepeatButton x:Name="ScrollRight" Width="50" Click="{EventBinding ScrollRight_Click}" Delay="100" Interval="100">
+                <RepeatButton x:Name="ScrollRight" Width="50" Click="{EventBinding ScrollRight_Click}" Delay="100" Interval="{Binding ElementName=AnimationSpeed, Path=Value}">
                     &gt;
                 </RepeatButton>
-                <RepeatButton x:Name="ScrollUp" Width="50" Click="{EventBinding ScrollUp_Click}" Delay="100" Interval="100">
+                <RepeatButton x:Name="ScrollUp" Width="50" Click="{EventBinding ScrollUp_Click}" Delay="100" Interval="{Binding ElementName=AnimationSpeed, Path=Value}">
                     ^
                 </RepeatButton>
-                <RepeatButton x:Name="ScrollDown" Width="50" Click="{EventBinding ScrollDown_Click}" Delay="100" Interval="100">
+                <RepeatButton x:Name="ScrollDown" Width="50" Click="{EventBinding ScrollDown_Click}" Delay="100" Interval="{Binding ElementName=AnimationSpeed, Path=Value}">
                     v
                 </RepeatButton>
             </StackPanel>

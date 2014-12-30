@@ -30,6 +30,7 @@ var Fayde;
         //    BottomRight = 4,
         //    Arbitrary = 5
         //}
+        // todo: use minerva vector struct
         var Zoomer = (function (_super) {
             __extends(Zoomer, _super);
             function Zoomer() {
@@ -190,11 +191,14 @@ var Fayde;
                     if (this.TranslateTransform.X > 0) {
                         this.TranslateTransform.X = 0;
                     }
-                    //if (this.TranslateTransform.X < (this.ScaleTransform.ScaleX - this.ViewportSize.width) * -1){
-                    //    this.TranslateTransform.X = (this.ScaleTransform.ScaleX - this.ViewportSize.width) * -1;
-                    //}
+                    if (this.TranslateTransform.X < ((this.ScaleTransform.ScaleX * this.ViewportSize.width) - this.ViewportSize.width) * -1) {
+                        this.TranslateTransform.X = ((this.ScaleTransform.ScaleX * this.ViewportSize.width) - this.ViewportSize.width) * -1;
+                    }
                     if (this.TranslateTransform.Y > 0) {
                         this.TranslateTransform.Y = 0;
+                    }
+                    if (this.TranslateTransform.Y < ((this.ScaleTransform.ScaleY * this.ViewportSize.height) - this.ViewportSize.height) * -1) {
+                        this.TranslateTransform.Y = ((this.ScaleTransform.ScaleY * this.ViewportSize.height) - this.ViewportSize.height) * -1;
                     }
                 }
             };

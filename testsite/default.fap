@@ -27,7 +27,7 @@
                       ZoomLevels="{Binding ElementName=ZoomLevels, Path=Value}"
                       ZoomLevel="{Binding ZoomLevel}"
                       TransformUpdated="{EventBinding TransformUpdated}"
-                      ConstrainToViewport="false">
+                      ConstrainToViewport="{Binding ElementName=ConstrainToViewport, Path=IsChecked}">
                 <Image Source="Images/testing.jpg" />
             </z:Zoomer>
         </Border>
@@ -70,6 +70,10 @@
             <StackPanel Margin="0,20,0,0">
                 <TextBlock Text="Zoom Levels" />
                 <controls:NumericUpDown x:Name="ZoomLevels" DecimalPlaces="0" Increment="1" Value="5" />
+            </StackPanel>
+
+            <StackPanel Margin="0,20,0,0">
+                <CheckBox x:Name="ConstrainToViewport" IsChecked="true">Constrain to Viewport</CheckBox>
             </StackPanel>
 
         </StackPanel>

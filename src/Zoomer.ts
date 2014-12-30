@@ -19,6 +19,7 @@ module Fayde.Zoomer {
     //    Arbitrary = 5
     //}
 
+    // todo: use minerva vector struct
     export class Zoomer extends Fayde.Controls.ContentControl {
 
         static ZoomFactorProperty = DependencyProperty.RegisterFull("ZoomFactor", () => Number, Zoomer, 2, (d, args) => (<Zoomer>d).OnZoomFactorChanged(args));
@@ -236,17 +237,17 @@ module Fayde.Zoomer {
                     this.TranslateTransform.X = 0;
                 }
 
-                //if (this.TranslateTransform.X < (this.ScaleTransform.ScaleX - this.ViewportSize.width) * -1){
-                //    this.TranslateTransform.X = (this.ScaleTransform.ScaleX - this.ViewportSize.width) * -1;
-                //}
+                if (this.TranslateTransform.X < ((this.ScaleTransform.ScaleX * this.ViewportSize.width) - this.ViewportSize.width) * -1){
+                    this.TranslateTransform.X = ((this.ScaleTransform.ScaleX * this.ViewportSize.width) - this.ViewportSize.width) * -1;
+                }
 
                 if (this.TranslateTransform.Y > 0){
                     this.TranslateTransform.Y = 0;
                 }
 
-                //if (this.TranslateTransform.Y < (this.ScaleTransform.ScaleY - this.ViewportSize.height) * -1){
-                //    this.TranslateTransform.Y = (this.ScaleTransform.ScaleY - this.ViewportSize.height) * -1;
-                //}
+                if (this.TranslateTransform.Y < ((this.ScaleTransform.ScaleY * this.ViewportSize.height) - this.ViewportSize.height) * -1){
+                    this.TranslateTransform.Y = ((this.ScaleTransform.ScaleY * this.ViewportSize.height) - this.ViewportSize.height) * -1;
+                }
             }
         }
 

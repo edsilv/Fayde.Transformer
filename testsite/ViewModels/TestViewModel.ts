@@ -7,29 +7,29 @@ import TranslateTransform = Fayde.Media.TranslateTransform;
 
 class TestViewModel extends Fayde.MVVM.ViewModelBase {
 
-    _ZoomFactor: number = 2;
-    _ZoomLevels: number = 5;
+    //_ZoomFactor: number = 2;
+    //_ZoomLevels: number = 5;
     _ZoomLevel: number;
     _TranslateTransform: TranslateTransform;
     _ScaleTransform: ScaleTransform;
 
-    get ZoomFactor(): number {
-        return this._ZoomFactor;
-    }
-
-    set ZoomFactor(value: number) {
-        this._ZoomFactor = value;
-        this.OnPropertyChanged("ZoomFactor");
-    }
-
-    get ZoomLevels(): number {
-        return this._ZoomLevels;
-    }
-
-    set ZoomLevels(value: number) {
-        this._ZoomLevels = value;
-        this.OnPropertyChanged("ZoomLevels");
-    }
+    //get ZoomFactor(): number {
+    //    return this._ZoomFactor;
+    //}
+    //
+    //set ZoomFactor(value: number) {
+    //    this._ZoomFactor = value;
+    //    this.OnPropertyChanged("ZoomFactor");
+    //}
+    //
+    //get ZoomLevels(): number {
+    //    return this._ZoomLevels;
+    //}
+    //
+    //set ZoomLevels(value: number) {
+    //    this._ZoomLevels = value;
+    //    this.OnPropertyChanged("ZoomLevels");
+    //}
 
     get ZoomLevel(): number {
         return this._ZoomLevel;
@@ -67,8 +67,6 @@ class TestViewModel extends Fayde.MVVM.ViewModelBase {
     TransformUpdated(e: Fayde.IEventBindingArgs<Fayde.Zoomer.ZoomerEventArgs>){
         this.ScaleTransform = e.args.Scale;
         this.TranslateTransform = e.args.Translate;
-
-        console.log(this.ScaleTransform.ScaleX);
     }
 
     ZoomIn_Click(){
@@ -94,6 +92,7 @@ class TestViewModel extends Fayde.MVVM.ViewModelBase {
     ScrollDown_Click(){
         //this._ScrollTo(new Vector(this.ZoomContentOffset.X, this.ZoomContentOffset.Y + 100));
     }
+
 }
 
 export = TestViewModel;

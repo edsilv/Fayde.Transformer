@@ -23,8 +23,8 @@
         </Grid.RowDefinitions>
 
         <Border Background="LightGray">
-            <z:Zoomer ZoomFactor="{Binding ZoomFactor}"
-                      ZoomLevels="{Binding ZoomLevels}"
+            <z:Zoomer ZoomFactor="{Binding ElementName=ZoomFactor, Path=Value}"
+                      ZoomLevels="{Binding ElementName=ZoomLevels, Path=Value}"
                       ZoomLevel="{Binding ZoomLevel}"
                       TransformUpdated="{EventBinding TransformUpdated}"
                       ConstrainToViewport="false">
@@ -44,8 +44,7 @@
             </StackPanel>
 
             <StackPanel Margin="0,10,0,10" VerticalAlignment="Center">
-                <Slider x:Name="ZoomSlider" Value="{Binding ZoomLevel, Mode=TwoWay}" Minimum="0" Maximum="{Binding ZoomLevels}" TickFrequency="{Binding ZoomLevels}" IsSnapToTickEnabled="True"  />
-                <!--<TextBlock Text="{Binding ElementName=ZoomSlider, Path=Value}" Foreground="#FFFFFF" />-->
+                <Slider x:Name="ZoomSlider" Value="{Binding ZoomLevel, Mode=TwoWay}" Minimum="0" Maximum="{Binding ElementName=ZoomLevels, Path=Value}" TickFrequency="{Binding ElementName=ZoomLevels, Path=Value}" IsSnapToTickEnabled="True"  />
             </StackPanel>
 
             <StackPanel Orientation="Horizontal">
@@ -63,9 +62,16 @@
                 </RepeatButton>
             </StackPanel>
 
-            <StackPanel>
-                <controls:NumericUpDown x:Name="ZoomFactorValue" DecimalPlaces="0" Increment="1" Value="2" />
+            <StackPanel Margin="0,20,0,0">
+                <TextBlock Text="Zoom Factor" />
+                <controls:NumericUpDown x:Name="ZoomFactor" DecimalPlaces="0" Increment="1" Value="2" />
             </StackPanel>
+
+            <StackPanel Margin="0,20,0,0">
+                <TextBlock Text="Zoom Levels" />
+                <controls:NumericUpDown x:Name="ZoomLevels" DecimalPlaces="0" Increment="1" Value="5" />
+            </StackPanel>
+
         </StackPanel>
     </Grid>
 </Application>

@@ -26,6 +26,7 @@
             <z:Zoomer ZoomFactor="{Binding ElementName=ZoomFactor, Path=Value}"
                       ZoomLevels="{Binding ElementName=ZoomLevels, Path=Value}"
                       ZoomLevel="{Binding ZoomLevel}"
+                      AnimationSpeed="{Binding ElementName=AnimationSpeed, Path=Value}"
                       TransformUpdated="{EventBinding TransformUpdated}"
                       ConstrainToViewport="{Binding ElementName=ConstrainToViewport, Path=IsChecked}">
                 <Image Source="Images/testing.jpg" />
@@ -64,16 +65,21 @@
 
             <StackPanel Margin="0,20,0,0">
                 <TextBlock Text="Zoom Factor" />
-                <controls:NumericUpDown x:Name="ZoomFactor" DecimalPlaces="0" Increment="1" Value="2" />
+                <controls:NumericUpDown x:Name="ZoomFactor" DecimalPlaces="0" Increment="1" Value="{Binding ZoomFactor, Mode=TwoWay}" />
             </StackPanel>
 
             <StackPanel Margin="0,20,0,0">
                 <TextBlock Text="Zoom Levels" />
-                <controls:NumericUpDown x:Name="ZoomLevels" DecimalPlaces="0" Increment="1" Value="5" />
+                <controls:NumericUpDown x:Name="ZoomLevels" DecimalPlaces="0" Increment="1" Value="{Binding ZoomLevels, Mode=TwoWay}" />
             </StackPanel>
 
             <StackPanel Margin="0,20,0,0">
                 <CheckBox x:Name="ConstrainToViewport" IsChecked="true">Constrain to Viewport</CheckBox>
+            </StackPanel>
+
+            <StackPanel Margin="0,20,0,0">
+                <TextBlock Text="Animation Speed" />
+                <controls:NumericUpDown x:Name="AnimationSpeed" DecimalPlaces="0" Increment="10" Maximum="10000" Value="{Binding AnimationSpeed, Mode=TwoWay}" />
             </StackPanel>
 
         </StackPanel>

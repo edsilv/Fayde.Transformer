@@ -7,37 +7,49 @@ import TranslateTransform = Fayde.Media.TranslateTransform;
 
 class TestViewModel extends Fayde.MVVM.ViewModelBase {
 
-    //_ZoomFactor: number = 2;
-    //_ZoomLevels: number = 5;
+
+    _ZoomFactor: number = 2;
+    _ZoomLevels: number = 5;
     _ZoomLevel: number;
+    _AnimationSpeed: number = 250;
     _TranslateTransform: TranslateTransform;
     _ScaleTransform: ScaleTransform;
 
-    //get ZoomFactor(): number {
-    //    return this._ZoomFactor;
-    //}
-    //
-    //set ZoomFactor(value: number) {
-    //    this._ZoomFactor = value;
-    //    this.OnPropertyChanged("ZoomFactor");
-    //}
-    //
-    //get ZoomLevels(): number {
-    //    return this._ZoomLevels;
-    //}
-    //
-    //set ZoomLevels(value: number) {
-    //    this._ZoomLevels = value;
-    //    this.OnPropertyChanged("ZoomLevels");
-    //}
+    get ZoomFactor(): number {
+        return this._ZoomFactor;
+    }
+
+    set ZoomFactor(value: number) {
+        this._ZoomFactor = value;
+        this.OnPropertyChanged("ZoomFactor");
+    }
+
+    get ZoomLevels(): number {
+        return this._ZoomLevels;
+    }
+
+    set ZoomLevels(value: number) {
+        this._ZoomLevels = value;
+        this.OnPropertyChanged("ZoomLevels");
+    }
 
     get ZoomLevel(): number {
         return this._ZoomLevel;
     }
 
     set ZoomLevel(value: number) {
+        if (!(value >= 0) || !(value <= this.ZoomLevels)) return;
         this._ZoomLevel = value;
         this.OnPropertyChanged("ZoomLevel");
+    }
+
+    get AnimationSpeed(): number {
+        return this._AnimationSpeed;
+    }
+
+    set AnimationSpeed(value: number) {
+        this._AnimationSpeed = value;
+        this.OnPropertyChanged("AnimationSpeed");
     }
 
     get ScaleTransform(): ScaleTransform {

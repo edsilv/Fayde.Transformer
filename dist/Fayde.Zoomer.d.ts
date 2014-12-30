@@ -12,6 +12,7 @@ declare module Fayde.Zoomer {
         static ZoomLevelsProperty: DependencyProperty;
         static ZoomLevelProperty: DependencyProperty;
         static ConstrainToViewportProperty: DependencyProperty;
+        static AnimationSpeedProperty: DependencyProperty;
         private OnZoomFactorChanged(args);
         private OnZoomLevelsChanged(args);
         private OnZoomLevelChanged(args);

@@ -26,6 +26,7 @@ module Fayde.Zoomer {
         static ZoomLevelsProperty = DependencyProperty.RegisterFull("ZoomLevels", () => Number, Zoomer, 0, (d, args) => (<Zoomer>d).OnZoomLevelsChanged(args));
         static ZoomLevelProperty = DependencyProperty.RegisterFull("ZoomLevel", () => Number, Zoomer, 0, (d, args) => (<Zoomer>d).OnZoomLevelChanged(args));
         static ConstrainToViewportProperty = DependencyProperty.RegisterFull("ConstrainToViewport", () => Boolean, Zoomer, true);
+        static AnimationSpeedProperty = DependencyProperty.RegisterFull("AnimationSpeed", () => Number, Zoomer, 250);
 
         private OnZoomFactorChanged (args: IDependencyPropertyChangedEventArgs) {
             this._ZoomTo(this.ZoomLevel);
@@ -39,7 +40,7 @@ module Fayde.Zoomer {
             this._ZoomTo(this.ZoomLevel);
         }
 
-        AnimationSpeed: number = 250;
+        AnimationSpeed: number;
         ZoomFactor: number;
         ZoomLevels: number;
         ZoomLevel: number;
@@ -140,6 +141,8 @@ module Fayde.Zoomer {
         }
 
         private _ZoomTo(level: number, instantly?: boolean): void {
+
+            if (!(level >= 0) || !(level <= this.ZoomLevels)) return;
 
             var scale = this._GetTargetScaleTransform(level);
             var translate = this._GetTargetTranslateTransform(scale);

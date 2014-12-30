@@ -35,7 +35,6 @@ var Fayde;
             __extends(Zoomer, _super);
             function Zoomer() {
                 _super.call(this);
-                this.AnimationSpeed = 250;
                 this._LastVisualTick = new Date(0).getTime();
                 this._IsMouseDown = false;
                 this._IsDragging = false;
@@ -125,6 +124,8 @@ var Fayde;
             };
             Zoomer.prototype._ZoomTo = function (level, instantly) {
                 var _this = this;
+                if (!(level >= 0) || !(level <= this.ZoomLevels))
+                    return;
                 var scale = this._GetTargetScaleTransform(level);
                 var translate = this._GetTargetTranslateTransform(scale);
                 if (instantly) {
@@ -279,6 +280,7 @@ var Fayde;
             Zoomer.ZoomLevelsProperty = DependencyProperty.RegisterFull("ZoomLevels", function () { return Number; }, Zoomer, 0, function (d, args) { return d.OnZoomLevelsChanged(args); });
             Zoomer.ZoomLevelProperty = DependencyProperty.RegisterFull("ZoomLevel", function () { return Number; }, Zoomer, 0, function (d, args) { return d.OnZoomLevelChanged(args); });
             Zoomer.ConstrainToViewportProperty = DependencyProperty.RegisterFull("ConstrainToViewport", function () { return Boolean; }, Zoomer, true);
+            Zoomer.AnimationSpeedProperty = DependencyProperty.RegisterFull("AnimationSpeed", function () { return Number; }, Zoomer, 250);
             return Zoomer;
         })(Fayde.Controls.ContentControl);
         _Zoomer.Zoomer = Zoomer;

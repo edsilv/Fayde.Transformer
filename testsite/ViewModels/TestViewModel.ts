@@ -81,6 +81,16 @@ class TestViewModel extends Fayde.MVVM.ViewModelBase {
         this.TranslateTransform = e.args.Translate;
     }
 
+    Background_MouseDown(e: Fayde.IEventBindingArgs<Fayde.Input.MouseButtonEventArgs>){
+        var pos = e.args.GetPosition(e.sender);
+        console.log(pos.x);
+    }
+
+    Background_MouseMove(e: Fayde.IEventBindingArgs<Fayde.Input.MouseButtonEventArgs>){
+        var pos = e.args.GetPosition(e.sender);
+        console.log(pos.x);
+    }
+
     ZoomIn_Click(){
         this.ZoomLevel += 1;
     }

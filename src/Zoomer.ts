@@ -1,8 +1,6 @@
-
 import ScaleTransform = Fayde.Media.ScaleTransform;
 import TranslateTransform = Fayde.Media.TranslateTransform;
 import TransformGroup = Fayde.Media.TransformGroup;
-import Size = minerva.Size;
 import Vector = Fayde.Utils.Vector;
 
 module Fayde.Zoomer {

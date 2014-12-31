@@ -14,7 +14,6 @@ var __extends = this.__extends || function (d, b) {
 var ScaleTransform = Fayde.Media.ScaleTransform;
 var TranslateTransform = Fayde.Media.TranslateTransform;
 var TransformGroup = Fayde.Media.TransformGroup;
-var Size = minerva.Size;
 var Vector = Fayde.Utils.Vector;
 var Fayde;
 (function (Fayde) {

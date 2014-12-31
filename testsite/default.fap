@@ -22,16 +22,18 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <Border Background="LightGray">
-            <z:Zoomer ZoomFactor="{Binding ElementName=ZoomFactor, Path=Value}"
-                      ZoomLevels="{Binding ElementName=ZoomLevels, Path=Value}"
-                      ZoomLevel="{Binding ZoomLevel}"
-                      AnimationSpeed="{Binding ElementName=AnimationSpeed, Path=Value}"
-                      TransformUpdated="{EventBinding TransformUpdated}"
-                      ConstrainToViewport="{Binding ElementName=ConstrainToViewport, Path=IsChecked}">
-                <Image Source="Images/testing.jpg" />
-            </z:Zoomer>
-        </Border>
+        <Rectangle Fill="LightGray" MouseLeftButtonDown="{EventBinding Background_MouseDown}" MouseMove="{EventBinding Background_MouseMove}">
+        </Rectangle>
+
+        <z:Zoomer ZoomFactor="{Binding ElementName=ZoomFactor, Path=Value}"
+                  ZoomLevels="{Binding ElementName=ZoomLevels, Path=Value}"
+                  ZoomLevel="{Binding ZoomLevel}"
+                  AnimationSpeed="{Binding ElementName=AnimationSpeed, Path=Value}"
+                  TransformUpdated="{EventBinding TransformUpdated}"
+                  ConstrainToViewport="{Binding ElementName=ConstrainToViewport, Path=IsChecked}">
+            <Image Source="Images/testing.jpg" />
+            <!--<Canvas Background="Blue"></Canvas>-->
+        </z:Zoomer>
 
         <StackPanel Grid.ZIndex="2" Grid.Column="1" Margin="20,20,20,0" Orientation="Vertical">
 
@@ -65,12 +67,12 @@
 
             <StackPanel Margin="0,20,0,0">
                 <TextBlock Text="Zoom Factor" />
-                <controls:NumericUpDown x:Name="ZoomFactor" DecimalPlaces="0" Increment="1" Value="{Binding ZoomFactor, Mode=TwoWay}" />
+                <controls:NumericUpDown x:Name="ZoomFactor" DecimalPlaces="1" Increment="0.5" Minimum="1.5" Value="{Binding ZoomFactor, Mode=TwoWay}" />
             </StackPanel>
 
             <StackPanel Margin="0,20,0,0">
                 <TextBlock Text="Zoom Levels" />
-                <controls:NumericUpDown x:Name="ZoomLevels" DecimalPlaces="0" Increment="1" Value="{Binding ZoomLevels, Mode=TwoWay}" />
+                <controls:NumericUpDown x:Name="ZoomLevels" DecimalPlaces="0" Increment="1" Minimum="1" Value="{Binding ZoomLevels, Mode=TwoWay}" />
             </StackPanel>
 
             <StackPanel Margin="0,20,0,0">

@@ -4,7 +4,6 @@ declare module Fayde.Zoomer {
 import ScaleTransform = Fayde.Media.ScaleTransform;
 import TranslateTransform = Fayde.Media.TranslateTransform;
 import TransformGroup = Fayde.Media.TransformGroup;
-import Size = minerva.Size;
 import Vector = Fayde.Utils.Vector;
 declare module Fayde.Zoomer {
     class Zoomer extends Controls.ContentControl {

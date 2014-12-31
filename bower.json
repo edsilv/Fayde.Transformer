@@ -12,8 +12,8 @@
   ],
   "dependencies": {
     "fayde": "~0.16.0",
-    "fayde.controls": "~0.15.1",
-    "fayde.utils": "git://github.com/edsilv/Fayde.Utils#~0.3.0",
+    "fayde.controls": "~0.16.0",
+    "fayde.utils": "git://github.com/edsilv/Fayde.Utils#~0.4.0",
     "tween.ts": "~0.1.0"
   },
   "devDependencies": {

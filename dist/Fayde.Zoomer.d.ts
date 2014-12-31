@@ -59,6 +59,8 @@ declare module Fayde.Zoomer {
     }
 }
 declare module Fayde.Zoomer {
+    import ScaleTransform = Fayde.Media.ScaleTransform;
+    import TranslateTransform = Fayde.Media.TranslateTransform;
     class ZoomerEventArgs implements nullstone.IEventArgs {
         Scale: ScaleTransform;
         Translate: TranslateTransform;

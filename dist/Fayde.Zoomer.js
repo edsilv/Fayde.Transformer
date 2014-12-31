@@ -45,7 +45,7 @@ var Fayde;
                 this._DragMaxSpeed = 30;
                 this._DragFriction = 2;
                 this.TransformUpdated = new nullstone.Event();
-                this.DefaultStyleKey = this.constructor;
+                this.DefaultStyleKey = Zoomer;
                 this._TweenEasing = TWEEN.Easing.Quadratic.InOut;
                 this.MouseLeftButtonDown.on(this.Zoomer_MouseLeftButtonDown, this);
                 this.MouseLeftButtonUp.on(this.Zoomer_MouseLeftButtonUp, this);
@@ -104,8 +104,8 @@ var Fayde;
             });
             Zoomer.prototype._UpdateTransform = function () {
                 var transformGroup = new TransformGroup();
-                transformGroup.Children.Add(this.TranslateTransform);
                 transformGroup.Children.Add(this.ScaleTransform);
+                transformGroup.Children.Add(this.TranslateTransform);
                 this.RenderTransform = transformGroup;
                 this.TransformUpdated.raise(this, new _Zoomer.ZoomerEventArgs(this.ScaleTransform, this.TranslateTransform));
             };

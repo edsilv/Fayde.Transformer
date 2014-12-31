@@ -99,7 +99,7 @@ module Fayde.Zoomer {
 
         constructor() {
             super();
-            this.DefaultStyleKey = (<any>this).constructor;
+            this.DefaultStyleKey = Zoomer;
 
             this._TweenEasing = TWEEN.Easing.Quadratic.InOut;
 
@@ -116,8 +116,8 @@ module Fayde.Zoomer {
 
             var transformGroup = new TransformGroup();
 
-            transformGroup.Children.Add(this.TranslateTransform);
             transformGroup.Children.Add(this.ScaleTransform);
+            transformGroup.Children.Add(this.TranslateTransform);
 
             this.RenderTransform = transformGroup;
 

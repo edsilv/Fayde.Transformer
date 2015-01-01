@@ -33,10 +33,6 @@ declare module Fayde.Zoomer {
         private _LastDragAccelerationMousePosition;
         private _MousePosition;
         private _MouseDelta;
-        private _LastTouchPosition;
-        private _LastDragAccelerationTouchPosition;
-        private _TouchPosition;
-        private _TouchDelta;
         private _DragVelocity;
         private _DragAcceleration;
         private _VelocityAccumulationTolerance;

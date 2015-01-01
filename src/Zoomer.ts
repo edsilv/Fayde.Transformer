@@ -57,12 +57,6 @@ module Fayde.Zoomer {
         private _LastDragAccelerationMousePosition: Vector;
         private _MousePosition: Vector;
         private _MouseDelta: Vector = new Vector(0, 0);
-
-        private _LastTouchPosition: Vector;
-        private _LastDragAccelerationTouchPosition: Vector;
-        private _TouchPosition: Vector;
-        private _TouchDelta: Vector = new Vector(0, 0);
-
         private _DragVelocity: Vector = new Vector(0, 0);
         private _DragAcceleration: Vector = new Vector(0, 0);
         private _VelocityAccumulationTolerance: number = 10; // dragging faster than this builds velocity
@@ -356,6 +350,9 @@ module Fayde.Zoomer {
 
             this.CaptureMouse();
             this._IsMouseDown = true;
+            var pos: Fayde.Input.TouchPoint = e.GetTouchPoint(null);
+            this._LastMousePosition = this._MousePosition || new Vector(0, 0);
+            this._MousePosition = new Vector(pos.Position.x, pos.Position.y);
             this._RemoveVelocity();
         }
 
@@ -378,15 +375,15 @@ module Fayde.Zoomer {
 
             var pos: Fayde.Input.TouchPoint = e.GetTouchPoint(null);
 
-            this._LastTouchPosition = this._TouchPosition || new Vector(0, 0);
-            this._TouchPosition = new Vector(pos.Position.x, pos.Position.y);
+            this._LastMousePosition = this._MousePosition || new Vector(0, 0);
+            this._MousePosition = new Vector(pos.Position.x, pos.Position.y);
 
-            this._TouchDelta = this._TouchPosition.Get();
-            this._TouchDelta.Sub(this._LastTouchPosition);
+            this._MouseDelta = this._MousePosition.Get();
+            this._MouseDelta.Sub(this._LastMousePosition);
 
             if (this._IsDragging){
-                this.TranslateTransform.X += this._TouchDelta.X;
-                this.TranslateTransform.Y += this._TouchDelta.Y;
+                this.TranslateTransform.X += this._MouseDelta.X;
+                this.TranslateTransform.Y += this._MouseDelta.Y;
 
                 this._UpdateTransform();
             }

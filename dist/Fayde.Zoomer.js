@@ -38,7 +38,6 @@ var Fayde;
                 this._IsMouseDown = false;
                 this._IsDragging = false;
                 this._MouseDelta = new Vector(0, 0);
-                this._TouchDelta = new Vector(0, 0);
                 this._DragVelocity = new Vector(0, 0);
                 this._DragAcceleration = new Vector(0, 0);
                 this._VelocityAccumulationTolerance = 10; // dragging faster than this builds velocity
@@ -275,6 +274,9 @@ var Fayde;
                     return;
                 this.CaptureMouse();
                 this._IsMouseDown = true;
+                var pos = e.GetTouchPoint(null);
+                this._LastMousePosition = this._MousePosition || new Vector(0, 0);
+                this._MousePosition = new Vector(pos.Position.x, pos.Position.y);
                 this._RemoveVelocity();
             };
             Zoomer.prototype.Zoomer_TouchUp = function (sender, e) {
@@ -291,13 +293,13 @@ var Fayde;
                     this._IsDragging = true;
                 }
                 var pos = e.GetTouchPoint(null);
-                this._LastTouchPosition = this._TouchPosition || new Vector(0, 0);
-                this._TouchPosition = new Vector(pos.Position.x, pos.Position.y);
-                this._TouchDelta = this._TouchPosition.Get();
-                this._TouchDelta.Sub(this._LastTouchPosition);
+                this._LastMousePosition = this._MousePosition || new Vector(0, 0);
+                this._MousePosition = new Vector(pos.Position.x, pos.Position.y);
+                this._MouseDelta = this._MousePosition.Get();
+                this._MouseDelta.Sub(this._LastMousePosition);
                 if (this._IsDragging) {
-                    this.TranslateTransform.X += this._TouchDelta.X;
-                    this.TranslateTransform.Y += this._TouchDelta.Y;
+                    this.TranslateTransform.X += this._MouseDelta.X;
+                    this.TranslateTransform.Y += this._MouseDelta.Y;
                     this._UpdateTransform();
                 }
             };

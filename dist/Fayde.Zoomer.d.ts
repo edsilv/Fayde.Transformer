@@ -12,6 +12,7 @@ declare module Fayde.Zoomer {
         static ZoomLevelProperty: DependencyProperty;
         static ConstrainToViewportProperty: DependencyProperty;
         static AnimationSpeedProperty: DependencyProperty;
+        static DragAccelerationEnabledProperty: DependencyProperty;
         private OnZoomFactorChanged(args);
         private OnZoomLevelsChanged(args);
         private OnZoomLevelChanged(args);
@@ -20,6 +21,7 @@ declare module Fayde.Zoomer {
         ZoomLevels: number;
         ZoomLevel: number;
         ConstrainToViewport: boolean;
+        DragAccelerationEnabled: boolean;
         private _TranslateTransform;
         private _ScaleTransform;
         private _TweenEasing;
@@ -31,6 +33,10 @@ declare module Fayde.Zoomer {
         private _LastDragAccelerationMousePosition;
         private _MousePosition;
         private _MouseDelta;
+        private _LastTouchPosition;
+        private _LastDragAccelerationTouchPosition;
+        private _TouchPosition;
+        private _TouchDelta;
         private _DragVelocity;
         private _DragAcceleration;
         private _VelocityAccumulationTolerance;
@@ -42,9 +48,9 @@ declare module Fayde.Zoomer {
         TranslateTransform: TranslateTransform;
         ViewportSize: Size;
         constructor();
+        OnTicked(lastTime: number, nowTime: number): void;
         private _UpdateTransform();
         private Zoomer_SizeChanged(sender, e);
-        OnTicked(lastTime: number, nowTime: number): void;
         private _ZoomTo(level);
         private _GetTargetScaleTransform(level);
         private _ScrollTo(newTransform);
@@ -56,6 +62,9 @@ declare module Fayde.Zoomer {
         private Zoomer_MouseLeftButtonDown(sender, e);
         private Zoomer_MouseLeftButtonUp(sender, e);
         private Zoomer_MouseMove(sender, e);
+        private Zoomer_TouchDown(sender, e);
+        private Zoomer_TouchUp(sender, e);
+        private Zoomer_TouchMove(sender, e);
     }
 }
 declare module Fayde.Zoomer {

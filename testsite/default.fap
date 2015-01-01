@@ -31,6 +31,7 @@
                   AnimationSpeed="{Binding ElementName=AnimationSpeed, Path=Value}"
                   TransformUpdated="{EventBinding TransformUpdated}"
                   ConstrainToViewport="{Binding ElementName=ConstrainToViewport, Path=IsChecked}"
+                  DragAccelerationEnabled="{Binding ElementName=DragAccelerationEnabled, Path=IsChecked}"
                   Background="LightGray"
                   BorderBrush="Black"
                   BorderThickness="1">
@@ -88,6 +89,10 @@
             <StackPanel Margin="0,20,0,0">
                 <TextBlock Text="Animation Speed" />
                 <controls:NumericUpDown x:Name="AnimationSpeed" DecimalPlaces="0" Increment="10" Maximum="10000" Value="{Binding AnimationSpeed, Mode=TwoWay}" />
+            </StackPanel>
+
+            <StackPanel Margin="0,20,0,0">
+                <CheckBox x:Name="DragAccelerationEnabled" IsChecked="true">Drag Acceleration Enabled</CheckBox>
             </StackPanel>
 
         </StackPanel>

@@ -25,6 +25,7 @@ module Fayde.Zoomer {
         static ZoomLevelProperty = DependencyProperty.RegisterFull("ZoomLevel", () => Number, Zoomer, 0, (d, args) => (<Zoomer>d).OnZoomLevelChanged(args));
         static ConstrainToViewportProperty = DependencyProperty.RegisterFull("ConstrainToViewport", () => Boolean, Zoomer, true);
         static AnimationSpeedProperty = DependencyProperty.RegisterFull("AnimationSpeed", () => Number, Zoomer, 250);
+        static DragAccelerationEnabledProperty = DependencyProperty.RegisterFull("DragAccelerationEnabled", () => Boolean, Zoomer, true);
 
         private OnZoomFactorChanged (args: IDependencyPropertyChangedEventArgs) {
             this._ZoomTo(this.ZoomLevel);
@@ -43,6 +44,7 @@ module Fayde.Zoomer {
         ZoomLevels: number;
         ZoomLevel: number;
         ConstrainToViewport: boolean;
+        DragAccelerationEnabled: boolean;
 
         private _TranslateTransform: TranslateTransform;
         private _ScaleTransform: ScaleTransform;
@@ -55,6 +57,12 @@ module Fayde.Zoomer {
         private _LastDragAccelerationMousePosition: Vector;
         private _MousePosition: Vector;
         private _MouseDelta: Vector = new Vector(0, 0);
+
+        private _LastTouchPosition: Vector;
+        private _LastDragAccelerationTouchPosition: Vector;
+        private _TouchPosition: Vector;
+        private _TouchDelta: Vector = new Vector(0, 0);
+
         private _DragVelocity: Vector = new Vector(0, 0);
         private _DragAcceleration: Vector = new Vector(0, 0);
         private _VelocityAccumulationTolerance: number = 10; // dragging faster than this builds velocity
@@ -106,10 +114,31 @@ module Fayde.Zoomer {
             this.MouseLeftButtonDown.on(this.Zoomer_MouseLeftButtonDown, this);
             this.MouseLeftButtonUp.on(this.Zoomer_MouseLeftButtonUp, this);
             this.MouseMove.on(this.Zoomer_MouseMove, this);
+            this.TouchDown.on(this.Zoomer_TouchDown, this);
+            this.TouchUp.on(this.Zoomer_TouchUp, this);
+            this.TouchMove.on(this.Zoomer_TouchMove, this);
             this.SizeChanged.on(this.Zoomer_SizeChanged, this);
 
             this._Timer = new Fayde.ClockTimer();
             this._Timer.RegisterTimer(this);
+        }
+
+        OnTicked (lastTime: number, nowTime: number) {
+            var now = new Date().getTime();
+            if (now - this._LastVisualTick < MAX_MSPF) return;
+            this._LastVisualTick = now;
+
+            TWEEN.update(nowTime);
+
+            if (this.DragAccelerationEnabled){
+                this._AddVelocity();
+            }
+
+            if (this.ConstrainToViewport){
+                this._Constrain();
+            }
+
+            this._UpdateTransform();
         }
 
         private _UpdateTransform() : void {
@@ -133,15 +162,6 @@ module Fayde.Zoomer {
             this._UpdateTransform();
         }
 
-        OnTicked (lastTime: number, nowTime: number) {
-            var now = new Date().getTime();
-            if (now - this._LastVisualTick < MAX_MSPF) return;
-            this._LastVisualTick = now;
-
-            TWEEN.update(nowTime);
-            this._AddVelocity();
-        }
-
         private _ZoomTo(level: number): void {
 
             if (!(level >= 0) || !(level <= this.ZoomLevels)) return;
@@ -159,7 +179,6 @@ module Fayde.Zoomer {
                 .onUpdate(() => {
                     this.ScaleTransform.ScaleX = currentSize.width;
                     this.ScaleTransform.ScaleY = currentSize.height;
-                    this._UpdateTransform();
                 })
                 .onComplete(() => {
                     //console.log("zoomLevel: " + this.ZoomLevel);
@@ -191,8 +210,6 @@ module Fayde.Zoomer {
                 .onUpdate(() => {
                     this.TranslateTransform.X = currentOffset.width;
                     this.TranslateTransform.Y = currentOffset.height;
-                    this._Constrain();
-                    this._UpdateTransform();
                 });
 
             scrollTween.start(this._LastVisualTick);
@@ -222,23 +239,20 @@ module Fayde.Zoomer {
 
         private _Constrain(){
 
-            if (this.ConstrainToViewport){
+            if (this.TranslateTransform.X > 0){
+                this.TranslateTransform.X = 0;
+            }
 
-                if (this.TranslateTransform.X > 0){
-                    this.TranslateTransform.X = 0;
-                }
+            if (this.TranslateTransform.X < ((this.ScaleTransform.ScaleX * this.ViewportSize.width) - this.ViewportSize.width) * -1){
+                this.TranslateTransform.X = ((this.ScaleTransform.ScaleX * this.ViewportSize.width) - this.ViewportSize.width) * -1;
+            }
 
-                if (this.TranslateTransform.X < ((this.ScaleTransform.ScaleX * this.ViewportSize.width) - this.ViewportSize.width) * -1){
-                    this.TranslateTransform.X = ((this.ScaleTransform.ScaleX * this.ViewportSize.width) - this.ViewportSize.width) * -1;
-                }
+            if (this.TranslateTransform.Y > 0){
+                this.TranslateTransform.Y = 0;
+            }
 
-                if (this.TranslateTransform.Y > 0){
-                    this.TranslateTransform.Y = 0;
-                }
-
-                if (this.TranslateTransform.Y < ((this.ScaleTransform.ScaleY * this.ViewportSize.height) - this.ViewportSize.height) * -1){
-                    this.TranslateTransform.Y = ((this.ScaleTransform.ScaleY * this.ViewportSize.height) - this.ViewportSize.height) * -1;
-                }
+            if (this.TranslateTransform.Y < ((this.ScaleTransform.ScaleY * this.ViewportSize.height) - this.ViewportSize.height) * -1){
+                this.TranslateTransform.Y = ((this.ScaleTransform.ScaleY * this.ViewportSize.height) - this.ViewportSize.height) * -1;
             }
         }
 
@@ -289,8 +303,6 @@ module Fayde.Zoomer {
 
             // reset acceleration
             this._DragAcceleration.Mult(0);
-
-            this._Constrain();
         }
 
         private _RemoveVelocity(){
@@ -314,7 +326,7 @@ module Fayde.Zoomer {
             this._IsMouseDown = false;
             this._IsDragging = false;
         }
-        
+
         private Zoomer_MouseMove(sender: any, e: Fayde.Input.MouseEventArgs) {
             if (e.Handled)
                 return;
@@ -332,6 +344,48 @@ module Fayde.Zoomer {
             if (this._IsDragging){
                 this.TranslateTransform.X += this._MouseDelta.X;
                 this.TranslateTransform.Y += this._MouseDelta.Y;
+
+                this._UpdateTransform();
+            }
+        }
+
+        private Zoomer_TouchDown(sender: any, e: Fayde.Input.TouchEventArgs) {
+            if (e.Handled)
+                return;
+
+            this.CaptureMouse();
+            this._IsMouseDown = true;
+            this._RemoveVelocity();
+        }
+
+        private Zoomer_TouchUp(sender: any, e: Fayde.Input.TouchEventArgs) {
+            if (e.Handled)
+                return;
+
+            this.ReleaseMouseCapture();
+            this._IsMouseDown = false;
+            this._IsDragging = false;
+        }
+
+        private Zoomer_TouchMove(sender: any, e: Fayde.Input.TouchEventArgs) {
+            if (e.Handled)
+                return;
+
+            if (this._IsMouseDown){
+                this._IsDragging = true;
+            }
+
+            var pos: Fayde.Input.TouchPoint = e.GetTouchPoint(null);
+
+            this._LastTouchPosition = this._TouchPosition || new Vector(0, 0);
+            this._TouchPosition = new Vector(pos.Position.x, pos.Position.y);
+
+            this._TouchDelta = this._TouchPosition.Get();
+            this._TouchDelta.Sub(this._LastTouchPosition);
+
+            if (this._IsDragging){
+                this.TranslateTransform.X += this._TouchDelta.X;
+                this.TranslateTransform.Y += this._TouchDelta.Y;
 
                 this._UpdateTransform();
             }

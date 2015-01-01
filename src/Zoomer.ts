@@ -155,11 +155,8 @@ module Fayde.Zoomer {
 
         // intialise viewport size and handle resizing
         private Zoomer_SizeChanged (sender: any, e: Fayde.SizeChangedEventArgs) {
-            var scale = this._GetTargetScaleTransform(this.ZoomLevel);
-            var translate = this._GetTargetTranslateTransform(scale);
-            this.ScaleTransform = scale;
-            this.TranslateTransform = translate;
-            this._UpdateTransform();
+            this.ScaleTransform = this._GetTargetScaleTransform(this.ZoomLevel);
+            this.TranslateTransform = this._GetTargetTranslateTransform(this.ScaleTransform);
         }
 
         private _ZoomTo(level: number): void {
@@ -243,16 +240,20 @@ module Fayde.Zoomer {
                 this.TranslateTransform.X = 0;
             }
 
-            if (this.TranslateTransform.X < ((this.ScaleTransform.ScaleX * this.ViewportSize.width) - this.ViewportSize.width) * -1){
-                this.TranslateTransform.X = ((this.ScaleTransform.ScaleX * this.ViewportSize.width) - this.ViewportSize.width) * -1;
+            var width = this.ScaleTransform.ScaleX * this.ViewportSize.width;
+
+            if (this.TranslateTransform.X < (width - this.ViewportSize.width) * -1){
+                this.TranslateTransform.X = (width - this.ViewportSize.width) * -1;
             }
 
             if (this.TranslateTransform.Y > 0){
                 this.TranslateTransform.Y = 0;
             }
 
-            if (this.TranslateTransform.Y < ((this.ScaleTransform.ScaleY * this.ViewportSize.height) - this.ViewportSize.height) * -1){
-                this.TranslateTransform.Y = ((this.ScaleTransform.ScaleY * this.ViewportSize.height) - this.ViewportSize.height) * -1;
+            var height = this.ScaleTransform.ScaleY * this.ViewportSize.height;
+
+            if (this.TranslateTransform.Y < (height - this.ViewportSize.height) * -1){
+                this.TranslateTransform.Y = (height - this.ViewportSize.height) * -1;
             }
         }
 

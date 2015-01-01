@@ -129,11 +129,8 @@ var Fayde;
             };
             // intialise viewport size and handle resizing
             Zoomer.prototype.Zoomer_SizeChanged = function (sender, e) {
-                var scale = this._GetTargetScaleTransform(this.ZoomLevel);
-                var translate = this._GetTargetTranslateTransform(scale);
-                this.ScaleTransform = scale;
-                this.TranslateTransform = translate;
-                this._UpdateTransform();
+                this.ScaleTransform = this._GetTargetScaleTransform(this.ZoomLevel);
+                this.TranslateTransform = this._GetTargetTranslateTransform(this.ScaleTransform);
             };
             Zoomer.prototype._ZoomTo = function (level) {
                 var _this = this;
@@ -187,14 +184,16 @@ var Fayde;
                 if (this.TranslateTransform.X > 0) {
                     this.TranslateTransform.X = 0;
                 }
-                if (this.TranslateTransform.X < ((this.ScaleTransform.ScaleX * this.ViewportSize.width) - this.ViewportSize.width) * -1) {
-                    this.TranslateTransform.X = ((this.ScaleTransform.ScaleX * this.ViewportSize.width) - this.ViewportSize.width) * -1;
+                var width = this.ScaleTransform.ScaleX * this.ViewportSize.width;
+                if (this.TranslateTransform.X < (width - this.ViewportSize.width) * -1) {
+                    this.TranslateTransform.X = (width - this.ViewportSize.width) * -1;
                 }
                 if (this.TranslateTransform.Y > 0) {
                     this.TranslateTransform.Y = 0;
                 }
-                if (this.TranslateTransform.Y < ((this.ScaleTransform.ScaleY * this.ViewportSize.height) - this.ViewportSize.height) * -1) {
-                    this.TranslateTransform.Y = ((this.ScaleTransform.ScaleY * this.ViewportSize.height) - this.ViewportSize.height) * -1;
+                var height = this.ScaleTransform.ScaleY * this.ViewportSize.height;
+                if (this.TranslateTransform.Y < (height - this.ViewportSize.height) * -1) {
+                    this.TranslateTransform.Y = (height - this.ViewportSize.height) * -1;
                 }
             };
             Zoomer.prototype._AddVelocity = function () {

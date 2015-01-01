@@ -22,15 +22,18 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <Rectangle Fill="LightGray" MouseLeftButtonDown="{EventBinding Background_MouseDown}" MouseMove="{EventBinding Background_MouseMove}">
-        </Rectangle>
+        <!--<Rectangle Fill="LightGray" MouseLeftButtonDown="{EventBinding Background_MouseDown}" MouseMove="{EventBinding Background_MouseMove}">-->
+        <!--</Rectangle>-->
 
         <z:Zoomer ZoomFactor="{Binding ElementName=ZoomFactor, Path=Value}"
                   ZoomLevels="{Binding ElementName=ZoomLevels, Path=Value}"
                   ZoomLevel="{Binding ZoomLevel}"
                   AnimationSpeed="{Binding ElementName=AnimationSpeed, Path=Value}"
                   TransformUpdated="{EventBinding TransformUpdated}"
-                  ConstrainToViewport="{Binding ElementName=ConstrainToViewport, Path=IsChecked}">
+                  ConstrainToViewport="{Binding ElementName=ConstrainToViewport, Path=IsChecked}"
+                  Background="LightGray"
+                  BorderBrush="Black"
+                  BorderThickness="1">
             <Image Source="Images/testing.jpg" />
             <!--<Canvas Background="Blue"></Canvas>-->
         </z:Zoomer>

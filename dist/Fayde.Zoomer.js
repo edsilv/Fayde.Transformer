@@ -240,12 +240,14 @@ var Fayde;
             Zoomer.prototype.Zoomer_MouseLeftButtonDown = function (sender, e) {
                 if (e.Handled)
                     return;
+                this.CaptureMouse();
                 this._IsMouseDown = true;
                 this._RemoveVelocity();
             };
             Zoomer.prototype.Zoomer_MouseLeftButtonUp = function (sender, e) {
                 if (e.Handled)
                     return;
+                this.ReleaseMouseCapture();
                 this._IsMouseDown = false;
                 this._IsDragging = false;
             };

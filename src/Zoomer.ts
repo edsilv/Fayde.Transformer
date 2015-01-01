@@ -301,6 +301,7 @@ module Fayde.Zoomer {
             if (e.Handled)
                 return;
 
+            this.CaptureMouse();
             this._IsMouseDown = true;
             this._RemoveVelocity();
         }
@@ -309,10 +310,11 @@ module Fayde.Zoomer {
             if (e.Handled)
                 return;
 
+            this.ReleaseMouseCapture();
             this._IsMouseDown = false;
             this._IsDragging = false;
         }
-
+        
         private Zoomer_MouseMove(sender: any, e: Fayde.Input.MouseEventArgs) {
             if (e.Handled)
                 return;

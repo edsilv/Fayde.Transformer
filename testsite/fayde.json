@@ -10,8 +10,8 @@
     "Fayde.Controls": {
       "exports": "Fayde.Controls"
     },
-    "Fayde.Zoomer": {
-      "exports": "Fayde.Zoomer",
+    "Fayde.Transformer": {
+      "exports": "Fayde.Transformer",
       "deps": ["Fayde.Utils", "tween"]
     }
   },
@@ -20,7 +20,7 @@
     "tween": "none",
     "Fayde.Controls": {
     },
-    "Fayde.Zoomer": {
+    "Fayde.Transformer": {
     }
   }
 }

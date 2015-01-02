@@ -1,7 +1,5 @@
 /// <amd-dependency path="Fayde.Utils" />
 
-//import Size = Fayde.Utils.Size;
-//import Vector = Fayde.Utils.Vector;
 import ScaleTransform = Fayde.Media.ScaleTransform;
 import TranslateTransform = Fayde.Media.TranslateTransform;
 
@@ -76,7 +74,7 @@ class TestViewModel extends Fayde.MVVM.ViewModelBase {
         this.ZoomLevel = 0;
     }
 
-    TransformUpdated(e: Fayde.IEventBindingArgs<Fayde.Zoomer.ZoomerEventArgs>){
+    TransformUpdated(e: Fayde.IEventBindingArgs<Fayde.Transformer.TransformerEventArgs>){
         this.ScaleTransform = e.args.Scale;
         this.TranslateTransform = e.args.Translate;
     }

@@ -18,7 +18,7 @@ module.exports = function (grunt) {
         livereload: 15151
     };
     var meta = {
-        name: 'Fayde.Zoomer'
+        name: 'Fayde.Transformer'
     };
 
     var dirs = {

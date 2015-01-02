@@ -3,14 +3,14 @@
         xmlns="http://schemas.wsick.com/fayde"
         xmlns:x="http://schemas.wsick.com/fayde/x"
         xmlns:vsm="http://schemas.wsick.com/fayde"
-        xmlns:z="lib://Fayde.Zoomer">
-    <Style TargetType="z:Zoomer">
+        xmlns:t="lib://Fayde.Transformer">
+    <Style TargetType="t:TransformerControl">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="BorderBrush" Value="Transparent"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="z:Zoomer">
+                <ControlTemplate TargetType="t:TransformerControl">
                     <Border x:Name="Background" Background="{TemplateBinding Background}"
                             BorderThickness="{TemplateBinding BorderThickness}"
                             BorderBrush="{TemplateBinding BorderBrush}">

@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.wsick.com/fayde/x"
         xmlns:vms="ViewModels"
         xmlns:controls="lib://Fayde.Controls"
-        xmlns:z="lib://Fayde.Zoomer"
+        xmlns:t="lib://Fayde.Transformer"
         ThemeName="Metro">
     <Application.Resources>
     </Application.Resources>
@@ -25,7 +25,7 @@
         <!--<Rectangle Fill="LightGray" MouseLeftButtonDown="{EventBinding Background_MouseDown}" MouseMove="{EventBinding Background_MouseMove}">-->
         <!--</Rectangle>-->
 
-        <z:Zoomer ZoomFactor="{Binding ElementName=ZoomFactor, Path=Value}"
+        <t:TransformerControl ZoomFactor="{Binding ElementName=ZoomFactor, Path=Value}"
                   ZoomLevels="{Binding ElementName=ZoomLevels, Path=Value}"
                   ZoomLevel="{Binding ZoomLevel}"
                   AnimationSpeed="{Binding ElementName=AnimationSpeed, Path=Value}"
@@ -37,7 +37,7 @@
                   BorderThickness="1">
             <Image Source="Images/testing.jpg" />
             <!--<Canvas Background="Blue"></Canvas>-->
-        </z:Zoomer>
+        </t:TransformerControl>
 
         <Rectangle Fill="White" Grid.Column="1">
         </Rectangle>

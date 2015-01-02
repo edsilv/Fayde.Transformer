@@ -1,11 +1,11 @@
 import Vector = Fayde.Utils.Vector;
 
-module Fayde.Zoomer {
+module Fayde.Transformer {
 
     var MAX_FPS: number = 100;
     var MAX_MSPF: number = 1000 / MAX_FPS;
 
-    export class LogicalZoomer {
+    export class Transformer {
 
         private _TweenEasing: any;
         private _Timer: Fayde.ClockTimer;

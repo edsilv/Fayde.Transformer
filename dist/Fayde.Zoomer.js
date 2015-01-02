@@ -2,7 +2,7 @@ var Fayde;
 (function (Fayde) {
     var Zoomer;
     (function (Zoomer) {
-        Zoomer.Version = '0.2.2';
+        Zoomer.Version = '0.4.0';
     })(Zoomer = Fayde.Zoomer || (Fayde.Zoomer = {}));
 })(Fayde || (Fayde = {}));
 var __extends = this.__extends || function (d, b) {

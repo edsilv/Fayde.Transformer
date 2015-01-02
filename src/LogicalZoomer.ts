@@ -26,13 +26,13 @@ module Fayde.Zoomer {
         private _TranslateTransform: TranslateTransform;
         private _ScaleTransform: ScaleTransform;
 
-        public ViewportSize: Size;// = new Size(1000, 500);
-        public AnimationSpeed: number;// = 250;
-        public ZoomFactor: number;// = 2;
-        public ZoomLevels: number = 5;
-        public ZoomLevel: number = 0;
-        public ConstrainToViewport: boolean = true;
-        public DragAccelerationEnabled: boolean = true;
+        public ViewportSize: Size;
+        public AnimationSpeed: number;
+        public ZoomFactor: number;
+        public ZoomLevels: number;
+        public ZoomLevel: number;
+        public ConstrainToViewport: boolean;
+        public DragAccelerationEnabled: boolean;
 
         public UpdateTransform: Fayde.RoutedEvent<Fayde.RoutedEventArgs> = new Fayde.RoutedEvent<Fayde.RoutedEventArgs>();
 

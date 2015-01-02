@@ -103,6 +103,12 @@ var Fayde;
                 transform.ScaleY = Math.pow(this.ZoomFactor, level);
                 return transform;
             };
+            Transformer.prototype.Scroll = function (position) {
+                var t = new TranslateTransform();
+                t.X = this.TranslateTransform.X + position.x;
+                t.Y = this.TranslateTransform.Y + position.y;
+                this.ScrollTo(t);
+            };
             Transformer.prototype.ScrollTo = function (newTransform) {
                 var _this = this;
                 var currentOffset = new Size(this.TranslateTransform.X, this.TranslateTransform.Y);
@@ -272,6 +278,12 @@ var Fayde;
             TransformerControl.prototype.OnDragAccelerationEnabledChanged = function (args) {
                 this._Transformer.DragAccelerationEnabled = this.DragAccelerationEnabled;
             };
+            TransformerControl.prototype.OnXPositionChanged = function (args) {
+                this._Transformer.Scroll(new Point(args.NewValue, 0));
+            };
+            TransformerControl.prototype.OnYPositionChanged = function (args) {
+                this._Transformer.Scroll(new Point(0, args.NewValue));
+            };
             Object.defineProperty(TransformerControl.prototype, "ViewportSize", {
                 get: function () {
                     return new Size(this.ActualWidth, this.ActualHeight);
@@ -332,6 +344,8 @@ var Fayde;
             TransformerControl.ConstrainToViewportProperty = DependencyProperty.RegisterFull("ConstrainToViewport", function () { return Boolean; }, TransformerControl, true, function (d, args) { return d.OnConstrainToViewportChanged(args); });
             TransformerControl.AnimationSpeedProperty = DependencyProperty.RegisterFull("AnimationSpeed", function () { return Number; }, TransformerControl, 250, function (d, args) { return d.OnAnimationSpeedChanged(args); });
             TransformerControl.DragAccelerationEnabledProperty = DependencyProperty.RegisterFull("DragAccelerationEnabled", function () { return Boolean; }, TransformerControl, true, function (d, args) { return d.OnDragAccelerationEnabledChanged(args); });
+            TransformerControl.XPositionProperty = DependencyProperty.RegisterFull("XPosition", function () { return Number; }, TransformerControl, 0, function (d, args) { return d.OnXPositionChanged(args); });
+            TransformerControl.YPositionProperty = DependencyProperty.RegisterFull("YPosition", function () { return Number; }, TransformerControl, 0, function (d, args) { return d.OnYPositionChanged(args); });
             return TransformerControl;
         })(Fayde.Controls.ContentControl);
         Transformer.TransformerControl = TransformerControl;

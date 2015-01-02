@@ -9,6 +9,8 @@ class TestViewModel extends Fayde.MVVM.ViewModelBase {
     _ZoomFactor: number = 2;
     _ZoomLevels: number = 5;
     _ZoomLevel: number;
+    _XPosition: number = 0;
+    _YPosition: number = 0;
     _AnimationSpeed: number = 250;
     _TranslateTransform: TranslateTransform;
     _ScaleTransform: ScaleTransform;
@@ -39,6 +41,24 @@ class TestViewModel extends Fayde.MVVM.ViewModelBase {
         if (!(value >= 0) || !(value <= this.ZoomLevels)) return;
         this._ZoomLevel = value;
         this.OnPropertyChanged("ZoomLevel");
+    }
+
+    get XPosition(): number {
+        return this._XPosition;
+    }
+
+    set XPosition(value: number) {
+        this._XPosition = value;
+        this.OnPropertyChanged("XPosition");
+    }
+
+    get YPosition(): number {
+        return this._YPosition;
+    }
+
+    set YPosition(value: number) {
+        this._YPosition = value;
+        this.OnPropertyChanged("YPosition");
     }
 
     get AnimationSpeed(): number {
@@ -81,12 +101,10 @@ class TestViewModel extends Fayde.MVVM.ViewModelBase {
 
     Background_MouseDown(e: Fayde.IEventBindingArgs<Fayde.Input.MouseButtonEventArgs>){
         var pos = e.args.GetPosition(e.sender);
-        console.log(pos.x);
     }
 
     Background_MouseMove(e: Fayde.IEventBindingArgs<Fayde.Input.MouseButtonEventArgs>){
         var pos = e.args.GetPosition(e.sender);
-        console.log(pos.x);
     }
 
     ZoomIn_Click(){
@@ -98,19 +116,27 @@ class TestViewModel extends Fayde.MVVM.ViewModelBase {
     }
 
     ScrollLeft_Click(){
-        //this._ScrollTo(new Vector(this.ZoomContentOffset.X - 100, this.ZoomContentOffset.Y));
+        this.XPosition = 0;
+        this.XPosition += this.GetScrollAmount();
     }
 
     ScrollRight_Click(){
-        //this._ScrollTo(new Vector(this.ZoomContentOffset.X + 100, this.ZoomContentOffset.Y));
+        this.XPosition = 0;
+        this.XPosition -= this.GetScrollAmount();
     }
 
     ScrollUp_Click(){
-        //this._ScrollTo(new Vector(this.ZoomContentOffset.X, this.ZoomContentOffset.Y - 100));
+        this.YPosition = 0;
+        this.YPosition += this.GetScrollAmount();
     }
 
     ScrollDown_Click(){
-        //this._ScrollTo(new Vector(this.ZoomContentOffset.X, this.ZoomContentOffset.Y + 100));
+        this.YPosition = 0;
+        this.YPosition -= this.GetScrollAmount();
+    }
+
+    GetScrollAmount(): number {
+        return this.ScaleTransform.ScaleX * 100;
     }
 
 }

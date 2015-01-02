@@ -28,6 +28,8 @@
         <t:TransformerControl ZoomFactor="{Binding ElementName=ZoomFactor, Path=Value}"
                   ZoomLevels="{Binding ElementName=ZoomLevels, Path=Value}"
                   ZoomLevel="{Binding ZoomLevel}"
+                  XPosition="{Binding XPosition}"
+                  YPosition="{Binding YPosition}"
                   AnimationSpeed="{Binding ElementName=AnimationSpeed, Path=Value}"
                   TransformUpdated="{EventBinding TransformUpdated}"
                   ConstrainToViewport="{Binding ElementName=ConstrainToViewport, Path=IsChecked}"

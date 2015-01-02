@@ -132,6 +132,14 @@ module Fayde.Transformer {
             return transform;
         }
 
+        public Scroll(position: Point) {
+            var t: TranslateTransform = new TranslateTransform();
+            t.X = this.TranslateTransform.X + position.x;
+            t.Y = this.TranslateTransform.Y + position.y;
+
+            this.ScrollTo(t);
+        }
+
         public ScrollTo(newTransform: TranslateTransform) {
 
             var currentOffset: Size = new Size(this.TranslateTransform.X, this.TranslateTransform.Y);

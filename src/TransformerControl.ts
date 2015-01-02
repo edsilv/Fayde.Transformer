@@ -12,6 +12,8 @@ module Fayde.Transformer {
         static ConstrainToViewportProperty = DependencyProperty.RegisterFull("ConstrainToViewport", () => Boolean, TransformerControl, true, (d, args) => (<TransformerControl>d).OnConstrainToViewportChanged(args));
         static AnimationSpeedProperty = DependencyProperty.RegisterFull("AnimationSpeed", () => Number, TransformerControl, 250, (d, args) => (<TransformerControl>d).OnAnimationSpeedChanged(args));
         static DragAccelerationEnabledProperty = DependencyProperty.RegisterFull("DragAccelerationEnabled", () => Boolean, TransformerControl, true, (d, args) => (<TransformerControl>d).OnDragAccelerationEnabledChanged(args));
+        static XPositionProperty = DependencyProperty.RegisterFull("XPosition", () => Number, TransformerControl, 0, (d, args) => (<TransformerControl>d).OnXPositionChanged(args));
+        static YPositionProperty = DependencyProperty.RegisterFull("YPosition", () => Number, TransformerControl, 0, (d, args) => (<TransformerControl>d).OnYPositionChanged(args));
 
         private OnZoomFactorChanged (args: IDependencyPropertyChangedEventArgs) {
             this._Transformer.ZoomFactor = this.ZoomFactor;
@@ -38,6 +40,14 @@ module Fayde.Transformer {
 
         private OnDragAccelerationEnabledChanged (args: IDependencyPropertyChangedEventArgs) {
             this._Transformer.DragAccelerationEnabled = this.DragAccelerationEnabled;
+        }
+
+        private OnXPositionChanged (args: IDependencyPropertyChangedEventArgs) {
+            this._Transformer.Scroll(new Point(args.NewValue, 0));
+        }
+
+        private OnYPositionChanged (args: IDependencyPropertyChangedEventArgs) {
+            this._Transformer.Scroll(new Point(0, args.NewValue));
         }
 
         AnimationSpeed: number;

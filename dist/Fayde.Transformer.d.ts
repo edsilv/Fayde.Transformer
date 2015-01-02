@@ -36,6 +36,7 @@ declare module Fayde.Transformer {
         SizeChanged(viewportSize: Size): void;
         ZoomTo(level: number): void;
         private _GetTargetScaleTransform(level);
+        Scroll(position: Point): void;
         ScrollTo(newTransform: TranslateTransform): void;
         private _GetTargetTranslateTransform(targetScaleTransform);
         private _GetZoomOrigin(scaleTransform);
@@ -58,12 +59,16 @@ declare module Fayde.Transformer {
         static ConstrainToViewportProperty: DependencyProperty;
         static AnimationSpeedProperty: DependencyProperty;
         static DragAccelerationEnabledProperty: DependencyProperty;
+        static XPositionProperty: DependencyProperty;
+        static YPositionProperty: DependencyProperty;
         private OnZoomFactorChanged(args);
         private OnZoomLevelsChanged(args);
         private OnZoomLevelChanged(args);
         private OnConstrainToViewportChanged(args);
         private OnAnimationSpeedChanged(args);
         private OnDragAccelerationEnabledChanged(args);
+        private OnXPositionChanged(args);
+        private OnYPositionChanged(args);
         AnimationSpeed: number;
         ZoomFactor: number;
         ZoomLevels: number;

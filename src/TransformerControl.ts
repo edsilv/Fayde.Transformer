@@ -1,5 +1,3 @@
-import ScaleTransform = Fayde.Media.ScaleTransform;
-import TranslateTransform = Fayde.Media.TranslateTransform;
 import TransformGroup = Fayde.Media.TransformGroup;
 
 module Fayde.Transformer {
@@ -91,12 +89,7 @@ module Fayde.Transformer {
 
         private UpdateTransform(sender: Transformer, e: TransformerEventArgs) : void {
 
-            var transformGroup = new TransformGroup();
-
-            transformGroup.Children.Add(e.Scale);
-            transformGroup.Children.Add(e.Translate);
-
-            this.RenderTransform = transformGroup;
+            this.RenderTransform = e.Transforms;
 
             this.TransformUpdated.raise(this, e);
         }

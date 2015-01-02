@@ -1,14 +1,10 @@
 module Fayde.Transformer {
-    import ScaleTransform = Fayde.Media.ScaleTransform;
-    import TranslateTransform = Fayde.Media.TranslateTransform;
 
     export class TransformerEventArgs implements nullstone.IEventArgs {
-        Scale: ScaleTransform;
-        Translate: TranslateTransform;
+        Transforms: TransformGroup;
 
-        constructor (scale: ScaleTransform, translate: TranslateTransform) {
-            Object.defineProperty(this, 'Scale', {value: scale, writable: false});
-            Object.defineProperty(this, 'Translate', {value: translate, writable: false});
+        constructor (transforms: TransformGroup) {
+            Object.defineProperty(this, 'Transforms', {value: transforms, writable: false});
         }
     }
 }

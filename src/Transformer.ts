@@ -1,3 +1,5 @@
+import ScaleTransform = Fayde.Media.ScaleTransform;
+import TranslateTransform = Fayde.Media.TranslateTransform;
 import Vector = Fayde.Utils.Vector;
 
 module Fayde.Transformer {
@@ -87,7 +89,11 @@ module Fayde.Transformer {
                 this._Constrain();
             }
 
-            this.UpdateTransform.raise(this, new TransformerEventArgs(this.ScaleTransform, this.TranslateTransform));
+            var transforms = new TransformGroup();
+            transforms.Children.Add(this.ScaleTransform);
+            transforms.Children.Add(this.TranslateTransform);
+
+            this.UpdateTransform.raise(this, new TransformerEventArgs(transforms));
         }
 
         public SizeChanged(viewportSize: Size) {

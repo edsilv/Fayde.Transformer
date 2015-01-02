@@ -5,6 +5,8 @@ var Fayde;
         Transformer.Version = '0.4.0';
     })(Transformer = Fayde.Transformer || (Fayde.Transformer = {}));
 })(Fayde || (Fayde = {}));
+var ScaleTransform = Fayde.Media.ScaleTransform;
+var TranslateTransform = Fayde.Media.TranslateTransform;
 var Vector = Fayde.Utils.Vector;
 var Fayde;
 (function (Fayde) {
@@ -73,7 +75,10 @@ var Fayde;
                 if (this.ConstrainToViewport) {
                     this._Constrain();
                 }
-                this.UpdateTransform.raise(this, new _Transformer.TransformerEventArgs(this.ScaleTransform, this.TranslateTransform));
+                var transforms = new TransformGroup();
+                transforms.Children.Add(this.ScaleTransform);
+                transforms.Children.Add(this.TranslateTransform);
+                this.UpdateTransform.raise(this, new _Transformer.TransformerEventArgs(transforms));
             };
             Transformer.prototype.SizeChanged = function (viewportSize) {
                 this.ViewportSize = viewportSize;
@@ -227,8 +232,6 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-var ScaleTransform = Fayde.Media.ScaleTransform;
-var TranslateTransform = Fayde.Media.TranslateTransform;
 var TransformGroup = Fayde.Media.TransformGroup;
 var Fayde;
 (function (Fayde) {
@@ -292,10 +295,7 @@ var Fayde;
                 configurable: true
             });
             TransformerControl.prototype.UpdateTransform = function (sender, e) {
-                var transformGroup = new TransformGroup();
-                transformGroup.Children.Add(e.Scale);
-                transformGroup.Children.Add(e.Translate);
-                this.RenderTransform = transformGroup;
+                this.RenderTransform = e.Transforms;
                 this.TransformUpdated.raise(this, e);
             };
             // intialise viewport size and handle resizing
@@ -356,9 +356,8 @@ var Fayde;
     var Transformer;
     (function (Transformer) {
         var TransformerEventArgs = (function () {
-            function TransformerEventArgs(scale, translate) {
-                Object.defineProperty(this, 'Scale', { value: scale, writable: false });
-                Object.defineProperty(this, 'Translate', { value: translate, writable: false });
+            function TransformerEventArgs(transforms) {
+                Object.defineProperty(this, 'Transforms', { value: transforms, writable: false });
             }
             return TransformerEventArgs;
         })();

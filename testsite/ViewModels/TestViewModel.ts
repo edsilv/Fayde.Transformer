@@ -1,5 +1,3 @@
-/// <amd-dependency path="Fayde.Utils" />
-
 import ScaleTransform = Fayde.Media.ScaleTransform;
 import TranslateTransform = Fayde.Media.TranslateTransform;
 
@@ -12,8 +10,7 @@ class TestViewModel extends Fayde.MVVM.ViewModelBase {
     _XPosition: number = 0;
     _YPosition: number = 0;
     _AnimationSpeed: number = 250;
-    _TranslateTransform: TranslateTransform;
-    _ScaleTransform: ScaleTransform;
+    _Transforms: TransformGroup;
 
     get ZoomFactor(): number {
         return this._ZoomFactor;
@@ -70,22 +67,13 @@ class TestViewModel extends Fayde.MVVM.ViewModelBase {
         this.OnPropertyChanged("AnimationSpeed");
     }
 
-    get ScaleTransform(): ScaleTransform {
-        return this._ScaleTransform;
+    get Transforms(): TransformGroup {
+        return this._Transforms;
     }
 
-    set ScaleTransform(value: ScaleTransform) {
-        this._ScaleTransform = value;
-        this.OnPropertyChanged("ScaleTransform");
-    }
-
-    get TranslateTransform(): TranslateTransform {
-        return this._TranslateTransform;
-    }
-
-    set TranslateTransform(value: TranslateTransform) {
-        this._TranslateTransform = value;
-        this.OnPropertyChanged("TranslateTransform");
+    set Transforms(value: TransformGroup) {
+        this._Transforms = value;
+        this.OnPropertyChanged("Transforms");
     }
 
     constructor() {
@@ -95,8 +83,7 @@ class TestViewModel extends Fayde.MVVM.ViewModelBase {
     }
 
     TransformUpdated(e: Fayde.IEventBindingArgs<Fayde.Transformer.TransformerEventArgs>){
-        this.ScaleTransform = e.args.Scale;
-        this.TranslateTransform = e.args.Translate;
+        this.Transforms = e.args.Transforms;
     }
 
     Background_MouseDown(e: Fayde.IEventBindingArgs<Fayde.Input.MouseButtonEventArgs>){
@@ -136,7 +123,8 @@ class TestViewModel extends Fayde.MVVM.ViewModelBase {
     }
 
     GetScrollAmount(): number {
-        return this.ScaleTransform.ScaleX * 100;
+        var scale = this.Transforms.Children.GetValueAt(0);
+        return (<any>scale).ScaleX * 100;
     }
 
 }

@@ -1,6 +1,8 @@
 declare module Fayde.Transformer {
     var Version: string;
 }
+import ScaleTransform = Fayde.Media.ScaleTransform;
+import TranslateTransform = Fayde.Media.TranslateTransform;
 import Vector = Fayde.Utils.Vector;
 declare module Fayde.Transformer {
     class Transformer {
@@ -48,8 +50,6 @@ declare module Fayde.Transformer {
         PointerMove(position: Point): void;
     }
 }
-import ScaleTransform = Fayde.Media.ScaleTransform;
-import TranslateTransform = Fayde.Media.TranslateTransform;
 import TransformGroup = Fayde.Media.TransformGroup;
 declare module Fayde.Transformer {
     class TransformerControl extends Controls.ContentControl {
@@ -90,11 +90,8 @@ declare module Fayde.Transformer {
     }
 }
 declare module Fayde.Transformer {
-    import ScaleTransform = Fayde.Media.ScaleTransform;
-    import TranslateTransform = Fayde.Media.TranslateTransform;
     class TransformerEventArgs implements nullstone.IEventArgs {
-        Scale: ScaleTransform;
-        Translate: TranslateTransform;
-        constructor(scale: ScaleTransform, translate: TranslateTransform);
+        Transforms: TransformGroup;
+        constructor(transforms: TransformGroup);
     }
 }

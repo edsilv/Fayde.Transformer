@@ -79,16 +79,16 @@ module Fayde.Transformer {
             this._Transformer.UpdateTransform.on(this.UpdateTransform, this);
         }
 
-        private UpdateTransform() : void {
+        private UpdateTransform(sender: Transformer, e: TransformerEventArgs) : void {
 
             var transformGroup = new TransformGroup();
 
-            transformGroup.Children.Add(this._Transformer.ScaleTransform);
-            transformGroup.Children.Add(this._Transformer.TranslateTransform);
+            transformGroup.Children.Add(e.Scale);
+            transformGroup.Children.Add(e.Translate);
 
             this.RenderTransform = transformGroup;
 
-            this.TransformUpdated.raise(this, new TransformerEventArgs(this._Transformer.ScaleTransform, this._Transformer.TranslateTransform));
+            this.TransformUpdated.raise(this, e);
         }
 
         // intialise viewport size and handle resizing
@@ -125,7 +125,7 @@ module Fayde.Transformer {
             if (e.Handled)
                 return;
 
-            this.CaptureMouse();
+            e.Device.Capture(this);
 
             var pos: Fayde.Input.TouchPoint = e.GetTouchPoint(null);
             this._Transformer.PointerDown(new Point(pos.Position.x, pos.Position.y));
@@ -135,7 +135,8 @@ module Fayde.Transformer {
             if (e.Handled)
                 return;
 
-            this.ReleaseMouseCapture();
+            e.Device.ReleaseCapture(this);
+
             this._Transformer.PointerUp();
         }
 

@@ -34,7 +34,7 @@ module Fayde.Transformer {
         public ConstrainToViewport: boolean;
         public DragAccelerationEnabled: boolean;
 
-        public UpdateTransform: Fayde.RoutedEvent<Fayde.RoutedEventArgs> = new Fayde.RoutedEvent<Fayde.RoutedEventArgs>();
+        public UpdateTransform = new nullstone.Event<TransformerEventArgs>();
 
         get ScaleTransform(): ScaleTransform {
             if (!this._ScaleTransform){
@@ -87,7 +87,7 @@ module Fayde.Transformer {
                 this._Constrain();
             }
 
-            this.UpdateTransform.raise(this, new Fayde.RoutedEventArgs());
+            this.UpdateTransform.raise(this, new TransformerEventArgs(this.ScaleTransform, this.TranslateTransform));
         }
 
         public SizeChanged(viewportSize: Size) {

@@ -92,7 +92,7 @@
             </StackPanel>
 
             <StackPanel Margin="0,20,0,0">
-                <CheckBox x:Name="DragAccelerationEnabled" IsChecked="true">Drag Acceleration Enabled</CheckBox>
+                <CheckBox x:Name="DragAccelerationEnabled" IsChecked="true">Drag Acceleration</CheckBox>
             </StackPanel>
 
         </StackPanel>

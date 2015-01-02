@@ -24,7 +24,7 @@ var Fayde;
                 this._DragMinSpeed = 2;
                 this._DragMaxSpeed = 30;
                 this._DragFriction = 2;
-                this.UpdateTransform = new Fayde.RoutedEvent();
+                this.UpdateTransform = new nullstone.Event();
                 this._TweenEasing = TWEEN.Easing.Quadratic.InOut;
                 this._Timer = new Fayde.ClockTimer();
                 this._Timer.RegisterTimer(this);
@@ -73,7 +73,7 @@ var Fayde;
                 if (this.ConstrainToViewport) {
                     this._Constrain();
                 }
-                this.UpdateTransform.raise(this, new Fayde.RoutedEventArgs());
+                this.UpdateTransform.raise(this, new _Transformer.TransformerEventArgs(this.ScaleTransform, this.TranslateTransform));
             };
             Transformer.prototype.SizeChanged = function (viewportSize) {
                 this.ViewportSize = viewportSize;
@@ -279,12 +279,12 @@ var Fayde;
                 enumerable: true,
                 configurable: true
             });
-            TransformerControl.prototype.UpdateTransform = function () {
+            TransformerControl.prototype.UpdateTransform = function (sender, e) {
                 var transformGroup = new TransformGroup();
-                transformGroup.Children.Add(this._Transformer.ScaleTransform);
-                transformGroup.Children.Add(this._Transformer.TranslateTransform);
+                transformGroup.Children.Add(e.Scale);
+                transformGroup.Children.Add(e.Translate);
                 this.RenderTransform = transformGroup;
-                this.TransformUpdated.raise(this, new Transformer.TransformerEventArgs(this._Transformer.ScaleTransform, this._Transformer.TranslateTransform));
+                this.TransformUpdated.raise(this, e);
             };
             // intialise viewport size and handle resizing
             TransformerControl.prototype.Transformer_SizeChanged = function (sender, e) {
@@ -310,14 +310,14 @@ var Fayde;
             TransformerControl.prototype.Transformer_TouchDown = function (sender, e) {
                 if (e.Handled)
                     return;
-                this.CaptureMouse();
+                e.Device.Capture(this);
                 var pos = e.GetTouchPoint(null);
                 this._Transformer.PointerDown(new Point(pos.Position.x, pos.Position.y));
             };
             TransformerControl.prototype.Transformer_TouchUp = function (sender, e) {
                 if (e.Handled)
                     return;
-                this.ReleaseMouseCapture();
+                e.Device.ReleaseCapture(this);
                 this._Transformer.PointerUp();
             };
             TransformerControl.prototype.Transformer_TouchMove = function (sender, e) {

@@ -28,7 +28,7 @@ declare module Fayde.Transformer {
         ZoomLevel: number;
         ConstrainToViewport: boolean;
         DragAccelerationEnabled: boolean;
-        UpdateTransform: RoutedEvent<RoutedEventArgs>;
+        UpdateTransform: nullstone.Event<TransformerEventArgs>;
         ScaleTransform: ScaleTransform;
         TranslateTransform: TranslateTransform;
         constructor();
@@ -74,7 +74,7 @@ declare module Fayde.Transformer {
         TransformUpdated: nullstone.Event<TransformerEventArgs>;
         ViewportSize: Size;
         constructor();
-        private UpdateTransform();
+        private UpdateTransform(sender, e);
         private Transformer_SizeChanged(sender, e);
         private Transformer_MouseLeftButtonDown(sender, e);
         private Transformer_MouseLeftButtonUp(sender, e);

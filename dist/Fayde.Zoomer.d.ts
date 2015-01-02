@@ -7,12 +7,12 @@ declare module Fayde.Zoomer {
         private _TweenEasing;
         private _Timer;
         private _LastVisualTick;
-        private _IsMouseDown;
+        private _IsPointerDown;
         private _IsDragging;
-        private _LastMousePosition;
-        private _LastDragAccelerationMousePosition;
-        private _MousePosition;
-        private _MouseDelta;
+        private _LastPointerPosition;
+        private _LastDragAccelerationPointerPosition;
+        private _PointerPosition;
+        private _PointerDelta;
         private _DragVelocity;
         private _DragAcceleration;
         private _VelocityAccumulationTolerance;
@@ -42,12 +42,9 @@ declare module Fayde.Zoomer {
         private _Constrain();
         private _AddVelocity();
         private _RemoveVelocity();
-        MouseDown(): void;
-        MouseUp(): void;
-        MouseMove(position: Point): void;
-        TouchDown(position: Point): void;
-        TouchUp(): void;
-        TouchMove(position: Point): void;
+        PointerDown(position: Point): void;
+        PointerUp(): void;
+        PointerMove(position: Point): void;
     }
 }
 import ScaleTransform = Fayde.Media.ScaleTransform;
@@ -64,6 +61,9 @@ declare module Fayde.Zoomer {
         private OnZoomFactorChanged(args);
         private OnZoomLevelsChanged(args);
         private OnZoomLevelChanged(args);
+        private OnConstrainToViewportChanged(args);
+        private OnAnimationSpeedChanged(args);
+        private OnDragAccelerationEnabledChanged(args);
         AnimationSpeed: number;
         ZoomFactor: number;
         ZoomLevels: number;

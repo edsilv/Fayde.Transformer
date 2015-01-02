@@ -4,15 +4,14 @@ import TransformGroup = Fayde.Media.TransformGroup;
 
 module Fayde.Zoomer {
 
-    // todo: use minerva vector struct
     export class Zoomer extends Fayde.Controls.ContentControl {
 
         static ZoomFactorProperty = DependencyProperty.RegisterFull("ZoomFactor", () => Number, Zoomer, 2, (d, args) => (<Zoomer>d).OnZoomFactorChanged(args));
         static ZoomLevelsProperty = DependencyProperty.RegisterFull("ZoomLevels", () => Number, Zoomer, 0, (d, args) => (<Zoomer>d).OnZoomLevelsChanged(args));
         static ZoomLevelProperty = DependencyProperty.RegisterFull("ZoomLevel", () => Number, Zoomer, 0, (d, args) => (<Zoomer>d).OnZoomLevelChanged(args));
-        static ConstrainToViewportProperty = DependencyProperty.RegisterFull("ConstrainToViewport", () => Boolean, Zoomer, true);
-        static AnimationSpeedProperty = DependencyProperty.RegisterFull("AnimationSpeed", () => Number, Zoomer, 250);
-        static DragAccelerationEnabledProperty = DependencyProperty.RegisterFull("DragAccelerationEnabled", () => Boolean, Zoomer, true);
+        static ConstrainToViewportProperty = DependencyProperty.RegisterFull("ConstrainToViewport", () => Boolean, Zoomer, true, (d, args) => (<Zoomer>d).OnConstrainToViewportChanged(args));
+        static AnimationSpeedProperty = DependencyProperty.RegisterFull("AnimationSpeed", () => Number, Zoomer, 250, (d, args) => (<Zoomer>d).OnAnimationSpeedChanged(args));
+        static DragAccelerationEnabledProperty = DependencyProperty.RegisterFull("DragAccelerationEnabled", () => Boolean, Zoomer, true, (d, args) => (<Zoomer>d).OnDragAccelerationEnabledChanged(args));
 
         private OnZoomFactorChanged (args: IDependencyPropertyChangedEventArgs) {
             this._LogicalZoomer.ZoomFactor = this.ZoomFactor;
@@ -29,60 +28,24 @@ module Fayde.Zoomer {
             this._LogicalZoomer.ZoomTo(this.ZoomLevel);
         }
 
+        private OnConstrainToViewportChanged (args: IDependencyPropertyChangedEventArgs) {
+            this._LogicalZoomer.ConstrainToViewport = this.ConstrainToViewport;
+        }
+
+        private OnAnimationSpeedChanged (args: IDependencyPropertyChangedEventArgs) {
+            this._LogicalZoomer.AnimationSpeed = this.AnimationSpeed;
+        }
+
+        private OnDragAccelerationEnabledChanged (args: IDependencyPropertyChangedEventArgs) {
+            this._LogicalZoomer.DragAccelerationEnabled = this.DragAccelerationEnabled;
+        }
+
         AnimationSpeed: number;
         ZoomFactor: number;
         ZoomLevels: number;
         ZoomLevel: number;
         ConstrainToViewport: boolean;
         DragAccelerationEnabled: boolean;
-
-        //get AnimationSpeed(): number {
-        //    return this._LogicalZoomer.AnimationSpeed;
-        //}
-        //
-        //set AnimationSpeed(value: number) {
-        //    this._LogicalZoomer.AnimationSpeed = value;
-        //}
-        //
-        //get ZoomFactor(): number {
-        //    return this._LogicalZoomer.ZoomFactor;
-        //}
-        //
-        //set ZoomFactor(value: number) {
-        //    this._LogicalZoomer.ZoomFactor = value;
-        //}
-        //
-        //get ZoomLevels(): number {
-        //    return this._LogicalZoomer.ZoomLevels;
-        //}
-        //
-        //set ZoomLevels(value: number) {
-        //    this._LogicalZoomer.ZoomLevels = value;
-        //}
-        //
-        //get ZoomLevel(): number {
-        //    return this._LogicalZoomer.ZoomLevel;
-        //}
-        //
-        //set ZoomLevel(value: number) {
-        //    this._LogicalZoomer.ZoomLevel = value;
-        //}
-        //
-        //get ConstrainToViewport(): boolean {
-        //    return this._LogicalZoomer.ConstrainToViewport;
-        //}
-        //
-        //set ConstrainToViewport(value: boolean) {
-        //    this._LogicalZoomer.ConstrainToViewport = value;
-        //}
-        //
-        //get DragAccelerationEnabled(): boolean {
-        //    return this._LogicalZoomer.DragAccelerationEnabled;
-        //}
-        //
-        //set DragAccelerationEnabled(value: boolean) {
-        //    this._LogicalZoomer.DragAccelerationEnabled = value;
-        //}
 
         private _LogicalZoomer: LogicalZoomer;
 
@@ -105,13 +68,12 @@ module Fayde.Zoomer {
             this.SizeChanged.on(this.Zoomer_SizeChanged, this);
 
             this._LogicalZoomer = new LogicalZoomer();
-
-            //this._LogicalZoomer.AnimationSpeed = this.AnimationSpeed;
-            //this._LogicalZoomer.ZoomFactor = this.ZoomFactor;
-            //this._LogicalZoomer.ZoomLevels = this.ZoomLevels;
-            //this._LogicalZoomer.ZoomLevel = this.ZoomLevel;
-            //this._LogicalZoomer.ConstrainToViewport = this.ConstrainToViewport;
-            //this._LogicalZoomer.DragAccelerationEnabled =this.DragAccelerationEnabled;
+            this._LogicalZoomer.AnimationSpeed = this.AnimationSpeed;
+            this._LogicalZoomer.ZoomFactor = this.ZoomFactor;
+            this._LogicalZoomer.ZoomLevels = this.ZoomLevels;
+            this._LogicalZoomer.ZoomLevel = this.ZoomLevel;
+            this._LogicalZoomer.ConstrainToViewport = this.ConstrainToViewport;
+            this._LogicalZoomer.DragAccelerationEnabled = this.DragAccelerationEnabled;
             this._LogicalZoomer.ViewportSize = this.ViewportSize;
 
             this._LogicalZoomer.UpdateTransform.on(this.UpdateTransform, this);
@@ -126,7 +88,7 @@ module Fayde.Zoomer {
 
             this.RenderTransform = transformGroup;
 
-            //this.TransformUpdated.raise(this, new ZoomerEventArgs(this._LogicalZoomer.ScaleTransform, this._LogicalZoomer.TranslateTransform));
+            this.TransformUpdated.raise(this, new ZoomerEventArgs(this._LogicalZoomer.ScaleTransform, this._LogicalZoomer.TranslateTransform));
         }
 
         // intialise viewport size and handle resizing
@@ -140,14 +102,14 @@ module Fayde.Zoomer {
 
             this.CaptureMouse();
 
-            this._LogicalZoomer.MouseDown();
+            this._LogicalZoomer.PointerDown(e.AbsolutePos);
         }
 
         private Zoomer_MouseLeftButtonUp(sender: any, e: Fayde.Input.MouseButtonEventArgs) {
             if (e.Handled)
                 return;
 
-            this._LogicalZoomer.MouseUp();
+            this._LogicalZoomer.PointerUp();
 
             this.ReleaseMouseCapture();
         }
@@ -156,7 +118,7 @@ module Fayde.Zoomer {
             if (e.Handled)
                 return;
 
-            this._LogicalZoomer.MouseMove(e.AbsolutePos);
+            this._LogicalZoomer.PointerMove(e.AbsolutePos);
         }
 
         private Zoomer_TouchDown(sender: any, e: Fayde.Input.TouchEventArgs) {
@@ -166,7 +128,7 @@ module Fayde.Zoomer {
             this.CaptureMouse();
 
             var pos: Fayde.Input.TouchPoint = e.GetTouchPoint(null);
-            this._LogicalZoomer.TouchDown(new Point(pos.Position.x, pos.Position.y));
+            this._LogicalZoomer.PointerDown(new Point(pos.Position.x, pos.Position.y));
         }
 
         private Zoomer_TouchUp(sender: any, e: Fayde.Input.TouchEventArgs) {
@@ -174,7 +136,7 @@ module Fayde.Zoomer {
                 return;
 
             this.ReleaseMouseCapture();
-            this._LogicalZoomer.TouchUp();
+            this._LogicalZoomer.PointerUp();
         }
 
         private Zoomer_TouchMove(sender: any, e: Fayde.Input.TouchEventArgs) {
@@ -183,7 +145,7 @@ module Fayde.Zoomer {
 
             var pos: Fayde.Input.TouchPoint = e.GetTouchPoint(null);
 
-            this._LogicalZoomer.TouchMove(new Point(pos.Position.x, pos.Position.y));
+            this._LogicalZoomer.PointerMove(new Point(pos.Position.x, pos.Position.y));
         }
     }
 

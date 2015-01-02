@@ -15,15 +15,19 @@ var Fayde;
         var LogicalZoomer = (function () {
             function LogicalZoomer() {
                 this._LastVisualTick = new Date(0).getTime();
-                this._IsMouseDown = false;
+                this._IsPointerDown = false;
                 this._IsDragging = false;
-                this._MouseDelta = new Vector(0, 0);
+                this._PointerDelta = new Vector(0, 0);
                 this._DragVelocity = new Vector(0, 0);
                 this._DragAcceleration = new Vector(0, 0);
                 this._VelocityAccumulationTolerance = 10; // dragging faster than this builds velocity
                 this._DragMinSpeed = 2;
                 this._DragMaxSpeed = 30;
                 this._DragFriction = 2;
+                this.ZoomLevels = 5;
+                this.ZoomLevel = 0;
+                this.ConstrainToViewport = true;
+                this.DragAccelerationEnabled = true;
                 this.UpdateTransform = new Fayde.RoutedEvent();
                 this._TweenEasing = TWEEN.Easing.Quadratic.InOut;
                 this._Timer = new Fayde.ClockTimer();
@@ -145,21 +149,21 @@ var Fayde;
                 }
             };
             LogicalZoomer.prototype._AddVelocity = function () {
-                var mouseStopped = false;
-                if (this._LastDragAccelerationMousePosition && this._LastDragAccelerationMousePosition.Equals(this._MousePosition)) {
-                    mouseStopped = true;
+                var pointerStopped = false;
+                if (this._LastDragAccelerationPointerPosition && this._LastDragAccelerationPointerPosition.Equals(this._PointerPosition)) {
+                    pointerStopped = true;
                 }
-                this._LastDragAccelerationMousePosition = this._MousePosition;
+                this._LastDragAccelerationPointerPosition = this._PointerPosition;
                 if (this._IsDragging) {
-                    if (mouseStopped) {
-                        // mouse isn't moving. remove velocity
+                    if (pointerStopped) {
+                        // pointer isn't moving. remove velocity
                         this._RemoveVelocity();
                     }
                     else {
                         // only add to velocity if dragging fast enough
-                        if (this._MouseDelta.Mag() > this._VelocityAccumulationTolerance) {
+                        if (this._PointerDelta.Mag() > this._VelocityAccumulationTolerance) {
                             // calculate acceleration
-                            this._DragAcceleration.Add(this._MouseDelta);
+                            this._DragAcceleration.Add(this._PointerDelta);
                             // integrate acceleration
                             this._DragVelocity.Add(this._DragAcceleration);
                             this._DragVelocity.Limit(this._DragMaxSpeed);
@@ -187,48 +191,27 @@ var Fayde;
             LogicalZoomer.prototype._RemoveVelocity = function () {
                 this._DragVelocity.Mult(0);
             };
-            LogicalZoomer.prototype.MouseDown = function () {
-                this._IsMouseDown = true;
+            LogicalZoomer.prototype.PointerDown = function (position) {
+                this._IsPointerDown = true;
+                this._LastPointerPosition = this._PointerPosition || new Vector(0, 0);
+                this._PointerPosition = new Vector(position.x, position.y);
                 this._RemoveVelocity();
             };
-            LogicalZoomer.prototype.MouseUp = function () {
-                this._IsMouseDown = false;
+            LogicalZoomer.prototype.PointerUp = function () {
+                this._IsPointerDown = false;
                 this._IsDragging = false;
             };
-            LogicalZoomer.prototype.MouseMove = function (position) {
-                if (this._IsMouseDown) {
+            LogicalZoomer.prototype.PointerMove = function (position) {
+                if (this._IsPointerDown) {
                     this._IsDragging = true;
                 }
-                this._LastMousePosition = this._MousePosition || new Vector(0, 0);
-                this._MousePosition = new Vector(position.x, position.y);
-                this._MouseDelta = this._MousePosition.Get();
-                this._MouseDelta.Sub(this._LastMousePosition);
+                this._LastPointerPosition = this._PointerPosition || new Vector(0, 0);
+                this._PointerPosition = new Vector(position.x, position.y);
+                this._PointerDelta = this._PointerPosition.Get();
+                this._PointerDelta.Sub(this._LastPointerPosition);
                 if (this._IsDragging) {
-                    this.TranslateTransform.X += this._MouseDelta.X;
-                    this.TranslateTransform.Y += this._MouseDelta.Y;
-                }
-            };
-            LogicalZoomer.prototype.TouchDown = function (position) {
-                this._IsMouseDown = true;
-                this._LastMousePosition = this._MousePosition || new Vector(0, 0);
-                this._MousePosition = new Vector(position.x, position.y);
-                this._RemoveVelocity();
-            };
-            LogicalZoomer.prototype.TouchUp = function () {
-                this._IsMouseDown = false;
-                this._IsDragging = false;
-            };
-            LogicalZoomer.prototype.TouchMove = function (position) {
-                if (this._IsMouseDown) {
-                    this._IsDragging = true;
-                }
-                this._LastMousePosition = this._MousePosition || new Vector(0, 0);
-                this._MousePosition = new Vector(position.x, position.y);
-                this._MouseDelta = this._MousePosition.Get();
-                this._MouseDelta.Sub(this._LastMousePosition);
-                if (this._IsDragging) {
-                    this.TranslateTransform.X += this._MouseDelta.X;
-                    this.TranslateTransform.Y += this._MouseDelta.Y;
+                    this.TranslateTransform.X += this._PointerDelta.X;
+                    this.TranslateTransform.Y += this._PointerDelta.Y;
                 }
             };
             return LogicalZoomer;
@@ -249,7 +232,6 @@ var Fayde;
 (function (Fayde) {
     var Zoomer;
     (function (_Zoomer) {
-        // todo: use minerva vector struct
         var Zoomer = (function (_super) {
             __extends(Zoomer, _super);
             function Zoomer() {
@@ -264,12 +246,12 @@ var Fayde;
                 this.TouchMove.on(this.Zoomer_TouchMove, this);
                 this.SizeChanged.on(this.Zoomer_SizeChanged, this);
                 this._LogicalZoomer = new _Zoomer.LogicalZoomer();
-                //this._LogicalZoomer.AnimationSpeed = this.AnimationSpeed;
-                //this._LogicalZoomer.ZoomFactor = this.ZoomFactor;
-                //this._LogicalZoomer.ZoomLevels = this.ZoomLevels;
-                //this._LogicalZoomer.ZoomLevel = this.ZoomLevel;
-                //this._LogicalZoomer.ConstrainToViewport = this.ConstrainToViewport;
-                //this._LogicalZoomer.DragAccelerationEnabled =this.DragAccelerationEnabled;
+                this._LogicalZoomer.AnimationSpeed = this.AnimationSpeed;
+                this._LogicalZoomer.ZoomFactor = this.ZoomFactor;
+                this._LogicalZoomer.ZoomLevels = this.ZoomLevels;
+                this._LogicalZoomer.ZoomLevel = this.ZoomLevel;
+                this._LogicalZoomer.ConstrainToViewport = this.ConstrainToViewport;
+                this._LogicalZoomer.DragAccelerationEnabled = this.DragAccelerationEnabled;
                 this._LogicalZoomer.ViewportSize = this.ViewportSize;
                 this._LogicalZoomer.UpdateTransform.on(this.UpdateTransform, this);
             }
@@ -285,6 +267,15 @@ var Fayde;
                 this._LogicalZoomer.ZoomLevel = this.ZoomLevel;
                 this._LogicalZoomer.ZoomTo(this.ZoomLevel);
             };
+            Zoomer.prototype.OnConstrainToViewportChanged = function (args) {
+                this._LogicalZoomer.ConstrainToViewport = this.ConstrainToViewport;
+            };
+            Zoomer.prototype.OnAnimationSpeedChanged = function (args) {
+                this._LogicalZoomer.AnimationSpeed = this.AnimationSpeed;
+            };
+            Zoomer.prototype.OnDragAccelerationEnabledChanged = function (args) {
+                this._LogicalZoomer.DragAccelerationEnabled = this.DragAccelerationEnabled;
+            };
             Object.defineProperty(Zoomer.prototype, "ViewportSize", {
                 get: function () {
                     return new Size(this.ActualWidth, this.ActualHeight);
@@ -297,7 +288,7 @@ var Fayde;
                 transformGroup.Children.Add(this._LogicalZoomer.ScaleTransform);
                 transformGroup.Children.Add(this._LogicalZoomer.TranslateTransform);
                 this.RenderTransform = transformGroup;
-                //this.TransformUpdated.raise(this, new ZoomerEventArgs(this._LogicalZoomer.ScaleTransform, this._LogicalZoomer.TranslateTransform));
+                this.TransformUpdated.raise(this, new _Zoomer.ZoomerEventArgs(this._LogicalZoomer.ScaleTransform, this._LogicalZoomer.TranslateTransform));
             };
             // intialise viewport size and handle resizing
             Zoomer.prototype.Zoomer_SizeChanged = function (sender, e) {
@@ -307,44 +298,44 @@ var Fayde;
                 if (e.Handled)
                     return;
                 this.CaptureMouse();
-                this._LogicalZoomer.MouseDown();
+                this._LogicalZoomer.PointerDown(e.AbsolutePos);
             };
             Zoomer.prototype.Zoomer_MouseLeftButtonUp = function (sender, e) {
                 if (e.Handled)
                     return;
-                this._LogicalZoomer.MouseUp();
+                this._LogicalZoomer.PointerUp();
                 this.ReleaseMouseCapture();
             };
             Zoomer.prototype.Zoomer_MouseMove = function (sender, e) {
                 if (e.Handled)
                     return;
-                this._LogicalZoomer.MouseMove(e.AbsolutePos);
+                this._LogicalZoomer.PointerMove(e.AbsolutePos);
             };
             Zoomer.prototype.Zoomer_TouchDown = function (sender, e) {
                 if (e.Handled)
                     return;
                 this.CaptureMouse();
                 var pos = e.GetTouchPoint(null);
-                this._LogicalZoomer.TouchDown(new Point(pos.Position.x, pos.Position.y));
+                this._LogicalZoomer.PointerDown(new Point(pos.Position.x, pos.Position.y));
             };
             Zoomer.prototype.Zoomer_TouchUp = function (sender, e) {
                 if (e.Handled)
                     return;
                 this.ReleaseMouseCapture();
-                this._LogicalZoomer.TouchUp();
+                this._LogicalZoomer.PointerUp();
             };
             Zoomer.prototype.Zoomer_TouchMove = function (sender, e) {
                 if (e.Handled)
                     return;
                 var pos = e.GetTouchPoint(null);
-                this._LogicalZoomer.TouchMove(new Point(pos.Position.x, pos.Position.y));
+                this._LogicalZoomer.PointerMove(new Point(pos.Position.x, pos.Position.y));
             };
             Zoomer.ZoomFactorProperty = DependencyProperty.RegisterFull("ZoomFactor", function () { return Number; }, Zoomer, 2, function (d, args) { return d.OnZoomFactorChanged(args); });
             Zoomer.ZoomLevelsProperty = DependencyProperty.RegisterFull("ZoomLevels", function () { return Number; }, Zoomer, 0, function (d, args) { return d.OnZoomLevelsChanged(args); });
             Zoomer.ZoomLevelProperty = DependencyProperty.RegisterFull("ZoomLevel", function () { return Number; }, Zoomer, 0, function (d, args) { return d.OnZoomLevelChanged(args); });
-            Zoomer.ConstrainToViewportProperty = DependencyProperty.RegisterFull("ConstrainToViewport", function () { return Boolean; }, Zoomer, true);
-            Zoomer.AnimationSpeedProperty = DependencyProperty.RegisterFull("AnimationSpeed", function () { return Number; }, Zoomer, 250);
-            Zoomer.DragAccelerationEnabledProperty = DependencyProperty.RegisterFull("DragAccelerationEnabled", function () { return Boolean; }, Zoomer, true);
+            Zoomer.ConstrainToViewportProperty = DependencyProperty.RegisterFull("ConstrainToViewport", function () { return Boolean; }, Zoomer, true, function (d, args) { return d.OnConstrainToViewportChanged(args); });
+            Zoomer.AnimationSpeedProperty = DependencyProperty.RegisterFull("AnimationSpeed", function () { return Number; }, Zoomer, 250, function (d, args) { return d.OnAnimationSpeedChanged(args); });
+            Zoomer.DragAccelerationEnabledProperty = DependencyProperty.RegisterFull("DragAccelerationEnabled", function () { return Boolean; }, Zoomer, true, function (d, args) { return d.OnDragAccelerationEnabledChanged(args); });
             return Zoomer;
         })(Fayde.Controls.ContentControl);
         _Zoomer.Zoomer = Zoomer;

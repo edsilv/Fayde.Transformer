@@ -11,12 +11,12 @@ module Fayde.Zoomer {
         private _Timer: Fayde.ClockTimer;
 
         private _LastVisualTick: number = new Date(0).getTime();
-        private _IsMouseDown: boolean = false;
+        private _IsPointerDown: boolean = false;
         private _IsDragging: boolean = false;
-        private _LastMousePosition: Vector;
-        private _LastDragAccelerationMousePosition: Vector;
-        private _MousePosition: Vector;
-        private _MouseDelta: Vector = new Vector(0, 0);
+        private _LastPointerPosition: Vector;
+        private _LastDragAccelerationPointerPosition: Vector;
+        private _PointerPosition: Vector;
+        private _PointerDelta: Vector = new Vector(0, 0);
         private _DragVelocity: Vector = new Vector(0, 0);
         private _DragAcceleration: Vector = new Vector(0, 0);
         private _VelocityAccumulationTolerance: number = 10; // dragging faster than this builds velocity
@@ -26,13 +26,13 @@ module Fayde.Zoomer {
         private _TranslateTransform: TranslateTransform;
         private _ScaleTransform: ScaleTransform;
 
-        public ViewportSize: Size;
-        public AnimationSpeed: number;
-        public ZoomFactor: number;
-        public ZoomLevels: number;
-        public ZoomLevel: number;
-        public ConstrainToViewport: boolean;
-        public DragAccelerationEnabled: boolean;
+        public ViewportSize: Size;// = new Size(1000, 500);
+        public AnimationSpeed: number;// = 250;
+        public ZoomFactor: number;// = 2;
+        public ZoomLevels: number = 5;
+        public ZoomLevel: number = 0;
+        public ConstrainToViewport: boolean = true;
+        public DragAccelerationEnabled: boolean = true;
 
         public UpdateTransform: Fayde.RoutedEvent<Fayde.RoutedEventArgs> = new Fayde.RoutedEvent<Fayde.RoutedEventArgs>();
 
@@ -196,23 +196,23 @@ module Fayde.Zoomer {
 
         private _AddVelocity(){
 
-            var mouseStopped = false;
+            var pointerStopped = false;
 
-            if (this._LastDragAccelerationMousePosition && this._LastDragAccelerationMousePosition.Equals(this._MousePosition)){
-                mouseStopped = true;
+            if (this._LastDragAccelerationPointerPosition && this._LastDragAccelerationPointerPosition.Equals(this._PointerPosition)){
+                pointerStopped = true;
             }
 
-            this._LastDragAccelerationMousePosition = this._MousePosition;
+            this._LastDragAccelerationPointerPosition = this._PointerPosition;
 
             if (this._IsDragging) {
-                if (mouseStopped){
-                    // mouse isn't moving. remove velocity
+                if (pointerStopped){
+                    // pointer isn't moving. remove velocity
                     this._RemoveVelocity();
                 } else {
                     // only add to velocity if dragging fast enough
-                    if (this._MouseDelta.Mag() > this._VelocityAccumulationTolerance) {
+                    if (this._PointerDelta.Mag() > this._VelocityAccumulationTolerance) {
                         // calculate acceleration
-                        this._DragAcceleration.Add(this._MouseDelta);
+                        this._DragAcceleration.Add(this._PointerDelta);
 
                         // integrate acceleration
                         this._DragVelocity.Add(this._DragAcceleration);
@@ -245,60 +245,33 @@ module Fayde.Zoomer {
             this._DragVelocity.Mult(0);
         }
 
-        public MouseDown() {
-            this._IsMouseDown = true;
+        public PointerDown(position: Point) {
+            this._IsPointerDown = true;
+
+            this._LastPointerPosition = this._PointerPosition || new Vector(0, 0);
+            this._PointerPosition = new Vector(position.x, position.y);
             this._RemoveVelocity();
         }
 
-        public MouseUp() {
-            this._IsMouseDown = false;
+        public PointerUp() {
+            this._IsPointerDown = false;
             this._IsDragging = false;
         }
 
-        public MouseMove(position: Point) {
-            if (this._IsMouseDown){
+        public PointerMove(position: Point) {
+            if (this._IsPointerDown){
                 this._IsDragging = true;
             }
 
-            this._LastMousePosition = this._MousePosition || new Vector(0, 0);
-            this._MousePosition = new Vector(position.x, position.y);
+            this._LastPointerPosition = this._PointerPosition || new Vector(0, 0);
+            this._PointerPosition = new Vector(position.x, position.y);
 
-            this._MouseDelta = this._MousePosition.Get();
-            this._MouseDelta.Sub(this._LastMousePosition);
-
-            if (this._IsDragging){
-                this.TranslateTransform.X += this._MouseDelta.X;
-                this.TranslateTransform.Y += this._MouseDelta.Y;
-            }
-        }
-
-        public TouchDown(position: Point) {
-            this._IsMouseDown = true;
-
-            this._LastMousePosition = this._MousePosition || new Vector(0, 0);
-            this._MousePosition = new Vector(position.x, position.y);
-            this._RemoveVelocity();
-        }
-
-        public TouchUp() {
-            this._IsMouseDown = false;
-            this._IsDragging = false;
-        }
-
-        public TouchMove(position: Point) {
-            if (this._IsMouseDown){
-                this._IsDragging = true;
-            }
-
-            this._LastMousePosition = this._MousePosition || new Vector(0, 0);
-            this._MousePosition = new Vector(position.x, position.y);
-
-            this._MouseDelta = this._MousePosition.Get();
-            this._MouseDelta.Sub(this._LastMousePosition);
+            this._PointerDelta = this._PointerPosition.Get();
+            this._PointerDelta.Sub(this._LastPointerPosition);
 
             if (this._IsDragging){
-                this.TranslateTransform.X += this._MouseDelta.X;
-                this.TranslateTransform.Y += this._MouseDelta.Y;
+                this.TranslateTransform.X += this._PointerDelta.X;
+                this.TranslateTransform.Y += this._PointerDelta.Y;
             }
         }
     }

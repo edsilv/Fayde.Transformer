@@ -1,4 +1,4 @@
-declare module Fayde.Zoomer {
+declare module Fayde.Transformer {
     var Version: string;
 }
 import ScaleTransform = Fayde.Media.ScaleTransform;

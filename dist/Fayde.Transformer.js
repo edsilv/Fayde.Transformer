@@ -1,9 +1,9 @@
 var Fayde;
 (function (Fayde) {
-    var Zoomer;
-    (function (Zoomer) {
-        Zoomer.Version = '0.5.0';
-    })(Zoomer = Fayde.Zoomer || (Fayde.Zoomer = {}));
+    var Transformer;
+    (function (Transformer) {
+        Transformer.Version = '0.5.1';
+    })(Transformer = Fayde.Transformer || (Fayde.Transformer = {}));
 })(Fayde || (Fayde = {}));
 var ScaleTransform = Fayde.Media.ScaleTransform;
 var TranslateTransform = Fayde.Media.TranslateTransform;

@@ -1,6 +1,6 @@
 {
-  "name": "Fayde.Zoomer",
-  "version": "0.5.1",
+  "name": "Fayde.Transformer",
+  "version": "0.5.2",
   "ignore": [
     "build",
     "nuget",

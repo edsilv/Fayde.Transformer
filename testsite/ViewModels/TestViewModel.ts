@@ -3,7 +3,6 @@ import TranslateTransform = Fayde.Media.TranslateTransform;
 
 class TestViewModel extends Fayde.MVVM.ViewModelBase {
 
-
     _ZoomFactor: number = 2;
     _ZoomLevels: number = 5;
     _ZoomLevel: number;

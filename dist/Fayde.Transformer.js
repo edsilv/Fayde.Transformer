@@ -2,7 +2,7 @@ var Fayde;
 (function (Fayde) {
     var Transformer;
     (function (Transformer) {
-        Transformer.Version = '0.5.3';
+        Transformer.Version = '0.5.4';
     })(Transformer = Fayde.Transformer || (Fayde.Transformer = {}));
 })(Fayde || (Fayde = {}));
 var ScaleTransform = Fayde.Media.ScaleTransform;
@@ -80,14 +80,26 @@ var Fayde;
                 transforms.Children.Add(this.TranslateTransform);
                 this.UpdateTransform.raise(this, new _Transformer.TransformerEventArgs(transforms));
             };
+            // todo: rename this to UpdateSize
             Transformer.prototype.SizeChanged = function (viewportSize) {
                 this.ViewportSize = viewportSize;
                 this.ScaleTransform = this._GetTargetScaleTransform(this.ZoomLevel);
                 this.TranslateTransform = this._GetTargetTranslateTransform(this.ScaleTransform);
             };
+            Transformer.prototype._ValidateZoomLevel = function (level) {
+                return (level >= 0) && (level <= this.ZoomLevels);
+            };
+            // pass a positive or negative value
+            Transformer.prototype.Zoom = function (amount) {
+                var newLevel = this.ZoomLevel + amount;
+                if (!this._ValidateZoomLevel(newLevel))
+                    return;
+                this.ZoomLevel = newLevel;
+                this.ZoomTo(newLevel);
+            };
             Transformer.prototype.ZoomTo = function (level) {
                 var _this = this;
-                if (!(level >= 0) || !(level <= this.ZoomLevels))
+                if (!this._ValidateZoomLevel(level))
                     return;
                 var scale = this._GetTargetScaleTransform(level);
                 var translate = this._GetTargetTranslateTransform(scale);

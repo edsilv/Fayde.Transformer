@@ -96,15 +96,31 @@ module Fayde.Transformer {
             this.UpdateTransform.raise(this, new TransformerEventArgs(transforms));
         }
 
+        // todo: rename this to UpdateSize
         public SizeChanged(viewportSize: Size) {
             this.ViewportSize = viewportSize;
             this.ScaleTransform = this._GetTargetScaleTransform(this.ZoomLevel);
             this.TranslateTransform = this._GetTargetTranslateTransform(this.ScaleTransform);
         }
 
+        private _ValidateZoomLevel(level: number): boolean {
+            return (level >= 0) && (level <= this.ZoomLevels);
+        }
+
+        // pass a positive or negative value
+        public Zoom(amount: number) {
+            var newLevel = this.ZoomLevel + amount;
+
+            if (!this._ValidateZoomLevel(newLevel)) return;
+
+            this.ZoomLevel = newLevel;
+
+            this.ZoomTo(newLevel);
+        }
+
         public ZoomTo(level: number): void {
 
-            if (!(level >= 0) || !(level <= this.ZoomLevels)) return;
+            if (!this._ValidateZoomLevel(level)) return;
 
             var scale = this._GetTargetScaleTransform(level);
             var translate = this._GetTargetTranslateTransform(scale);

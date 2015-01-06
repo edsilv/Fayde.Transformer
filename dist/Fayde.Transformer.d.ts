@@ -36,6 +36,8 @@ declare module Fayde.Transformer {
         constructor();
         OnTicked(lastTime: number, nowTime: number): void;
         SizeChanged(viewportSize: Size): void;
+        private _ValidateZoomLevel(level);
+        Zoom(amount: number): void;
         ZoomTo(level: number): void;
         private _GetTargetScaleTransform(level);
         Scroll(position: Point): void;

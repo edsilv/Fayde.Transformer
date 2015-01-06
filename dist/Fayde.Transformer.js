@@ -2,7 +2,7 @@ var Fayde;
 (function (Fayde) {
     var Transformer;
     (function (Transformer) {
-        Transformer.Version = '0.5.2';
+        Transformer.Version = '0.5.3';
     })(Transformer = Fayde.Transformer || (Fayde.Transformer = {}));
 })(Fayde || (Fayde = {}));
 var ScaleTransform = Fayde.Media.ScaleTransform;

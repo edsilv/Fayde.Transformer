@@ -9,13 +9,17 @@
     },
     "Fayde.Transformer": {
       "exports": "Fayde.Transformer",
-      "deps": ["Fayde.Utils", "tween"]
-    }
+      "deps": [
+        "Fayde.Utils",
+        "tween"
+      ]
+    },
+    "qunit": {}
   },
   "themes": {
     "Fayde.Utils": "none",
     "tween": "none",
-    "Fayde.Transformer": {
-    }
+    "Fayde.Transformer": {},
+    "qunit": "none"
   }
 }

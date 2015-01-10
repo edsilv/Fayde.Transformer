@@ -10,11 +10,11 @@
   ],
   "dependencies": {
     "fayde": "~0.16.8",
-    "fayde.controls": "~0.16.0",
     "fayde.utils": "git://github.com/edsilv/Fayde.Utils#~0.4.0",
     "tween.ts": "git://github.com/edsilv/tween.ts#~0.1.2"
   },
   "devDependencies": {
+    "fayde.controls": "~0.16.0",
     "qunit": "~1.16.0"
   }
 }

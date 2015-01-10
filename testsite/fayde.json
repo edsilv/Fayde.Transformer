@@ -12,15 +12,18 @@
     },
     "Fayde.Transformer": {
       "exports": "Fayde.Transformer",
-      "deps": ["Fayde.Utils", "tween"]
-    }
+      "deps": [
+        "Fayde.Utils",
+        "tween"
+      ]
+    },
+    "qunit": {}
   },
   "themes": {
     "Fayde.Utils": "none",
     "tween": "none",
-    "Fayde.Controls": {
-    },
-    "Fayde.Transformer": {
-    }
+    "Fayde.Controls": {},
+    "Fayde.Transformer": {},
+    "qunit": "none"
   }
 }

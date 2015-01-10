@@ -3,19 +3,18 @@
   "version": "0.5.4",
   "ignore": [
     "build",
-    "nuget",
     "test",
     "testsite",
     "typings",
     "Gruntfile.js"
   ],
   "dependencies": {
-    "fayde": "~0.16.0",
+    "fayde": "~0.16.8",
     "fayde.controls": "~0.16.0",
     "fayde.utils": "git://github.com/edsilv/Fayde.Utils#~0.4.0",
-    "tween.ts": "~0.1.0"
+    "tween.ts": "git://github.com/edsilv/tween.ts#~0.1.2"
   },
   "devDependencies": {
-    "qunit": "~1.15.0"
+    "qunit": "~1.16.0"
   }
 }

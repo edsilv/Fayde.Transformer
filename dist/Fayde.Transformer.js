@@ -1,9 +1,9 @@
 var Fayde;
 (function (Fayde) {
-    var Zoomer;
-    (function (Zoomer) {
-        Zoomer.Version = '0.2.2';
-    })(Zoomer = Fayde.Zoomer || (Fayde.Zoomer = {}));
+    var Transformer;
+    (function (Transformer) {
+        Transformer.Version = '0.2.2';
+    })(Transformer = Fayde.Transformer || (Fayde.Transformer = {}));
 })(Fayde || (Fayde = {}));
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -17,8 +17,8 @@ var TransformGroup = Fayde.Media.TransformGroup;
 var Vector = Fayde.Utils.Vector;
 var Fayde;
 (function (Fayde) {
-    var Zoomer;
-    (function (_Zoomer) {
+    var Transformer;
+    (function (Transformer) {
         var MAX_FPS = 100;
         var MAX_MSPF = 1000 / MAX_FPS;
         //enum Origin {
@@ -107,7 +107,7 @@ var Fayde;
                 transformGroup.Children.Add(this.ScaleTransform);
                 transformGroup.Children.Add(this.TranslateTransform);
                 this.RenderTransform = transformGroup;
-                this.TransformUpdated.raise(this, new _Zoomer.ZoomerEventArgs(this.ScaleTransform, this.TranslateTransform));
+                this.TransformUpdated.raise(this, new Transformer.ZoomerEventArgs(this.ScaleTransform, this.TranslateTransform));
             };
             // intialise viewport size and handle resizing
             Zoomer.prototype.Zoomer_SizeChanged = function (sender, e) {
@@ -272,13 +272,13 @@ var Fayde;
             Zoomer.AnimationSpeedProperty = DependencyProperty.RegisterFull("AnimationSpeed", function () { return Number; }, Zoomer, 250);
             return Zoomer;
         })(Fayde.Controls.ContentControl);
-        _Zoomer.Zoomer = Zoomer;
-    })(Zoomer = Fayde.Zoomer || (Fayde.Zoomer = {}));
+        Transformer.Zoomer = Zoomer;
+    })(Transformer = Fayde.Transformer || (Fayde.Transformer = {}));
 })(Fayde || (Fayde = {}));
 var Fayde;
 (function (Fayde) {
-    var Zoomer;
-    (function (Zoomer) {
+    var Transformer;
+    (function (Transformer) {
         var ZoomerEventArgs = (function () {
             function ZoomerEventArgs(scale, translate) {
                 Object.defineProperty(this, 'Scale', { value: scale, writable: false });
@@ -286,7 +286,7 @@ var Fayde;
             }
             return ZoomerEventArgs;
         })();
-        Zoomer.ZoomerEventArgs = ZoomerEventArgs;
-    })(Zoomer = Fayde.Zoomer || (Fayde.Zoomer = {}));
+        Transformer.ZoomerEventArgs = ZoomerEventArgs;
+    })(Transformer = Fayde.Transformer || (Fayde.Transformer = {}));
 })(Fayde || (Fayde = {}));
-//# sourceMappingURL=Fayde.Zoomer.js.map
+//# sourceMappingURL=Fayde.Transformer.js.map

@@ -1,4 +1,4 @@
-module Fayde.Zoomer {
+module Fayde.Transformer {
     import ScaleTransform = Fayde.Media.ScaleTransform;
     import TranslateTransform = Fayde.Media.TranslateTransform;
 

@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.wsick.com/fayde/x"
         xmlns:vms="ViewModels"
         xmlns:controls="lib://Fayde.Controls"
-        xmlns:z="lib://Fayde.Zoomer"
+        xmlns:z="lib://Fayde.Transformer"
         ThemeName="Metro">
     <Application.Resources>
     </Application.Resources>

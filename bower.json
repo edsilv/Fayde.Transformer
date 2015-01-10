@@ -1,22 +1,20 @@
 {
-  "name": "Fayde.Zoomer",
+  "name": "Fayde.Transformer",
   "version": "0.2.2",
   "ignore": [
     "build",
-    "nuget",
-    "src",
     "test",
     "testsite",
     "typings",
     "Gruntfile.js"
   ],
   "dependencies": {
-    "fayde": "~0.16.0",
-    "fayde.controls": "~0.16.0",
-    "fayde.utils": "git://github.com/edsilv/Fayde.Utils#~0.4.0",
-    "tween.ts": "~0.1.0"
+    "fayde": "~0.16.8",
+    "Fayde.Utils": "git://github.com/edsilv/fayde.utils#~0.4.2",
+    "tween.ts": "git://github.com/edsilv/tween.ts.git#~0.1.2",
+    "fayde.controls": "~0.16.4"
   },
   "devDependencies": {
-    "qunit": "~1.15.0"
+    "qunit": "~1.16.0"
   }
 }

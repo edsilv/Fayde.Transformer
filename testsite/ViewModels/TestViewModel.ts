@@ -76,7 +76,7 @@ class TestViewModel extends Fayde.MVVM.ViewModelBase {
         this.ZoomLevel = 0;
     }
 
-    TransformUpdated(e: Fayde.IEventBindingArgs<Fayde.Zoomer.ZoomerEventArgs>){
+    TransformUpdated(e: Fayde.IEventBindingArgs<Fayde.Transformer.ZoomerEventArgs>){
         this.ScaleTransform = e.args.Scale;
         this.TranslateTransform = e.args.Translate;
     }

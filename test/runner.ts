@@ -1,5 +1,5 @@
 module runner {
-    var libpath = "lib/Fayde.Zoomer/dist/Fayde.Zoomer";
+    var libpath = "lib/Fayde.Transformer/dist/Fayde.Transformer";
     var testModules = [
         ".build/tests/test1"
     ];

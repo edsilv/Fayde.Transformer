@@ -1,11 +1,11 @@
-declare module Fayde.Zoomer {
+declare module Fayde.Transformer {
     var Version: string;
 }
 import ScaleTransform = Fayde.Media.ScaleTransform;
 import TranslateTransform = Fayde.Media.TranslateTransform;
 import TransformGroup = Fayde.Media.TransformGroup;
 import Vector = Fayde.Utils.Vector;
-declare module Fayde.Zoomer {
+declare module Fayde.Transformer {
     class Zoomer extends Controls.ContentControl {
         static ZoomFactorProperty: DependencyProperty;
         static ZoomLevelsProperty: DependencyProperty;
@@ -58,7 +58,7 @@ declare module Fayde.Zoomer {
         private Zoomer_MouseMove(sender, e);
     }
 }
-declare module Fayde.Zoomer {
+declare module Fayde.Transformer {
     import ScaleTransform = Fayde.Media.ScaleTransform;
     import TranslateTransform = Fayde.Media.TranslateTransform;
     class ZoomerEventArgs implements nullstone.IEventArgs {

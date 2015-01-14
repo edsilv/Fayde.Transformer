@@ -20,7 +20,7 @@ module.exports = function (grunt) {
         livereload: 15151
     };
     var meta = {
-        name: 'Fayde.Transformer'
+        name: 'fayde.transformer'
     };
 
     var dirs = {

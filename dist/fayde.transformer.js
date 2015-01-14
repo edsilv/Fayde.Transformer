@@ -376,4 +376,4 @@ var Fayde;
         Transformer.TransformerEventArgs = TransformerEventArgs;
     })(Transformer = Fayde.Transformer || (Fayde.Transformer = {}));
 })(Fayde || (Fayde = {}));
-//# sourceMappingURL=Fayde.Transformer.js.map
+//# sourceMappingURL=fayde.transformer.js.map

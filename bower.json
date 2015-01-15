@@ -1,6 +1,6 @@
 {
-  "name": "Fayde.Transformer",
-  "version": "0.5.5",
+  "name": "fayde.transformer",
+  "version": "0.6.0",
   "ignore": [
     "build",
     "test",
@@ -9,12 +9,12 @@
     "Gruntfile.js"
   ],
   "dependencies": {
-    "fayde": "~0.16.8",
-    "fayde.utils": "git://github.com/edsilv/Fayde.Utils#~0.4.0",
-    "tween.ts": "git://github.com/edsilv/tween.ts#~0.1.2"
+    "fayde": "~0.16.11",
+    "fayde.utils": "git://github.com/bsick7/Fayde.Utils#~0.5.0",
+    "tween.ts": "git://github.com/bsick7/tween.ts#~0.1.2"
   },
   "devDependencies": {
-    "fayde.controls": "~0.16.0",
+    "fayde.controls": "~0.17.0",
     "qunit": "~1.16.0"
   }
 }

@@ -2,8 +2,8 @@
         xmlns="http://schemas.wsick.com/fayde"
         xmlns:x="http://schemas.wsick.com/fayde/x"
         xmlns:vms="ViewModels"
-        xmlns:controls="lib://Fayde.Controls"
-        xmlns:t="lib://Fayde.Transformer"
+        xmlns:controls="lib://fayde.controls"
+        xmlns:t="lib://fayde.transformer"
         ThemeName="Metro">
     <Application.Resources>
     </Application.Resources>

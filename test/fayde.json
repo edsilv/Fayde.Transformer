@@ -4,7 +4,8 @@
       "exports": "Fayde.Transformer",
       "deps": [
         "fayde.utils",
-        "tween"
+        "tween",
+        "qunit"
       ]
     },
     "fayde.utils": {
@@ -14,14 +15,16 @@
       "exports": "TWEEN",
       "path": "lib/tween.ts/build/tween.min"
     },
-    "fayde.controls": {
-      "exports": "Fayde.Controls"
-    }
+    "qunit": {}
   },
   "themes": {
     "fayde.transformer": {},
     "fayde.utils": "none",
     "tween": "none",
-    "fayde.controls": {}
+    "qunit": "none"
+  },
+  "debug": {
+    "warnMissingThemes": false,
+    "warnBrokenPath": false
   }
 }

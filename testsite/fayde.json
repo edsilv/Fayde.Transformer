@@ -23,5 +23,9 @@
     "fayde.utils": "none",
     "tween": "none",
     "fayde.controls": {}
+  },
+  "debug": {
+    "warnMissingThemes": false,
+    "warnBrokenPath": false
   }
 }

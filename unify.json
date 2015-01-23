@@ -4,11 +4,13 @@
     "tests": [
       {
         "file": "test/fayde.json",
-        "lib": "test/lib"
+        "lib": "test/lib",
+        "exclude": ["fayde.controls"]
       },
       {
         "file": "testsite/fayde.json",
-        "lib": "testsite/lib"
+        "lib": "testsite/lib",
+        "exclude": ["qunit"]
       }
     ]
   },
@@ -18,6 +20,7 @@
     "type": "export",
     "exports": "Fayde.Transformer"
   },
+  "themes": {},
   "typings": [
     "dist/fayde.transformer.d.ts"
   ]

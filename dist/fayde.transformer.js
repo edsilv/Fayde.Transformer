@@ -26,6 +26,7 @@ var Fayde;
                 this._DragMinSpeed = 2;
                 this._DragMaxSpeed = 30;
                 this._DragFriction = 2;
+                this.ScaleContent = true; // scales content instead of world
                 this.UpdateTransform = new nullstone.Event();
                 this._TweenEasing = TWEEN.Easing.Quadratic.InOut;
                 this._Timer = new Fayde.ClockTimer();
@@ -137,19 +138,34 @@ var Fayde;
                 scrollTween.start(this._LastVisualTick);
             };
             Transformer.prototype._GetTargetTranslateTransform = function (targetScaleTransform) {
+                /*
+                var matrix = new Matrix();
+                matrix.concat( new TranslateMatrix( -offsetX, -offsetY ) )
+                matrix.concat( new ScaleMatrix( scaleFactor) )
+                matrix.concat( new TranslateMatrix( offsetX * scaleFactor, offsetY * scaleFactor) )
+                myControl.transform = matrix;
+                */
                 var currentCenter = this._GetZoomOrigin(this.ScaleTransform);
                 var targetCenter = this._GetZoomOrigin(targetScaleTransform);
                 var diff = new Point(targetCenter.x - currentCenter.x, targetCenter.y - currentCenter.y);
                 var translateTransform = new TranslateTransform();
-                translateTransform.X = this.TranslateTransform.X - diff.x;
-                translateTransform.Y = this.TranslateTransform.Y - diff.y;
+                if (this.ScaleContent) {
+                    translateTransform.X = this.TranslateTransform.X - diff.x;
+                    translateTransform.Y = this.TranslateTransform.Y - diff.y;
+                }
+                else {
+                    // scale world
+                    // the current x is scaled proportionally to its distance from center
+                    var contentCenter = new Point(this.TranslateTransform.X + (this.ViewportSize.width / 2), this.TranslateTransform.Y + (this.ViewportSize.height / 2));
+                    var diffWorldCenter = new Point(contentCenter.x - (this.ViewportSize.width / 2), contentCenter.y - (this.ViewportSize.height / 2));
+                    var scaledDistanceFromWorldCenter = new Point(diffWorldCenter.x * targetScaleTransform.ScaleX, diffWorldCenter.y * targetScaleTransform.ScaleY);
+                }
                 return translateTransform;
             };
             Transformer.prototype._GetZoomOrigin = function (scaleTransform) {
-                // todo: use this.RenderTransformOrigin instead of halving width
-                var width = scaleTransform.ScaleX * this.ViewportSize.width;
-                var height = scaleTransform.ScaleY * this.ViewportSize.height;
-                return new Point(width * 0.5, height * 0.5);
+                var x = (scaleTransform.ScaleX * this.ViewportSize.width) * 0.5;
+                var y = (scaleTransform.ScaleY * this.ViewportSize.height) * 0.5;
+                return new Point(x, y);
             };
             Transformer.prototype._Constrain = function () {
                 if (this.TranslateTransform.X > 0) {

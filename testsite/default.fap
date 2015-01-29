@@ -38,7 +38,6 @@
                   BorderBrush="Black"
                   BorderThickness="1">
             <Image Source="Images/testing.jpg" />
-            <!--<Canvas Background="Blue"></Canvas>-->
         </t:TransformerControl>
 
         <Rectangle Fill="White" Grid.Column="1">
@@ -76,7 +75,7 @@
 
             <StackPanel Margin="0,20,0,0">
                 <TextBlock Text="Zoom Factor" />
-                <controls:NumericUpDown x:Name="ZoomFactor" DecimalPlaces="1" Increment="0.5" Minimum="1.5" Value="{Binding ZoomFactor, Mode=TwoWay}" />
+                <controls:NumericUpDown x:Name="ZoomFactor" DecimalPlaces="1" Increment="0.1" Minimum="1.1" Value="{Binding ZoomFactor, Mode=TwoWay}" />
             </StackPanel>
 
             <StackPanel Margin="0,20,0,0">

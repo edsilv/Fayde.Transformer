@@ -30,6 +30,7 @@ declare module Fayde.Transformer {
         ZoomLevel: number;
         ConstrainToViewport: boolean;
         DragAccelerationEnabled: boolean;
+        ScaleContent: boolean;
         UpdateTransform: nullstone.Event<TransformerEventArgs>;
         ScaleTransform: ScaleTransform;
         TranslateTransform: TranslateTransform;

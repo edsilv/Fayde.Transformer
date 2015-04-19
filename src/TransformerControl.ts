@@ -9,6 +9,7 @@ module Fayde.Transformer {
         static ZoomLevelProperty = DependencyProperty.RegisterFull("ZoomLevel", () => Number, TransformerControl, 0, (d, args) => (<TransformerControl>d).OnZoomLevelChanged(args));
         static ConstrainToViewportProperty = DependencyProperty.RegisterFull("ConstrainToViewport", () => Boolean, TransformerControl, true, (d, args) => (<TransformerControl>d).OnConstrainToViewportChanged(args));
         static AnimationSpeedProperty = DependencyProperty.RegisterFull("AnimationSpeed", () => Number, TransformerControl, 250, (d, args) => (<TransformerControl>d).OnAnimationSpeedChanged(args));
+        static VelocityToleranceProperty = DependencyProperty.RegisterFull("VelocityTolerance", () => Number, TransformerControl, 0, (d, args) => (<TransformerControl>d).OnVelocityToleranceChanged(args));
         static DragAccelerationEnabledProperty = DependencyProperty.RegisterFull("DragAccelerationEnabled", () => Boolean, TransformerControl, true, (d, args) => (<TransformerControl>d).OnDragAccelerationEnabledChanged(args));
         static XPositionProperty = DependencyProperty.RegisterFull("XPosition", () => Number, TransformerControl, 0, (d, args) => (<TransformerControl>d).OnXPositionChanged(args));
         static YPositionProperty = DependencyProperty.RegisterFull("YPosition", () => Number, TransformerControl, 0, (d, args) => (<TransformerControl>d).OnYPositionChanged(args));
@@ -36,6 +37,10 @@ module Fayde.Transformer {
             this._Transformer.AnimationSpeed = this.AnimationSpeed;
         }
 
+        private OnVelocityToleranceChanged (args: IDependencyPropertyChangedEventArgs) {
+            this._Transformer.VelocityTolerance = this.VelocityTolerance;
+        }
+
         private OnDragAccelerationEnabledChanged (args: IDependencyPropertyChangedEventArgs) {
             this._Transformer.DragAccelerationEnabled = this.DragAccelerationEnabled;
         }
@@ -49,6 +54,7 @@ module Fayde.Transformer {
         }
 
         AnimationSpeed: number;
+        VelocityTolerance: number;
         ZoomFactor: number;
         ZoomLevels: number;
         ZoomLevel: number;
@@ -77,6 +83,7 @@ module Fayde.Transformer {
 
             this._Transformer = new Transformer();
             this._Transformer.AnimationSpeed = this.AnimationSpeed;
+            this._Transformer.VelocityTolerance = this.VelocityTolerance;
             this._Transformer.ZoomFactor = this.ZoomFactor;
             this._Transformer.ZoomLevels = this.ZoomLevels;
             this._Transformer.ZoomLevel = this.ZoomLevel;
@@ -100,8 +107,7 @@ module Fayde.Transformer {
         }
 
         private Transformer_MouseLeftButtonDown (sender: any, e: Fayde.Input.MouseButtonEventArgs) {
-            if (e.Handled)
-                return;
+            if (e.Handled) return;
 
             this.CaptureMouse();
 
@@ -109,8 +115,7 @@ module Fayde.Transformer {
         }
 
         private Transformer_MouseLeftButtonUp(sender: any, e: Fayde.Input.MouseButtonEventArgs) {
-            if (e.Handled)
-                return;
+            if (e.Handled) return;
 
             this._Transformer.PointerUp();
 
@@ -118,15 +123,13 @@ module Fayde.Transformer {
         }
 
         private Transformer_MouseMove(sender: any, e: Fayde.Input.MouseEventArgs) {
-            if (e.Handled)
-                return;
+            if (e.Handled) return;
 
             this._Transformer.PointerMove(e.AbsolutePos);
         }
 
         private Transformer_TouchDown(sender: any, e: Fayde.Input.TouchEventArgs) {
-            if (e.Handled)
-                return;
+            if (e.Handled) return;
 
             e.Device.Capture(this);
 
@@ -135,8 +138,7 @@ module Fayde.Transformer {
         }
 
         private Transformer_TouchUp(sender: any, e: Fayde.Input.TouchEventArgs) {
-            if (e.Handled)
-                return;
+            if (e.Handled) return;
 
             e.Device.ReleaseCapture(this);
 
@@ -144,8 +146,7 @@ module Fayde.Transformer {
         }
 
         private Transformer_TouchMove(sender: any, e: Fayde.Input.TouchEventArgs) {
-            if (e.Handled)
-                return;
+            if (e.Handled) return;
 
             var pos: Fayde.Input.TouchPoint = e.GetTouchPoint(null);
 

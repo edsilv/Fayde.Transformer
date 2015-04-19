@@ -9,6 +9,7 @@ class TestViewModel extends Fayde.MVVM.ViewModelBase {
     _XPosition: number = 0;
     _YPosition: number = 0;
     _AnimationSpeed: number = 250;
+    _VelocityTolerance: number = 15;
     _Transforms: TransformGroup;
 
     get ZoomFactor(): number {
@@ -64,6 +65,15 @@ class TestViewModel extends Fayde.MVVM.ViewModelBase {
     set AnimationSpeed(value: number) {
         this._AnimationSpeed = value;
         this.OnPropertyChanged("AnimationSpeed");
+    }
+
+    get VelocityTolerance(): number {
+        return this._VelocityTolerance;
+    }
+
+    set VelocityTolerance(value: number) {
+        this._VelocityTolerance = value;
+        this.OnPropertyChanged("VelocityTolerance");
     }
 
     get Transforms(): TransformGroup {

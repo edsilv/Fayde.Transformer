@@ -2,6 +2,8 @@ import ScaleTransform = Fayde.Media.ScaleTransform;
 import TranslateTransform = Fayde.Media.TranslateTransform;
 import Vector = Fayde.Utils.Vector;
 
+// todo: use matrix transforms
+// https://github.com/wsick/minerva/tree/master/src/mat
 module Fayde.Transformer {
 
     var MAX_FPS: number = 100;
@@ -21,7 +23,6 @@ module Fayde.Transformer {
         private _PointerDelta: Vector = new Vector(0, 0);
         private _DragVelocity: Vector = new Vector(0, 0);
         private _DragAcceleration: Vector = new Vector(0, 0);
-        private _VelocityAccumulationTolerance: number = 10; // dragging faster than this builds velocity
         private _DragMinSpeed: number = 2;
         private _DragMaxSpeed: number = 30;
         private _DragFriction: number = 2;
@@ -35,6 +36,7 @@ module Fayde.Transformer {
         public ZoomLevel: number;
         public ConstrainToViewport: boolean;
         public DragAccelerationEnabled: boolean;
+        public VelocityTolerance: number; // dragging faster than this builds velocity
         public ScaleContent: boolean = true; // scales content instead of world
 
         public UpdateTransform = new nullstone.Event<TransformerEventArgs>();
@@ -264,7 +266,7 @@ module Fayde.Transformer {
                     this._RemoveVelocity();
                 } else {
                     // only add to velocity if dragging fast enough
-                    if (this._PointerDelta.Mag() > this._VelocityAccumulationTolerance) {
+                    if (this._PointerDelta.Mag() > this.VelocityTolerance) {
                         // calculate acceleration
                         this._DragAcceleration.Add(this._PointerDelta);
 

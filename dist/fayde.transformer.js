@@ -8,6 +8,8 @@ var Fayde;
 var ScaleTransform = Fayde.Media.ScaleTransform;
 var TranslateTransform = Fayde.Media.TranslateTransform;
 var Vector = Fayde.Utils.Vector;
+// todo: use matrix transforms
+// https://github.com/wsick/minerva/tree/master/src/mat
 var Fayde;
 (function (Fayde) {
     var Transformer;
@@ -22,7 +24,6 @@ var Fayde;
                 this._PointerDelta = new Vector(0, 0);
                 this._DragVelocity = new Vector(0, 0);
                 this._DragAcceleration = new Vector(0, 0);
-                this._VelocityAccumulationTolerance = 10; // dragging faster than this builds velocity
                 this._DragMinSpeed = 2;
                 this._DragMaxSpeed = 30;
                 this._DragFriction = 2;
@@ -196,7 +197,7 @@ var Fayde;
                     }
                     else {
                         // only add to velocity if dragging fast enough
-                        if (this._PointerDelta.Mag() > this._VelocityAccumulationTolerance) {
+                        if (this._PointerDelta.Mag() > this.VelocityTolerance) {
                             // calculate acceleration
                             this._DragAcceleration.Add(this._PointerDelta);
                             // integrate acceleration
@@ -280,6 +281,7 @@ var Fayde;
                 this.SizeChanged.on(this.Transformer_SizeChanged, this);
                 this._Transformer = new Transformer.Transformer();
                 this._Transformer.AnimationSpeed = this.AnimationSpeed;
+                this._Transformer.VelocityTolerance = this.VelocityTolerance;
                 this._Transformer.ZoomFactor = this.ZoomFactor;
                 this._Transformer.ZoomLevels = this.ZoomLevels;
                 this._Transformer.ZoomLevel = this.ZoomLevel;
@@ -305,6 +307,9 @@ var Fayde;
             };
             TransformerControl.prototype.OnAnimationSpeedChanged = function (args) {
                 this._Transformer.AnimationSpeed = this.AnimationSpeed;
+            };
+            TransformerControl.prototype.OnVelocityToleranceChanged = function (args) {
+                this._Transformer.VelocityTolerance = this.VelocityTolerance;
             };
             TransformerControl.prototype.OnDragAccelerationEnabledChanged = function (args) {
                 this._Transformer.DragAccelerationEnabled = this.DragAccelerationEnabled;
@@ -371,6 +376,7 @@ var Fayde;
             TransformerControl.ZoomLevelProperty = DependencyProperty.RegisterFull("ZoomLevel", function () { return Number; }, TransformerControl, 0, function (d, args) { return d.OnZoomLevelChanged(args); });
             TransformerControl.ConstrainToViewportProperty = DependencyProperty.RegisterFull("ConstrainToViewport", function () { return Boolean; }, TransformerControl, true, function (d, args) { return d.OnConstrainToViewportChanged(args); });
             TransformerControl.AnimationSpeedProperty = DependencyProperty.RegisterFull("AnimationSpeed", function () { return Number; }, TransformerControl, 250, function (d, args) { return d.OnAnimationSpeedChanged(args); });
+            TransformerControl.VelocityToleranceProperty = DependencyProperty.RegisterFull("VelocityTolerance", function () { return Number; }, TransformerControl, 0, function (d, args) { return d.OnVelocityToleranceChanged(args); });
             TransformerControl.DragAccelerationEnabledProperty = DependencyProperty.RegisterFull("DragAccelerationEnabled", function () { return Boolean; }, TransformerControl, true, function (d, args) { return d.OnDragAccelerationEnabledChanged(args); });
             TransformerControl.XPositionProperty = DependencyProperty.RegisterFull("XPosition", function () { return Number; }, TransformerControl, 0, function (d, args) { return d.OnXPositionChanged(args); });
             TransformerControl.YPositionProperty = DependencyProperty.RegisterFull("YPosition", function () { return Number; }, TransformerControl, 0, function (d, args) { return d.OnYPositionChanged(args); });

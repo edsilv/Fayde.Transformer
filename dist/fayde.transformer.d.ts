@@ -17,7 +17,6 @@ declare module Fayde.Transformer {
         private _PointerDelta;
         private _DragVelocity;
         private _DragAcceleration;
-        private _VelocityAccumulationTolerance;
         private _DragMinSpeed;
         private _DragMaxSpeed;
         private _DragFriction;
@@ -30,6 +29,7 @@ declare module Fayde.Transformer {
         ZoomLevel: number;
         ConstrainToViewport: boolean;
         DragAccelerationEnabled: boolean;
+        VelocityTolerance: number;
         ScaleContent: boolean;
         UpdateTransform: nullstone.Event<TransformerEventArgs>;
         ScaleTransform: ScaleTransform;
@@ -61,6 +61,7 @@ declare module Fayde.Transformer {
         static ZoomLevelProperty: DependencyProperty;
         static ConstrainToViewportProperty: DependencyProperty;
         static AnimationSpeedProperty: DependencyProperty;
+        static VelocityToleranceProperty: DependencyProperty;
         static DragAccelerationEnabledProperty: DependencyProperty;
         static XPositionProperty: DependencyProperty;
         static YPositionProperty: DependencyProperty;
@@ -69,10 +70,12 @@ declare module Fayde.Transformer {
         private OnZoomLevelChanged(args);
         private OnConstrainToViewportChanged(args);
         private OnAnimationSpeedChanged(args);
+        private OnVelocityToleranceChanged(args);
         private OnDragAccelerationEnabledChanged(args);
         private OnXPositionChanged(args);
         private OnYPositionChanged(args);
         AnimationSpeed: number;
+        VelocityTolerance: number;
         ZoomFactor: number;
         ZoomLevels: number;
         ZoomLevel: number;

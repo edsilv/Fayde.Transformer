@@ -1,3 +1,3 @@
 module Fayde.Transformer {
-    export var Version = '0.7.0';
+    export var Version = '0.7.1';
 }

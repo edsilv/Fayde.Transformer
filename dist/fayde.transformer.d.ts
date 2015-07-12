@@ -3,7 +3,7 @@ declare module Fayde.Transformer {
 }
 import ScaleTransform = Fayde.Media.ScaleTransform;
 import TranslateTransform = Fayde.Media.TranslateTransform;
-import Vector = Fayde.Utils.Vector;
+import Vector = Utils.Maths.Vector;
 declare module Fayde.Transformer {
     class Transformer {
         private _TweenEasing;

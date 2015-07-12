@@ -3,13 +3,19 @@
     "fayde.transformer": {
       "exports": "Fayde.Transformer",
       "deps": [
-        "fayde.utils",
+        "utils",
         "tween",
         "qunit"
       ]
     },
-    "fayde.utils": {
-      "exports": "Fayde.Utils"
+    "utils": {
+      "path": "lib/utils/dist/utils.js",
+      "deps": [
+        "extensions"
+      ]
+    },
+    "extensions": {
+      "path": "lib/extensions/dist/extensions.js"
     },
     "tween": {
       "exports": "TWEEN",
@@ -19,7 +25,8 @@
   },
   "themes": {
     "fayde.transformer": {},
-    "fayde.utils": "none",
+    "utils": "none",
+    "extensions": "none",
     "tween": "none",
     "qunit": "none"
   },

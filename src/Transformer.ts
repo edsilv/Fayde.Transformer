@@ -1,6 +1,6 @@
 import ScaleTransform = Fayde.Media.ScaleTransform;
 import TranslateTransform = Fayde.Media.TranslateTransform;
-import Vector = Fayde.Utils.Vector;
+import Vector = Utils.Maths.Vector;
 
 // todo: use matrix transforms
 // https://github.com/wsick/minerva/tree/master/src/mat

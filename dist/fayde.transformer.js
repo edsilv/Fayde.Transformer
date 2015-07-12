@@ -7,7 +7,7 @@ var Fayde;
 })(Fayde || (Fayde = {}));
 var ScaleTransform = Fayde.Media.ScaleTransform;
 var TranslateTransform = Fayde.Media.TranslateTransform;
-var Vector = Fayde.Utils.Vector;
+var Vector = Utils.Maths.Vector;
 // todo: use matrix transforms
 // https://github.com/wsick/minerva/tree/master/src/mat
 var Fayde;

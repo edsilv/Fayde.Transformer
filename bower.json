@@ -10,7 +10,7 @@
   ],
   "dependencies": {
     "fayde": "~0.16.11",
-    "utils": "edsilv/utils#~0.0.19",
+    "utils": "edsilv/utils#~0.0.20",
     "tween.ts": "edsilv/tween.ts#~0.1.2"
   },
   "devDependencies": {
